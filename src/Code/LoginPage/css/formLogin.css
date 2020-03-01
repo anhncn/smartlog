@@ -1,0 +1,58 @@
+.login .form-login{
+    width: 300px;
+    height: 525px;
+    padding: 130px 25px;
+    display: flex;
+    box-sizing: border-box;
+    box-shadow: #242021 2px 2px 5px;
+    align-items: center;
+    border: 1px solid #242021;
+    border-radius: 4px;
+    animation-name:  opacityna;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+
+}
+.login .form-login .img-logo{
+    width: 100%;
+}
+.login .form-login .img-logo img{
+    width: 100%;
+    padding-bottom: 30px;
+}
+.login .form-login .form-detail form label{
+    font-weight: 500;
+    color: #888;
+    transition: color 1s;
+    font-size: 16px;
+    cursor: pointer;
+    
+}
+.login .form-login .form-detail form .input-field input{
+    width: 100%;
+    border: none;
+    padding: 0;
+    outline: none;
+    width: 100%;
+    margin-top: 5px;
+    border-bottom: 1px solid #888 ;
+}
+.login .form-login .form-detail form .input-field.btn-custom{
+    cursor: pointer;
+    width: 100%;
+    background-color: #E1282E;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    height: 40px;
+    box-sizing: border-box;
+    display: flex;
+}
+.login .form-login .form-detail form .input-field.btn-custom input{
+    cursor: pointer;
+    border: none;
+    margin: 0;
+    font-weight: 700;
+    color: #fff;
+    background-color: #E1282E;
+}

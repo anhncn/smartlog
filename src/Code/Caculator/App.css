@@ -1,0 +1,82 @@
+body{
+    background-color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+button{
+    cursor: pointer !important;
+}
+.caculator-project{
+    width: 400px;
+    height: 550px;
+    position: absolute;
+    top: calc(50% - 275px);
+    left: calc(50% - 200px);
+    background-color: #fff;
+    border: 1px solid #921029;
+    box-sizing: border-box;
+}
+
+.caculator-project .screen{
+    width: 100%;
+    height: 150px;
+    font-size: 100px;
+    box-sizing: border-box;
+    background-color: #433437;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.caculator-project .btn-clear{
+    width: 75%;
+    height: 100px;
+    color: #525252;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    background-color: #fff;
+    border: none;
+    border-right: 1px solid #921029;
+    border-top: 1px solid #921029;
+    padding: 0;
+}
+.caculator-project .btn-operator{
+    width: 25%;
+    height: 398px;
+    position: absolute;
+    border-collapse: collapse;
+    top: 150px;
+    right: 0;
+    box-sizing: border-box;
+}
+.caculator-project .btn-number{
+    width: 75%;
+    height: calc(calc(600% / 11) - 1px);
+
+}
+.caculator-project .btn-operator .operator-child{
+    width: 100%;
+    height: 25%;
+    color: #fff;
+    background-color: #f2274f;
+    font-size: 60px;
+    padding: 0;
+    border: none;
+    /* //border-left: 1px solid #921029; */
+    border-top: 1px solid #921029;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+
+.caculator-project .btn-number .btn-number-child{
+    width: calc(100% / 3);
+    height: calc(100% /3);
+    padding: 0;
+    border: none;
+    background-color: #fff;
+    font-size: 60px;
+    border-top: 1px solid #921029;
+    border-right: 1px solid #921029;
+    color: #292929;
+}
