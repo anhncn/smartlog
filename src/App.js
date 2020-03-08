@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
-// import Caculator from './Code/Caculator/Caculator'
-// class App extends Component{
-//   render(){
-//     return(
-//       <Caculator />
-//     )
-//   }
-// }
-// export default App;
 
-import Login from './Code/LoginBase/Login'
+/**
+ * updated nnanh 08/03/2020
+ * Không sử dụng các hàm có dạng base nữa
+ * ex : Folder LoginBase, Folder Base
+ */
+
+import Login from './Code/LoginPage/Login'
+import Home from './Code/HomePage/Home'
+import Warn from './Code/WarningPage/WarningPage'
 class App extends Component {
   render() {
     return (
-      <Login/>
+      <Warn />
     )
   }
 }
 export default App;
-

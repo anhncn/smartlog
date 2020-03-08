@@ -7,7 +7,7 @@ class FormLogin extends React.Component{
     render(){
         return(
             <div className={"form-login"}>
-                <div>
+                <div style={{width: '100%'}}>
                     <div className="img-logo">
                         <img alt="brand" src={Logo}></img>
                     </div>

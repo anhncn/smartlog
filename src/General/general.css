@@ -1,0 +1,135 @@
+@import '../Common/common.css';
+body .ngocanh{
+    position: relative;
+}
+
+/*Container*/
+body .ngocanh .container {
+    margin-left: 50px;
+    transition: margin-left .3s ease-in-out;
+}
+
+body .ngocanh.sidebar-open .container {
+    margin-left: 230px;
+    
+}
+/*Header*/
+body .ngocanh .header {
+    border-bottom: 1px solid #ccc;
+}
+
+    body .ngocanh .header .logo {
+        cursor: pointer;
+        transition: width .3s ease-in-out;
+        width: 50px;
+        height: 50px;
+        padding: 0 15px;
+        box-sizing: border-box;
+        line-height: 50px;
+        display: block;
+        float: left;
+        text-align: center;
+    }
+
+    body .ngocanh .header .navbar {
+        min-height: 50px;
+        margin-left: 50px;
+        border-left: 1px solid #ccc;
+        transition: margin-left .3s ease-in-out;
+    }
+
+    body .ngocanh .header .logo span.logo-mini {
+        cursor: pointer;
+        display: block;
+        margin-left: -15px;
+        margin-right: -15px;
+        font-size: 18px;
+    }
+
+body .ngocanh.sidebar-open .header .logo span.logo-mini {
+    display: none;
+}
+
+body .ngocanh .header .logo span.logo-lg {
+    display: none;
+}
+
+body .ngocanh.sidebar-open .header .logo span.logo-lg {
+    display: block;
+}
+
+body .ngocanh.sidebar-open .header .logo {
+    width: 230px;
+}
+
+body .ngocanh.sidebar-open .header .navbar {
+    margin-left: 230px;
+}
+
+/*Sidebar*/
+body .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    border-right: 1px solid #ccc;
+    margin-top: 50px;
+    min-height: calc(100% - 50px);
+    transition: width .3s ease-in-out;
+}
+
+body .ngocanh.sidebar-open .sidebar {
+    width: 230px;
+}
+
+/*Content*/
+body .ngocanh .container .content {
+    min-height: calc(100vh - 130px);
+    padding: 15px;
+    overflow: auto;
+}
+
+    body .ngocanh .container .content .title {
+        display: flex;
+        justify-content: space-between;
+    }
+    body .ngocanh .container .content .title .txt-title{
+        font-size: 24px;
+    }
+    body .ngocanh .container .content .title .home-title{
+        align-items: center;
+        display: flex;
+    }
+
+body .ngocanh .container .grid {
+    /* overflow: auto; */
+    padding-top: 15px;
+}
+
+    body .ngocanh .container .grid .list-warning {
+        float: left;
+        padding-right: 15px;
+        background-color: #e9e9e9;
+    }
+
+    body .ngocanh .container .grid .description {
+        float: left;
+        padding-left: 15px;
+        background-color: #ededed;
+    }
+
+@media only screen and (max-width: 600px) {
+    body .ngocanh .container .grid .list-warning {
+        padding-right: 0;
+    }
+
+    body .ngocanh .container .grid .description {
+        padding-left: 0;
+    }
+}
+/*Footer*/
+body .ngocanh .footer {
+    padding: 15px;
+    transition: margin-left .3s ease-in-out;
+    border-top: 1px solid #ccc;
+}
