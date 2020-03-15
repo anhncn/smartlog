@@ -1,0 +1,29 @@
+table th, table td{
+    border: 1px solid #ccc;
+    padding: 12px 4px;
+    width: calc(100% / 9);
+    font-weight: bold;
+    min-width: 120px;
+    background-color: #fcfcfc;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+table td{
+    font-weight: 100;
+}
+
+.box-wrap-custom .box-header{
+    padding-bottom: 0;
+}
+.manager-left{
+    padding-right: 15px;
+}
+.manager-right{
+    padding-left: 15px;
+}
+.manager-right .col-10.padding-parent [class ^='col']{
+    padding-right: 10px;
+}
+.manager-right .btn-filter label{
+    height: 15px;
+}

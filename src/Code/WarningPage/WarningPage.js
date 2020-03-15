@@ -6,13 +6,12 @@ class WarningPage extends React.Component{
     super()
     this.onClickToggleBoxContent = this.onClickToggleBoxContent.bind(this)
   }
-
   onClickToggleBoxContent(){
     this.refs.boxContent.classList.toggle('toggle-box')
   }
     render() {
         return (
-          <General>
+          <General Title='Cảnh báo'>
             <div className="col-12">
               <div className="box-header">
                 <div className="title-box">Báo cáo trạng sự kiện tủ theo thời gian thực</div>

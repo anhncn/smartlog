@@ -1,0 +1,99 @@
+::placeholder{
+    font-style: italic;
+}
+::-moz-placeholder{
+    font-style: italic;
+}
+/*
+    InputNA
+*/
+.form-inputna{
+    padding-bottom: 10px;
+}
+.label-element label{
+    display: block;
+    width: 100%;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 0px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.input-element input{
+    width: 100%;
+    margin: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 10px 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.input-element input[type='button'],
+.input-element input[type='submit']{
+    cursor: pointer;
+    background-color: #e30613;
+    color: #fff;
+}
+/*
+    BoxWrapNA
+*/
+.box-wrap{
+    width: 100%;
+    border: 1px solid #f00;
+    border-radius: 4px;
+    transition: all .3s linear;
+}
+.box-wrap .box-body{
+    padding: 8px 8px 0 8px;
+}
+.box-wrap .box-footer{
+    padding: 0 8px 8px 8px;
+}
+.box-wrap .box-body,
+.box-wrap .box-footer{
+    transition: opacity .3s ease-in-out;
+}
+.box-wrap .box-body.toggle-box,
+.box-wrap .box-footer.toggle-box{
+    opacity: 0;
+    padding: 0;
+    height: 0;
+    margin: 0;
+    border: 0;
+}
+.box-header{
+    background-color: #e30613;
+    padding: 15px 8px;
+    color: #fff;
+    box-sizing: border-box;   
+  }
+
+.box-header .head-box-header{
+    display: flex;
+    justify-content: space-between;
+}
+.box-header .head-box-header .title-box{
+    font-size: 18px;
+}
+.btn-box-tool{ 
+    background-color: transparent;
+    border: 0;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+ }
+ /* 
+    SelectFormNA 
+ */
+ .select-element{
+     padding: 10px 16px;
+     width: 100%;
+     -moz-appearance: none;
+     -webkit-appearance:none;
+     appearance: none;
+ }
+ .select-element option{
+     padding: 10px 16px;
+     display: block;
+ }

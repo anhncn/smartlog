@@ -241,29 +241,9 @@ class Home extends React.Component {
         }
 
         setInterval(this.LoadStaticData, 15000);
-        // const LockerStatistical = this.refs.LockerStatistical
-        // const LockerHealth = this.refs.LockerHealth
-        // const WarningStatistical = this.refs.WarningStatistical
-        // const configs = {
-        //     type: "line",
-        //     data: {
-        //         labels: ["Jan", "Feb", "March"],
-        //         datasets: [
-        //             {
-        //                 label: "Sales",
-        //                 data: [86, 67, 91],
-        //             }
-        //         ]
-        //     },
-        // }
-        // new Chart(LockerStatistical, configs)
-        // new Chart(LockerHealth, configs)
-        // new Chart(WarningStatistical, configs);
-
     }
     render() {
-        var styleHeight = {
-            // height: '300px',
+        let styleHeight = {
         }
 
         return (
