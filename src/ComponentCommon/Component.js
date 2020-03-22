@@ -338,10 +338,12 @@ class ComboboxNA extends Component {
     }
     // tính toán vị trí hiện cho combobox theo input
     caculatePositionPlaceData() {
+        debugger
         let me = this, placeData = me.getElementPlaceData(),
-            bodyInput = me.bodyInputRef.current.getBoundingClientRect()
-        placeData.style.top = bodyInput.bottom + 'px'
-        placeData.style.left = bodyInput.left + 'px'
+            bodyInput = me.bodyInputRef.current,
+            boundBodyInput = bodyInput.getBoundingClientRect()
+        placeData.style.top = bodyInput.offsetTop + boundBodyInput.height + 'px'
+        placeData.style.left = bodyInput.offsetLeft + 'px'
     }
     // đặt giá trị cho input khi click vào li
     onClickSetValueInput(element) {
