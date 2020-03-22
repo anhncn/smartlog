@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import General from '../../General/General'
-import InputNA, { BoxWrapNA, SelectFormNA, httpRequest } from '../../ComponentCommon/Component'
+import InputNA, { BoxWrapNA, SelectFormNA, httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA } from '../../ComponentCommon/Component'
 import './managerCard.css'
 /**
  * Quản lý sử dụng thẻ từ
@@ -18,12 +18,58 @@ class ManagerCard extends Component {
         { value: 5, display: 'Thái Bình' },
         { value: 6, display: 'Thanh Hóa' },
     ]
-    // statusUse = [
-    //     { value: 1, display: 'Chưa có thể' },
-    //     { value: 2, display: 'Đã có thẻ' },
-    // ]
-    componentDidMount() {
-    }
+    records = [
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+        { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
+    ]
+    recordsComBobox =[
+        {value:1, display:'Vĩnh Phúc'},
+        {value:2, display:'Hà Nội'},
+        {value:3, display:'Thái Bình'},
+        {value:4, display:'Hải Dương'},
+        {value:5, display:'Thanh Hóa'},
+        {value:6, display:'HCM'},
+    ]
     constructor() {
         super()
         this.state = {
@@ -31,6 +77,17 @@ class ManagerCard extends Component {
             statusUse: [],
         }
         this.clickBtnFilter = this.clickBtnFilter.bind(this)
+        this.getDataAccess = this.getDataAccess.bind(this)
+    }
+    getDataAccess() {
+        let me = this,
+            config = {
+                method: 'GET',
+                url: 'http://localhost:49884/api/CountProvince',
+                async: false,
+            }
+        httpRequest.get(config)
+        me.clickBtnFilter()
     }
     /**
      * Call API lấy danh sách tình trạng thẻ
@@ -41,16 +98,15 @@ class ManagerCard extends Component {
         let me = this,
             config = {
                 method: 'GET',
-                url: 'http://localhost:49884/api/StatusCard',
+                url: 'http://localhost:49884/api/Province',
             }
         httpRequest.get(config)
             .then((response) => {
-                debugger
                 let status = JSON.parse(response) || [], listStatus = []
                 for (let i = 0; i < status.length; i++) {
                     listStatus.push({
-                        value: status[i].StatusCardValue,
-                        display: status[i].NameStatusCard,
+                        value: status[i].ValueProvince,
+                        display: status[i].NameProvince,
                     })
                 }
                 me.setState({
@@ -60,6 +116,12 @@ class ManagerCard extends Component {
             .catch((response) => {
                 console.log(response)
             })
+    }
+    componentDidMount() {
+        // let value = this.context
+        this.clickBtnFilter()
+        //debugger
+        // document.querySelector('.col-2 input').dispatchEvent(new Event('click', { 'bubbles': true }))
     }
     render() {
         console.log('render manager card')
@@ -79,36 +141,24 @@ class ManagerCard extends Component {
                             <div className='col-10 padding-parent'>
                                 <InputNA className='col-3' textLabel='Tên nhân viên' placeholder='ví dụ: NA'></InputNA>
                                 <InputNA className='col-3' textLabel='Mã định danh' placeholder='ví dụ: nnanh'></InputNA>
-                                <SelectFormNA className='col-3' data={placeWork} textLabel='Bộ phân làm việc' placeholder='Chọn một bộ phân làm việc'></SelectFormNA>
+                                <ComboboxNA className='col-3' ID='ComboboxNA' textLabel='Mã định danh' hasLabel={true} data={JSON.stringify(this.recordsComBobox)}/>
                                 <SelectFormNA className='col-3' data={statusUse} textLabel='Tình trạng'></SelectFormNA>
                             </div>
-                            <InputNA className='col-2 btn-filter' typeInput='button' value='Lọc kết quả' onClick={this.clickBtnFilter}></InputNA>
+                            <InputNA ref='filterResult' className='col-2 btn-filter' typeInput='button' value='Lọc kết quả' onClick={this.getDataAccess}></InputNA>
                         </div>
-                        <div ref={'boxContent'} className="box-content">
-                            <div style={{ overflow: "auto" }}>
-                                <table style={{ borderCollapse: 'collapse', width: '100%', }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Họ và tên</th>
-                                            <th>Mã nhân viên</th>
-                                            <th>Bộ phận hiện thị</th>
-                                            <th>Thẻ đang sử dụng</th>
-                                            <th>Tiện ích</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colSpan="5">No data to dislay</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <TableNA Height={400} Width={920} data={JSON.stringify(this.records)}>
+                            <ColumnNA isLocked={true} Width={200} DataIndex='FullName' text='Họ và tên'>Hello</ColumnNA>
+                            <ColumnNA Width={200} text='Mã nhân viên' DataIndex='StudentCode'>Hello</ColumnNA>
+                            <ColumnNA Width={200} text='Bộ phận hiện thị' DataIndex='DisplayPath'>Hello</ColumnNA>
+                            <ColumnNA Width={200} text='Thẻ đang sử dụng' DataIndex='CardUsing'>Hello</ColumnNA>
+                            <ColumnNA Width={200} text='Tiện ích' DataIndex='Entertainment'>Hello</ColumnNA>
+                        </TableNA>
                     </BoxWrapNA>
                 </div>
             </General>
         )
     }
 }
+ManagerCard.contextType = UserContext
 
 export default ManagerCard

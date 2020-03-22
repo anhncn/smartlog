@@ -4,7 +4,7 @@ body {
     font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
     color: #333;
 }
-[class^="col"]{
+[class *="col-"]{
     float: left;
     min-height: 1px;
     box-sizing: border-box;

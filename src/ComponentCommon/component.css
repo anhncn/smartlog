@@ -1,16 +1,20 @@
-::placeholder{
+::placeholder {
     font-style: italic;
 }
-::-moz-placeholder{
+
+::-moz-placeholder {
     font-style: italic;
 }
+
 /*
     InputNA
 */
-.form-inputna{
+
+.form-inputna {
     padding-bottom: 10px;
 }
-.label-element label{
+
+.label-element label {
     display: block;
     width: 100%;
     font-weight: 600;
@@ -20,7 +24,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.input-element input{
+
+.input-element input {
     width: 100%;
     margin: 0;
     border-radius: 4px;
@@ -29,71 +34,400 @@
     border: 1px solid #ccc;
     outline: none;
 }
-.input-element input[type='button'],
-.input-element input[type='submit']{
+
+.input-element input[type='button'], .input-element input[type='submit'] {
     cursor: pointer;
     background-color: #e30613;
     color: #fff;
 }
+
 /*
     BoxWrapNA
 */
-.box-wrap{
+
+.box-wrap {
     width: 100%;
     border: 1px solid #f00;
     border-radius: 4px;
     transition: all .3s linear;
 }
-.box-wrap .box-body{
+
+.box-wrap .box-body {
     padding: 8px 8px 0 8px;
 }
-.box-wrap .box-footer{
+
+.box-wrap .box-footer {
     padding: 0 8px 8px 8px;
 }
-.box-wrap .box-body,
-.box-wrap .box-footer{
+
+.box-wrap .box-body, .box-wrap .box-footer {
     transition: opacity .3s ease-in-out;
 }
-.box-wrap .box-body.toggle-box,
-.box-wrap .box-footer.toggle-box{
+
+.box-wrap .box-body.toggle-box, .box-wrap .box-footer.toggle-box {
     opacity: 0;
     padding: 0;
     height: 0;
     margin: 0;
     border: 0;
 }
-.box-header{
+
+.box-header {
     background-color: #e30613;
     padding: 15px 8px;
     color: #fff;
-    box-sizing: border-box;   
-  }
+    box-sizing: border-box;
+}
 
-.box-header .head-box-header{
+.box-header .head-box-header {
     display: flex;
     justify-content: space-between;
 }
-.box-header .head-box-header .title-box{
+
+.box-header .head-box-header .title-box {
     font-size: 18px;
 }
-.btn-box-tool{ 
+
+.btn-box-tool {
     background-color: transparent;
     border: 0;
     color: #fff;
     outline: none;
     cursor: pointer;
- }
- /* 
+}
+
+/* 
     SelectFormNA 
  */
- .select-element{
-     padding: 10px 16px;
-     width: 100%;
-     -moz-appearance: none;
-     -webkit-appearance:none;
-     appearance: none;
- }
- .select-element option{
-     padding: 10px 16px;
-     display: block;
- }
+
+.select-element {
+    padding: 10px 16px;
+    width: 100%;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.select-element option {
+    padding: 10px 16px;
+    display: block;
+}
+
+/* Select mix Input */
+
+.combobox-body {
+    width: 170px;
+    height: 37px;
+    display: table;
+}
+
+.combobox-body .combobox-triggerWrap {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.combobox-body .combobox-triggerWrap .combobox-inputWrap {
+    float: left;
+    width: calc(100% - 30px);
+    border: 0;
+    margin: 0;
+    height: 100%;
+}
+
+.combobox-body .combobox-triggerWrap .combobox-inputWrap input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    margin: 0;
+    padding: 6px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.combobox-body .combobox-triggerWrap .combobox-trigger-picker {
+    float: right;
+    width: 30px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.hidden-bound-list[data-componentid] {
+    display: none;
+}
+
+[data-componentid] {
+    position: absolute;
+    background-color: #fff;
+    z-index: 100;
+    max-height: 224px;
+    overflow: auto;
+    width: 170px;
+}
+
+/* width */
+
+[data-componentid]::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+
+[data-componentid]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+
+[data-componentid]::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+/* Handle on hover */
+
+[data-componentid]::-webkit-scrollbar-thumb:hover {
+    background: #888;
+    cursor: pointer;
+}
+
+.bound-list {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-top: 0;
+    box-sizing: border-box;
+}
+
+.bound-list .picker-listWrap {
+    width: 100%;
+    overflow: auto;
+}
+
+.bound-list .picker-listWrap ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.bound-list .picker-listWrap ul li {
+    padding: 0 8px;
+    box-sizing: border-box;
+    border: 1px dotted #fff;
+    height: 32px;
+    line-height: 30px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.bound-list .picker-listWrap ul li.active, .bound-list .picker-listWrap ul li.active-movement, .bound-list .picker-listWrap ul li:hover, .bound-list .picker-listWrap ul li:focus {
+    background-color: #ccc;
+    border-color: #ccc;
+    color: #fff;
+}
+
+/* Table Component */
+.table-scroll-body::-webkit-scrollbar,
+.table-scrollbarer-lock::-webkit-scrollbar,
+.table-scrollbarer-normal::-webkit-scrollbar {
+    width: var(--size-scrollbar-pixel);
+    height: var(--size-scrollbar-pixel);
+}
+.table-scroll-body::-webkit-scrollbar-track,
+.table-scrollbarer-lock::-webkit-scrollbar-track,
+.table-scrollbarer-normal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.table-scroll-body::-webkit-scrollbar-thumb,
+.table-scrollbarer-lock::-webkit-scrollbar-thumb,
+.table-scrollbarer-normal::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.table-scroll-body::-webkit-scrollbar-thumb:hover,
+.table-scrollbarer-lock::-webkit-scrollbar-thumb:hover,
+.table-scrollbarer-normal::-webkit-scrollbar-thumb:hover {
+    background: #888;
+    cursor: pointer;
+}
+
+.tableContainer .tableWrap .tableEl .theadEl::-webkit-scrollbar,
+ .table-scrollbar-clipped::-webkit-scrollbar,
+ .header-normal::-webkit-scrollbar {
+    display: none;
+}
+
+/*Common grid*/
+
+.table-item {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 0;
+    border: 0;
+}
+
+.table-scroll-body {
+    overflow: hidden auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 17px;
+}
+
+.tableContainer .tableWrap {
+    height: 400px;
+    border: 1px solid #ccc;
+    width: 800px;
+    overflow: hidden;
+}
+
+.tableContainer .tableWrap .tableEl {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    --height-header-table : 42px;
+    --size-scrollbar-pixel : 8px;   
+}
+
+/*Header Grid*/
+
+.tableContainer .tableWrap .tableEl .theadEl {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--height-header-table);
+    z-index: 1;
+    right: 0;
+    overflow: scroll hidden;
+}
+
+.header-lock {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.header-normal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 201px;
+    overflow: scroll hidden;
+}
+
+.table-item tbody tr .column-header {
+    position: sticky;
+    top: 0;
+    width: 100px;
+
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0;
+    background-color: #fcfcfc;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 0 1px;
+}
+
+.table-item tbody tr .column-header .column-header-inner {
+    border-bottom: 2px solid #222;
+    height: var(--height-header-table);
+    box-sizing: border-box;
+    padding: 12px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*Body Grid*/
+
+.tableContainer .tableWrap .tableEl .tbodyEl {
+    position: absolute;
+    top: var(--height-header-table);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.table-cell {
+    width: 200px;
+    border: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.table-cell-inner {
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 12px 4px;
+    background-color: #fff;
+}
+
+.table-scrollbar-clipped {
+    overflow: scroll hidden;
+    position: absolute;
+    top: 0;
+}
+
+.table-scrollbar-normal {
+    left: 201px;
+    right: 0;
+}
+.table-scrollbar-normal .table-item .table-row .table-cell:last-child{
+    width: 183px;
+}
+
+.table-item tbody .table-row:last-child .table-cell {
+    border-bottom: 0;
+}
+
+.table-item tbody tr .column-header:first-child, .table-item tbody .table-row .table-cell:first-child {
+    border-left: 0;
+}
+/* scroller */
+
+.scroller{
+    --width-scroller-lock : 201px;
+    /* --width-scroll-expand-lock: 800px;
+    --width-scroll-expand-normal: 800px; */
+}
+.table-scrollbarer {
+    position: absolute;
+    bottom: 0;
+    height: var(--size-scrollbar-pixel);
+    left: 0;
+    right: 0;
+    overflow: scroll hidden;
+}
+.table-scrollbarer-lock{
+    width: var(--width-scroller-lock);
+}
+.table-scrollbarer-normal{
+    left: var(--width-scroller-lock);
+    right: 0;
+}
+
+.scroller-spacer {
+    /* transform: translate3d(800px, 0px, 0px); */
+    line-height: 1px;
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    height: 1px;
+    width: 1px;
+    font-size: 0;
+    pointer-events: none;
+}
