@@ -10,6 +10,7 @@ class InputNA extends BaseElementNA {
         if (this.props.hasLabel == false) {
             return false
         }
+        // COmment ne
         return <div className="label-element">
             <label htmlFor={id} >{this.props.textLabel}</label>
         </div>
