@@ -235,7 +235,7 @@ class ComboboxNA extends Component {
         this.setData = this.setData.bind(this)
         this.getData = this.getData.bind(this)
         this.getElementLabel = this.getElementLabel.bind(this)
-        this.createPlaceData = this.createPlaceData.bind(this)
+        this.createContainerCombobox = this.createContainerCombobox.bind(this)
         this.keyDownSelectLi = this.keyDownSelectLi.bind(this)
         this.inputTextSearch = this.inputTextSearch.bind(this)
         this.openBoundingList = this.openBoundingList.bind(this)
@@ -244,9 +244,9 @@ class ComboboxNA extends Component {
         this.mousedownDocument = this.mousedownDocument.bind(this)
         this.getAllIdCombobox = this.getAllIdCombobox.bind(this)
         this.setScrollTopCombobox = this.setScrollTopCombobox.bind(this)
-        this.getElementPlaceData = this.getElementPlaceData.bind(this)
+        this.getContainerCombobox = this.getContainerCombobox.bind(this)
         this.onClickSetValueInput = this.onClickSetValueInput.bind(this)
-        this.caculatePositionPlaceData = this.caculatePositionPlaceData.bind(this)
+        this.caculatePositionContainerCombobox = this.caculatePositionContainerCombobox.bind(this)
         this.onClickToggleBoundingList = this.onClickToggleBoundingList.bind(this)
     }
     // lấy dữ liệu từ prop dạng json
@@ -266,9 +266,9 @@ class ComboboxNA extends Component {
         { value: 1, display: 'Hà Nội' }
     ]
     // render danh sách combobox 
-    pushData(data, isShow = false) {
+    renderCombobox(data, isShow = false) {
         let me = this, liElements = [], element
-        let placeData = me.createPlaceData()
+        let container = me.createContainerCombobox()
         data.forEach((rec, index) => {
             let text = rec.display,
                 recordindex = index, recordid = rec.value,
@@ -287,28 +287,29 @@ class ComboboxNA extends Component {
                 </ul>
             </div>
         </div>
-        ReactDOM.render(element, placeData)
+        ReactDOM.render(element, container)
         isShow ? me.openBoundingList() : me.closeBoundingList()
     }
-    // tạo một element chứa danh sách combobox
-    createPlaceData() {
+    // tạo một thùng chứa combobox
+    createContainerCombobox() {
         let me = this
-        if (!me.getElementPlaceData()) {
-            let placeData = document.createElement('DIV')
-            placeData.className = 'anh thay la ko con thuong em nua y'
-            placeData.setAttribute('data-componentid', this.props.ID)
-            document.querySelector('body').appendChild(placeData)
+        if (!me.getContainerCombobox()) {
+            let container = document.createElement('DIV')
+            container.className = 'avenger mighty'
+            container.style.width = this.bodyInputRef.current.getBoundingClientRect().width + 'px';
+            container.setAttribute('data-componentid', this.props.ID)
+            document.querySelector('body').appendChild(container)   
         }
-        return me.getElementPlaceData()
+        return me.getContainerCombobox()
     }
-    // lấy ra element chưa danh sách combobox
-    getElementPlaceData() {
+    // lấy ra thùng chứa combobox
+    getContainerCombobox() {
         return document.querySelector(`[data-componentid=${this.props.ID}]`)
     }
     // bật tắt danh sách combobox
     // xóa bỏ các class sinh ra khi sử dụng phím tắt trên li
     onClickToggleBoundingList() {
-        let me = this, placeData = me.getElementPlaceData(),
+        let me = this, placeData = me.getContainerCombobox(),
             dataElement = placeData
         dataElement.classList.toggle('hidden-bound-list')
         if (!dataElement.classList.contains('hidden-bound-list')) {
@@ -323,23 +324,22 @@ class ComboboxNA extends Component {
             }
         }
         me.inputRef.current.focus()
-        me.caculatePositionPlaceData()
+        me.caculatePositionContainerCombobox()
     }
     // đóng combobox
     closeBoundingList() {
-        let me = this, placeData = me.getElementPlaceData()
+        let me = this, placeData = me.getContainerCombobox()
         placeData.classList.add('hidden-bound-list')
     }
     // mở combobox
     openBoundingList() {
-        let me = this, placeData = me.getElementPlaceData()
+        let me = this, placeData = me.getContainerCombobox()
         placeData.classList.remove('hidden-bound-list')
-        me.caculatePositionPlaceData()
+        me.caculatePositionContainerCombobox()
     }
     // tính toán vị trí hiện cho combobox theo input
-    caculatePositionPlaceData() {
-        debugger
-        let me = this, placeData = me.getElementPlaceData(),
+    caculatePositionContainerCombobox() {
+        let me = this, placeData = me.getContainerCombobox(),
             bodyInput = me.bodyInputRef.current,
             boundBodyInput = bodyInput.getBoundingClientRect()
         placeData.style.top = bodyInput.offsetTop + boundBodyInput.height + 'px'
@@ -367,7 +367,7 @@ class ComboboxNA extends Component {
         const me = this,
             content = e.target.value.toLowerCase(),
             data = me.data.filter(item => { return item.display.toLowerCase().includes(content) })
-        me.pushData(data, true)
+        me.renderCombobox(data, true)
     }
     // nếu combobox ẩn và bấm nút xuống thì hiện
     // nếu combobox hiện thì todo
@@ -426,25 +426,30 @@ class ComboboxNA extends Component {
         }
 
     }
+    /**
+     * tính toán lại vị trí của scroll trong combobox
+     * @param {boolean} isUp 
+     * sự kiện bấm lên hay xuống trong combobox
+     */
     setScrollTopCombobox(isUp) {
-        let me = this, placeData = me.getElementPlaceData(),
-            offsetTopELement = placeData.querySelector('.active-movement').offsetTop,
-            heightCombobox = placeData.getBoundingClientRect().height,
-            heightElement = placeData.querySelector('ul li').getBoundingClientRect().height
+        let me = this, container = me.getContainerCombobox(),
+            offsetTopELement = container.querySelector('.active-movement').offsetTop,
+            heightCombobox = container.getBoundingClientRect().height,
+            heightElement = container.querySelector('ul li').getBoundingClientRect().height
         if (isUp) {
-            if (offsetTopELement < placeData.scrollTop) {
-                placeData.scrollTop = offsetTopELement
+            if (offsetTopELement < container.scrollTop) {
+                container.scrollTop = offsetTopELement
             }
-            else if (offsetTopELement >= placeData.querySelector('.bound-list').getBoundingClientRect().height - 2 * heightElement) {
-                placeData.scrollTop = offsetTopELement - heightCombobox + heightElement
+            else if (offsetTopELement >= container.querySelector('.bound-list').getBoundingClientRect().height - 2 * heightElement) {
+                container.scrollTop = offsetTopELement - heightCombobox + heightElement
             }
         }
         else {
-            if (offsetTopELement + heightElement > placeData.scrollTop + heightCombobox) {
-                placeData.scrollTop = offsetTopELement - heightCombobox + heightElement
+            if (offsetTopELement + heightElement > container.scrollTop + heightCombobox) {
+                container.scrollTop = offsetTopELement - heightCombobox + heightElement
             }
             else if (offsetTopELement === 0) {
-                placeData.scrollTop = offsetTopELement
+                container.scrollTop = offsetTopELement
             }
         }
 
@@ -486,7 +491,7 @@ class ComboboxNA extends Component {
     }
     // kiểm tra combobox có hiện ko
     isVisblePlaceData() {
-        const placeData = this.getElementPlaceData()
+        const placeData = this.getContainerCombobox()
         if (placeData.classList.contains('hidden-bound-list')) {
             return false
         }
@@ -496,7 +501,7 @@ class ComboboxNA extends Component {
     componentDidMount() {
         const me = this;
         me.setData()
-        me.pushData(me.data)
+        me.renderCombobox(me.data)
         document.onmousedown = me.mousedownDocument
     }
     getElementLabel(text, id, hasLabel = true) {
@@ -541,10 +546,11 @@ class TableNA extends Component {
         this.scrollContainer = React.createRef()
         this.scrollLock = React.createRef()
         this.scrollNormal = React.createRef()
+
         this.getDataFillTable = this.getDataFillTable.bind(this)
         this.onScrollTable = this.onScrollTable.bind(this)
         this.getHeaderTable = this.getHeaderTable.bind(this)
-        this.getChildrens = this.getChildrens.bind(this)
+        this.getColumnsLockAndNormal = this.getColumnsLockAndNormal.bind(this)
         this.getBodyRecordTable = this.getBodyRecordTable.bind(this)
         this.getBodyAndRecordTable = this.getBodyAndRecordTable.bind(this)
         this.isOverflow = this.isOverflow.bind(this)
@@ -557,7 +563,7 @@ class TableNA extends Component {
     getDataFillTable() {
         let me = this, records = []
         try {
-            records = JSON.parse(me.props.data)
+            records = records.concat(JSON.parse(me.props.data))
         } catch (error) {
             return records
         }
@@ -587,8 +593,8 @@ class TableNA extends Component {
      */
     setSizeScrollerTable() {
         let me = this,
-            scrollWidthNormal = me.headerNormal.current.scrollWidth + 'px',
-            scrollWidthLocked = me.headerLocked.current.scrollWidth + 'px'
+            scrollWidthNormal = me.headerNormal.current.scrollWidth - 1 + 'px',
+            scrollWidthLocked = me.headerLocked.current.scrollWidth - 1 + 'px'
         me.scrollNormal.current.querySelector('.scroller-spacer').
             style.transform = `translate3d(${scrollWidthNormal}, 0px, 0px)`;
         me.scrollLock.current.querySelector('.scroller-spacer').
@@ -605,33 +611,38 @@ class TableNA extends Component {
         me.bodyNormal.current.style.left = widthLocked
         me.scrollContainer.current.style.setProperty('--width-scroller-lock', widthLocked)
     }
+    /* ref có bị overflow ko */
     isOverflow(ref) {
         return this.isOverflowHorizontal(ref) || this.isOverflowVertical(ref)
     }
+    /* ref có bị overflow dọc ko */
     isOverflowVertical(ref) {
         let element = ref.current
         return element.clientHeight < element.scrollHeight
     }
+    /* ref có bị overflow ngang ko */
     isOverflowHorizontal(ref) {
         let element = ref.current
         return element.clientWidth < element.scrollWidth
     }
+    /* chỉnh scroll của ref head và body theo scroll của scroller */
     onScrollTable(head, body, scroller) {
         const scrollLeft = scroller.current.scrollLeft
         body.current.scrollLeft = scrollLeft
         head.current.scrollLeft = scrollLeft
     }
-
-    getChildrens() {
-        let me = this, childrens = [], childLock = [], childNormal = []
+    /* trả về các danh sách thông tin cột đã đóng băng và cột bình thường */
+    getColumnsLockAndNormal() {
+        let me = this, columns = [], columnsLock = [], columnsNormal = []
         if (me.props.children) {
-            childrens = childrens.concat(me.props.children)
-            childrens = childrens.filter(child => { return child.type.nameComponent === 'ColumnNA' })
-            childLock = childrens.filter(child => { return child.props.isLocked === true })
-            childNormal = childrens.filter(child => { return child.props.isLocked !== true })
+            columns = columns.concat(me.props.children)
+            columns = columns.filter(cloumn => { return cloumn.type.nameComponent === 'ColumnNA' })
+            columnsLock = columns.filter(cloumn => { return cloumn.props.isLocked === true })
+            columnsNormal = columns.filter(cloumn => { return cloumn.props.isLocked !== true })
         }
-        return [childLock, childNormal]
+        return [columnsLock, columnsNormal]
     }
+    /* truyền vào thông tin cột trả ra header html cột */
     getHeaderTable(columns = [], isLocked = false) {
         let me = this, header = []
         columns.forEach(child => {
@@ -645,6 +656,7 @@ class TableNA extends Component {
         })
         return <table className='table-item'><tbody><tr>{header}</tr></tbody></table>
     }
+    /* truyền vào thông tin cột trả ra body html cột */
     getBodyRecordTable(columns = [], isLocked = false) {
         let me = this, rowsInTable = [], records = me.getDataFillTable()
         records.forEach(rec => {
@@ -662,8 +674,9 @@ class TableNA extends Component {
         })
         return <div className='table-item-container'>{rowsInTable}</div>
     }
-    getBodyAndRecordTable(childrens = [], isLocked = false) {
-        return [this.getHeaderTable(childrens, isLocked), this.getBodyRecordTable(childrens, isLocked)];
+    /* ném vào thông tin cột lấy ra html của header và body cột */
+    getBodyAndRecordTable(columns = [], isLocked = false) {
+        return [this.getHeaderTable(columns, isLocked), this.getBodyRecordTable(columns, isLocked)];
     }
     componentDidMount() {
         let me = this
@@ -678,12 +691,12 @@ class TableNA extends Component {
         me.setSizeScrollerTable()
     }
     render() {
-        let me = this, [childLock, childNormal] = me.getChildrens(),
+        let me = this, [childLock, childNormal] = me.getColumnsLockAndNormal(),
             [headerTableLock, recordsTableLock] = me.getBodyAndRecordTable(childLock),
             [headerTableNormal, recordsTableNormal] = me.getBodyAndRecordTable(childNormal),
             styleTableWrap = {
-                width: '100%',
-                height: me.props.Height + 'px'
+                width: me.props.Width || '100%',
+                height: me.props.Height || '100%',
             }
         return (
             <div className='tableContainer' ref={me.tableWrapAll}>

@@ -18,6 +18,8 @@ body .ngocanh.sidebar-open .container {
 
 body .ngocanh .header {
     border-bottom: 1px solid #ccc;
+    position: relative;
+    z-index: 10;
 }
 
 body .ngocanh .header .logo {

@@ -75,6 +75,7 @@ class ManagerCard extends Component {
         this.state = {
             province: [],
             statusUse: [],
+            dataTable: this.records,
         }
         this.clickBtnFilter = this.clickBtnFilter.bind(this)
         this.getDataAccess = this.getDataAccess.bind(this)
@@ -118,9 +119,7 @@ class ManagerCard extends Component {
             })
     }
     componentDidMount() {
-        // let value = this.context
         this.clickBtnFilter()
-        //debugger
         // document.querySelector('.col-2 input').dispatchEvent(new Event('click', { 'bubbles': true }))
     }
     render() {
@@ -128,7 +127,7 @@ class ManagerCard extends Component {
         let statusUse = JSON.stringify(this.state.statusUse),
             placeWork = JSON.stringify(this.province)
         return (
-            <General Title={'Quản lý sử dụng thẻ từ'}>
+            <General Title={'Quản lý sử dụng thẻ từ'} className='manager-card-nguyen-ngoc-anh-feature'>
                 <div className='col-3 manager-left'>
                     <BoxWrapNA Title="Thêm thẻ cho nhân viên">
                         <InputNA textLabel="Bô phận / phòng ban" placeholder="Chọn một bộ phận/ phòng ban" ></InputNA>
@@ -146,7 +145,7 @@ class ManagerCard extends Component {
                             </div>
                             <InputNA ref='filterResult' className='col-2 btn-filter' typeInput='button' value='Lọc kết quả' onClick={this.getDataAccess}></InputNA>
                         </div>
-                        <TableNA Height={400} Width={920} data={JSON.stringify(this.records)}>
+                        <TableNA Height={300} data={JSON.stringify(this.records)}>
                             <ColumnNA isLocked={true} Width={200} DataIndex='FullName' text='Họ và tên'>Hello</ColumnNA>
                             <ColumnNA Width={200} text='Mã nhân viên' DataIndex='StudentCode'>Hello</ColumnNA>
                             <ColumnNA Width={200} text='Bộ phận hiện thị' DataIndex='DisplayPath'>Hello</ColumnNA>

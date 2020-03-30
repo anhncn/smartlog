@@ -1,9 +1,9 @@
 import React from 'react'
+import 'font-awesome/css/font-awesome.min.css'
 import './general.css'
-import 'font-awesome/css/font-awesome.min.css';
 import logo from '../staticna/logo.png'
-import logo_sm from '../staticna/Logo_sm.png'
 import user from '../staticna/user.png'
+import logo_sm from '../staticna/Logo_sm.png'
 /**
  * created by nnanh 08/03/2020
  * class chung cho các màn hình bên trong
@@ -21,8 +21,9 @@ class General extends React.Component {
         this.refs.ngocanh.classList.toggle('sidebar-open')
     }
     render() {
+        const me = this, className = `${me.props.className || ''} ngocanh`
         return (
-            <div className="ngocanh" ref="ngocanh">
+            <div className={className} ref="ngocanh">
                 <div className="sidebar">
                     <div className='user-panel'></div>
                     <ul className='user-sidebar-menu'>

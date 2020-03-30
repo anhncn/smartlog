@@ -11,50 +11,6 @@ import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA } from './Comp
 // import Warn from './Code/WarningPage/WarningPage'
 import ManagerCard from './Code/ManagerCardUsing/ManagerCard' 
 class App extends Component {
-  records = [
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-    { FullName: 'Ngọc Anh', StudentCode:'1', DisplayPath:'Vĩnh Phúc', CardUsing:'16', Entertainment:'Xóa'},
-  ]
   recordsComBobox =[
     {value:1, display:'Vĩnh Phúc'},
     {value:2, display:'Hà Nội'},
@@ -67,14 +23,6 @@ class App extends Component {
     return (
       <UserProvider>
         <ManagerCard/>
-        {/* <TableNA Height={400} Width={600} data={JSON.stringify(this.records)}>
-          <ColumnNA isLocked={true} Width={200} DataIndex='FullName' text='Họ và tên'>Hello</ColumnNA>
-          <ColumnNA Width={200} text='Mã nhân viên' DataIndex='StudentCode'>Hello</ColumnNA>
-          <ColumnNA Width={200} text='Bộ phận hiện thị' DataIndex='DisplayPath'>Hello</ColumnNA>
-          <ColumnNA Width={200} text='Thẻ đang sử dụng' DataIndex='CardUsing'>Hello</ColumnNA>
-          <ColumnNA Width={200} text='Tiện ích' DataIndex='Entertainment'>Hello</ColumnNA>
-        </TableNA> */}
-        {/* <ComboboxNA data={JSON.stringify(this.recordsComBobox)}/> */}
       </UserProvider>
     )
   }

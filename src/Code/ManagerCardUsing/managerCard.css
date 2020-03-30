@@ -1,16 +1,27 @@
 
-.box-wrap-custom .box-header{
+.manager-card-nguyen-ngoc-anh-feature .box-wrap-custom .box-header{
     padding-bottom: 0;
 }
-.manager-left{
+.manager-card-nguyen-ngoc-anh-feature .manager-left{
     padding-right: 15px;
 }
-.manager-right{
+.manager-card-nguyen-ngoc-anh-feature .manager-right{
     padding-left: 15px;
 }
-.manager-right .col-10.padding-parent [class ^='col']{
+.manager-card-nguyen-ngoc-anh-feature .manager-right .col-10.padding-parent [class ^='col-']{
     padding-right: 10px;
 }
-.manager-right .btn-filter label{
+.manager-card-nguyen-ngoc-anh-feature .manager-right .btn-filter label{
     height: 15px;
+}
+@media only screen and (max-width: 820px){
+    .manager-card-nguyen-ngoc-anh-feature .col-3.manager-left{
+        width: 80%;
+        padding: 0 10% 10px;
+        box-sizing: unset;
+    }
+    .manager-card-nguyen-ngoc-anh-feature .col-9.manager-right{
+        width: 100%;
+        padding: 0;
+    }
 }
