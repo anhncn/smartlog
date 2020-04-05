@@ -1,28 +1,28 @@
 @import '../Common/common.css';
-body .ngocanh {
+.ngocanh {
     position: relative;
 }
 
 /*Container*/
 
-body .ngocanh .container {
+.ngocanh .container {
     margin-left: 50px;
     transition: margin-left .3s ease-in-out;
 }
 
-body .ngocanh.sidebar-open .container {
+.ngocanh.sidebar-open .container {
     margin-left: 230px;
 }
 
 /*Header*/
 
-body .ngocanh .header {
+.ngocanh .header {
     border-bottom: 1px solid #ccc;
     position: relative;
     z-index: 10;
 }
 
-body .ngocanh .header .logo {
+.ngocanh .header .logo {
     cursor: pointer;
     transition: width .3s ease-in-out;
     width: 50px;
@@ -35,28 +35,28 @@ body .ngocanh .header .logo {
     text-align: center;
 }
 
-body .ngocanh .header .navbar {
+.ngocanh .header .navbar {
     min-height: 50px;
     margin-left: 50px;
     border-left: 1px solid #ccc;
     transition: margin-left .3s ease-in-out;
 }
 
-body .ngocanh .header .navbar::after {
+.ngocanh .header .navbar::after {
     clear: both;
     display: table;
     content: '';
 }
 
-body .ngocanh .header .navbar .navbar-custom-menu {
+.ngocanh .header .navbar .navbar-custom-menu {
     float: right;
 }
 
-body .ngocanh .header .navbar .user-menu {
+.ngocanh .header .navbar .user-menu {
     box-sizing: border-box;
     height: 50px;
 }
-body .ngocanh .header .navbar .user-menu .dropdown-menu{
+.ngocanh .header .navbar .user-menu .dropdown-menu{
     display: none;
     position: absolute;
     right: 0;
@@ -70,16 +70,16 @@ body .ngocanh .header .navbar .user-menu .dropdown-menu{
     border-radius: 4px;
     border-top-left-radius: 0 ;
 }
-body .ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-header{
+.ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-header{
     height: 175px;
     text-align: center;
 }
-body .ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-footer{
+.ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-footer{
     display: flex;
     justify-content: space-between;
 
 }
-body .ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-footer a{
+.ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-footer a{
     background-color: #f00;
     color: #fff;
     padding: 8px 8px;
@@ -87,7 +87,7 @@ body .ngocanh .header .navbar .user-menu .dropdown-menu .user-dropdown-footer a{
     border: 0;
     margin: 0;
 }
-body .ngocanh .header .navbar .user-menu .user-image {
+.ngocanh .header .navbar .user-menu .user-image {
     float: left;
     width: 25px;
     height: 25px;
@@ -96,26 +96,26 @@ body .ngocanh .header .navbar .user-menu .user-image {
     margin-top: -2px;
 }
 
-body .ngocanh .header .navbar .user-menu a {
+.ngocanh .header .navbar .user-menu a {
     text-decoration: none;
     font-size: 13px;
     padding: 15px;
     display: flex;
     cursor: pointer;
 }
-body .ngocanh .header .navbar .user-menu a:hover{
+.ngocanh .header .navbar .user-menu a:hover{
     background-color: #ccc;
     color: #000;
 }
-body .ngocanh .header .navbar .user-menu:hover .dropdown-menu{
+.ngocanh .header .navbar .user-menu:hover .dropdown-menu{
     display: block;
 }
 
-body .ngocanh .header .navbar .user-menu a span{
+.ngocanh .header .navbar .user-menu a span{
     line-height: 20px;
 }
 
-body .ngocanh .header .logo span.logo-mini {
+.ngocanh .header .logo span.logo-mini {
     cursor: pointer;
     display: block;
     margin-left: -15px;
@@ -123,29 +123,29 @@ body .ngocanh .header .logo span.logo-mini {
     font-size: 18px;
 }
 
-body .ngocanh.sidebar-open .header .logo span.logo-mini {
+.ngocanh.sidebar-open .header .logo span.logo-mini {
     display: none;
 }
 
-body .ngocanh .header .logo span.logo-lg {
+.ngocanh .header .logo span.logo-lg {
     display: none;
 }
 
-body .ngocanh.sidebar-open .header .logo span.logo-lg {
+.ngocanh.sidebar-open .header .logo span.logo-lg {
     display: block;
 }
 
-body .ngocanh.sidebar-open .header .logo {
+.ngocanh.sidebar-open .header .logo {
     width: 230px;
 }
 
-body .ngocanh.sidebar-open .header .navbar {
+.ngocanh.sidebar-open .header .navbar {
     margin-left: 230px;
 }
 
 /*Sidebar*/
 
-body .sidebar {
+.sidebar {
     position: absolute;
     top: 0;
     left: 0;
@@ -156,92 +156,104 @@ body .sidebar {
     transition: width .3s ease-in-out;
 }
 
-body .ngocanh.sidebar-open .sidebar {
+.ngocanh.sidebar-open .sidebar {
     width: 230px;
 }
 
-body .sidebar ul.user-sidebar-menu{
+.sidebar ul.user-sidebar-menu{
     padding: 0;
     margin: 0;
 }
-body .sidebar ul.user-sidebar-menu li{
+.sidebar ul.user-sidebar-menu > li{
     list-style-type: none;
-    padding: 16px 8px;
     font-size: 13px;
     color: #3c8dbc;
     cursor: pointer;
 }
-body .sidebar ul.user-sidebar-menu li:hover{
+.sidebar ul.user-sidebar-menu > li a{
+    padding: 16px 8px;
+    display: block;
+}
+.sidebar ul.user-sidebar-menu a:hover{
     background-color: #ccc;
 }
-body .sidebar ul.user-sidebar-menu li a i{
+.sidebar ul.user-sidebar-menu > li a i{
     color: #3c8dbc;
     padding-right: 8px;
     padding-left: 8px;
 }
-body .ngocanh .sidebar ul.user-sidebar-menu li a span{
+.sidebar ul.user-sidebar-menu > li ul{
+    padding: 0;
+}
+.sidebar ul.user-sidebar-menu > li li{
+    list-style-type: none;
+    font-size: 13px;
+    color: #3c8dbc;
+    cursor: pointer;
+}
+.ngocanh .sidebar ul.user-sidebar-menu li a span{
     display: none;
 }
-body .ngocanh.sidebar-open .sidebar ul.user-sidebar-menu li a span{
+.ngocanh.sidebar-open .sidebar ul.user-sidebar-menu li a span{
     display: inline-block;
 }
 /*Content*/
 
-body .ngocanh .container .content {
+.ngocanh .container .content {
     min-height: calc(100vh - 130px);
     padding: 15px;
     overflow: auto;
 }
 
-body .ngocanh .container .content .title {
+.ngocanh .container .content .title {
     display: flex;
     justify-content: space-between;
 }
 
-body .ngocanh .container .content .title .txt-title {
+.ngocanh .container .content .title .txt-title {
     font-size: 24px;
 }
 
-body .ngocanh .container .content .title .home-title {
+.ngocanh .container .content .title .home-title {
     align-items: center;
     display: flex;
 }
 
-body .ngocanh .container .grid {
+.ngocanh .container .grid {
     /* overflow: auto; */
     padding-top: 15px;
 }
 
-body .ngocanh .container .grid::after {
+.ngocanh .container .grid::after {
     content: '';
     clear: both;
     display: table;
 }
 
-body .ngocanh .container .grid .list-warning {
+.ngocanh .container .grid .list-warning {
     float: left;
     padding-right: 15px;
     background-color: #e9e9e9;
 }
 
-body .ngocanh .container .grid .description {
+.ngocanh .container .grid .description {
     float: left;
     padding-left: 15px;
     background-color: #ededed;
 }
 
 @media only screen and (max-width: 600px) {
-    body .ngocanh .container .grid .list-warning {
+    .ngocanh .container .grid .list-warning {
         padding-right: 0;
     }
-    body .ngocanh .container .grid .description {
+    .ngocanh .container .grid .description {
         padding-left: 0;
     }
 }
 
 /*Footer*/
 
-body .ngocanh .footer {
+.ngocanh .footer {
     padding: 15px;
     transition: margin-left .3s ease-in-out;
     border-top: 1px solid #ccc;

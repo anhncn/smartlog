@@ -1,0 +1,55 @@
+Cách sử dụng các component trong project
+Mục đích:
+    Giúp giảm thời gian cho người khác muốn sử dụng đc các component mà không cần hiểu quá sâu về code của dev
+    Giúp cho chính mình hiểu khi đã code quá lâu
+    Giảm sự phức tạp bằng diễn đạt lời bởi có một số component cần một số prop nhất định mới hoạt động đc =>
+    vào code đọc, đọc ko hiểu => ko dùng.... => tự viết lại hoặc vẽ lại =>
+    lặp code => khi maintain phải sửa nhiều chỗ => khó maintain => bỏ project => cần có teachicalwriter
+Folder Code:
+    Component.js : chứa hầu hết các component của project
+    component.css: chứa style css của các component
+Component.js:
+    NgocAnh: chứa các Enum của chương trình
+    InputNA: thẻ input gồm cả label cuộn chung 
+             prop className: muốn sử dụng thêm class custom,
+             prop textLabel: thêm tên labble,
+             prop placeholder: thêm placeholder,
+             prop hasLabel : ẩn label => hasLabel={false}
+    
+    BoxWrapNA: một hộp chứa custom theo form của project
+               prop Title: title box,
+               prop className: muốn sử dụng thêm class custom
+               prop typeChild: sử dụng ở children của BoxWrapNA, mục đích để children sẽ nằm ở đầu, thân hay cuối BoxWrapNA,
+               typeChild có ba trạng thái cơ bản: typeChild="body", typeChild="footer", typeChild="header" 
+    httpRequest: callApi
+                cú pháp: httpRequest.get({ method: METHOD, data: DATA, url: URL, async: ASYNC }).then(res=>{//todo}).catch(res=>{//todo})
+                METHOD: phương thức gửi dữ liệu // GET, POST, PUT,... có GET và POST là hay dùng nhất
+                DATA: dữ liệu muốn truyền xuống server,
+                URL: url server,
+                ASYNC: bằng false thì chờ đến khi nhận đc dữ liệu trả về mới tiếp tục và ngược lại // ko ghi gì mặc định là true
+                then: todo sau khi kq trả về thành công thì sẽ thực thi ở then
+                catch: todo khi có lỗi xảy ra
+    ComboboxNA: combobox
+                prop ID: mỗi một combobox cần có ID KHÁC NHAU và CẦN PHẢI CÓ ID mới dùng đc combobox,
+                prop textLabel: thêm tên labble,
+                prop placeholder: thêm placeholder,
+                prop hasLabel : ẩn label => hasLabel={false},
+                prop className: muốn sử dụng thêm class custom,
+                prop data: truyền data vào combobox dạng stringify object
+                prop DisplayField: thuộc tính hiện thị lên BoxWrapNA
+                prop ValueField: thuộc tính khi chọn BoxWrapNA 
+    TableNA: grid
+             width luôn bằng 100% width của thẻ cha nó, => muốn setWidth cho grid thì setWidth thẻ cha là được
+             prop Height: chiều rộng của dữ liệu hiển thị
+             prop data: truyền data vào grid dạng stringify object
+             prop Filter: thông số filter data
+             prop NumPaging: số bản ghi hiển thị
+             ColumnNA: sử dụng là children của TableNA
+             ColumnNA prop isLocked: cột đó đóng băng hay không
+             ColumnNA prop Width: độ rộng của cột(fix cứng)
+             ColumnNA prop MinWidth: độ rộng tối thiểu của cột
+             ColumnNA prop Flex: độ rộng để làm vừa Grid, phù hợp khi đi với MinWidth để tránh cột bị nhỏ quá
+             ColumnNA prop DataIndex: tên dữ liệu sẽ lấy vào cột
+             ColumnNA prop text: tên cột
+             
+                

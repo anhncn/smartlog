@@ -50,6 +50,7 @@
     border: 1px solid #f00;
     border-radius: 4px;
     transition: all .3s linear;
+    box-sizing: border-box;
 }
 
 .box-wrap .box-body {
@@ -70,6 +71,7 @@
     height: 0;
     margin: 0;
     border: 0;
+    display: none;
 }
 
 .box-wrap .box-header {
@@ -114,7 +116,9 @@
 }
 
 /* Select mix Input */
-
+.container-combobox{
+    padding-bottom: 10px;
+}
 .combobox-body {
     width: 100%;
     height: 37px;
@@ -279,11 +283,13 @@
     border: 1px solid #ccc;
     width: 800px;
     overflow: hidden;
+    box-sizing: border-box;
+    --height-paging-grid : 26px;
 }
 
 .tableContainer .tableWrap .tableEl {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 0px);
     position: relative;
     --height-header-table: 42px;
     --size-scrollbar-pixel: 8px;
@@ -359,7 +365,14 @@
     box-sizing: border-box;
     font-size: 14px;
 }
-
+.table-item[data-recordid].active .table-cell-inner,
+.table-item[data-recordid].selected .table-cell-inner,
+.table-item[data-recordid]:nth-child(even) .table-cell-inner{
+    background-color: #ccc;
+    color: #fff;
+    cursor: pointer;
+    
+}
 .table-cell-inner {
     position: relative;
     overflow: hidden;
@@ -367,6 +380,8 @@
     white-space: nowrap;
     padding: 12px 4px;
     background-color: #fff;
+    cursor: pointer;
+    height: 16px;
 }
 
 .table-scrollbar-clipped {
@@ -383,7 +398,6 @@
 .table-scrollbar-normal .table-item .table-row .table-cell:last-child {
     width: 183px;
 }
-
 /* 
 .table-item tbody .table-row:last-child .table-cell {
     border-bottom: 0;
@@ -429,4 +443,66 @@
     width: 1px;
     font-size: 0;
     pointer-events: none;
+}
+
+/* Paging */
+.tablePaging{
+    --height-paging: 30px;
+    padding-top: 10px;
+    width: 100%;
+    height: var(--height-paging);
+    box-sizing: border-box;
+}
+.tablePaging .contentPaging{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+}
+/* bên trái phân trang */
+.tablePaging .leftPaging{
+    display: flex;
+}
+
+
+/* bên phải phân trang */
+.tablePaging .rightPaging{
+    display: flex;
+    width: 160px;
+    justify-content: space-around;
+    align-items: center;
+}
+.tablePaging .rightPaging .child-rightPaging{
+    height: 100%;
+    align-items: center;
+    display: flex;
+}
+.tablePaging .rightPaging .inputPaging{
+    width: 40px;
+    height: 20px;
+}
+
+.tablePaging .rightPaging input{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.tablePaging .rightPaging .prePaging{
+    width: 20px;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.tablePaging .rightPaging .currentPaging{
+    box-sizing: border-box;
+}
+.tablePaging .rightPaging .nextPaging{
+    width: 20px;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
 }

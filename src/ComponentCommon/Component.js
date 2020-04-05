@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import 'font-awesome/css/font-awesome.min.css'
 import './component.css'
 
 var NgocAnh = {
@@ -17,6 +18,11 @@ var NgocAnh = {
  * nnanh 13.03.2020
  */
 class InputNA extends Component {
+    constructor() {
+        super()
+
+        this.inputRef = React.createRef()
+    }
     /**
      * textLabel nội dung của label
      * ID id của input để label for được
@@ -29,6 +35,14 @@ class InputNA extends Component {
                 <label htmlFor={id} >{contentLabel}</label>
             </div>
     }
+
+    getValue() {
+        return this.inputRef.current.querySelector('.input-element input').value
+    }
+
+    setValue(val) {
+        this.inputRef.current.querySelector('.input-element input').value = val
+    }
     /**
      * className custom form
      * ID id của input để label for được
@@ -40,7 +54,7 @@ class InputNA extends Component {
             placeholder = this.props.placeholder, typeInput = this.props.typeInput,
             label = me.getElementLabel(id, this.props.hasLabel, this.props.textLabel)
         return (
-            <div className={classList}>
+            <div className={classList} ref={me.inputRef}>
                 {label}
                 <div className="input-element">
                     <input id={id} type={typeInput} value={value} placeholder={placeholder} onClick={this.props.onClick} ></input>
@@ -266,20 +280,30 @@ class ComboboxNA extends Component {
         { value: 1, display: 'Hà Nội' }
     ]
     // render danh sách combobox 
-    renderCombobox(data, isShow = false) {
-        let me = this, liElements = [], element
-        let container = me.createContainerCombobox()
-        data.forEach((rec, index) => {
-            let text = rec.display,
-                recordindex = index, recordid = rec.value,
+    renderCombobox(records, isShow = false) {
+        let me = this, liElements = [], element,
+            container = me.createContainerCombobox(),
+            displayField = this.props.DisplayField || '',
+            valueField = this.props.ValueField || ''
+        for (let index = 0; index < records.length; index++) {
+            let rec = records[index],
+                text = rec[displayField],
+                recordid = rec[valueField],
+                recordindex = index,
                 onClick = me.onClickSetValueInput,
-                liElement = <li role='option' unselectable='on'
+                liElement = <li role='option' aria-selected={true} unselectable='on'
                     tabIndex='-1' data-recordindex={recordindex}
                     data-recordid={recordid} className='x-boundlist-item'
                     data-boundview={`${this.props.ID}-picker`}
                     onClick={onClick} key={recordindex}>{text}</li>
-            liElements.push(liElement)
-        })
+            if (recordid === undefined || recordid === null || recordid === '' || displayField === undefined || displayField === null) {
+                continue
+            }
+            else {
+                liElements.push(liElement)
+            }
+        }
+
         element = <div className="bound-list">
             <div className="picker-listWrap" >
                 <ul ref={me.ulRefs} data-selectid={-1}>
@@ -296,9 +320,12 @@ class ComboboxNA extends Component {
         if (!me.getContainerCombobox()) {
             let container = document.createElement('DIV')
             container.className = 'avenger mighty'
-            container.style.width = this.bodyInputRef.current.getBoundingClientRect().width + 'px';
+            container.style.width = this.bodyInputRef.current.getBoundingClientRect().width + 'px'
             container.setAttribute('data-componentid', this.props.ID)
-            document.querySelector('body').appendChild(container)   
+            document.querySelector('body').appendChild(container)
+        }
+        else {
+            me.getContainerCombobox().style.width = me.bodyInputRef.current.getBoundingClientRect().width + 'px'
         }
         return me.getContainerCombobox()
     }
@@ -504,24 +531,31 @@ class ComboboxNA extends Component {
         me.renderCombobox(me.data)
         document.onmousedown = me.mousedownDocument
     }
+
+    componentDidUpdate() {
+        this.setData()
+        this.renderCombobox(this.data)
+    }
     getElementLabel(text, id, hasLabel = true) {
         return hasLabel && <div className='label-element'>
             <label id={`${id}-labelEl`}>{text}</label>
         </div>
     }
     render() {
-        const id = this.props.ID;
-        let className = this.props.className || '' + ' container-combobox',
-            label = this.getElementLabel(this.props.textLabel, id, this.props.hasLabel)
+        const me = this, id = me.props.ID, readonly = me.props.ReadOnly || false
+        let className = me.props.className || '' + ' container-combobox',
+            label = me.getElementLabel(me.props.textLabel, id, me.props.hasLabel)
         return (
             <div id={`${id}_Container`} className={className}>
                 {label}
-                <div id={`${id}-bodyEl`} ref={this.bodyInputRef} className="combobox-body" tabIndex='-1' onKeyDown={this.keyDownSelectLi}>
+                <div id={`${id}-bodyEl`} ref={me.bodyInputRef} className="combobox-body" tabIndex='-1' onKeyDown={me.keyDownSelectLi}>
                     <div id={`${id}-triggerWrap`} className="combobox-triggerWrap">
                         <div id={`${id}-inputWrap`} className="combobox-inputWrap">
-                            <input id={`${id}-inputEl`} ref={this.inputRef} onInput={this.inputTextSearch} type="text" className="combobox" />
+                            <input id={`${id}-inputEl`} ref={me.inputRef}
+                                placeholder={me.props.placeholder} onInput={me.inputTextSearch}
+                                readOnly={readonly} type="text" className="combobox" />
                         </div>
-                        <div id={`${id}-trigger-picker`} className="combobox-trigger-picker" onClick={this.onClickToggleBoundingList}></div>
+                        <div id={`${id}-trigger-picker`} className="combobox-trigger-picker" onClick={me.onClickToggleBoundingList}></div>
                     </div>
                 </div>
             </div>
@@ -535,8 +569,16 @@ class ComboboxNA extends Component {
  */
 class TableNA extends Component {
     static nameComponent = 'TableNA'
+    Paging = {
+        records: [],
+        totalRecords: 0,
+        currentPaging: 0,
+        totalPaging: 0,
+        numPaging: 0,
+    }
     constructor() {
         super()
+        this.PagingGrid = React.createRef()
         this.tableWrapAll = React.createRef()
         this.headerNormal = React.createRef()
         this.headerLocked = React.createRef()
@@ -547,28 +589,83 @@ class TableNA extends Component {
         this.scrollLock = React.createRef()
         this.scrollNormal = React.createRef()
 
-        this.getDataFillTable = this.getDataFillTable.bind(this)
-        this.onScrollTable = this.onScrollTable.bind(this)
-        this.getHeaderTable = this.getHeaderTable.bind(this)
-        this.getColumnsLockAndNormal = this.getColumnsLockAndNormal.bind(this)
-        this.getBodyRecordTable = this.getBodyRecordTable.bind(this)
-        this.getBodyAndRecordTable = this.getBodyAndRecordTable.bind(this)
         this.isOverflow = this.isOverflow.bind(this)
+        this.renderPaging = this.renderPaging.bind(this)
+        this.getColumnGrid = this.getColumnGrid.bind(this)
+        this.onScrollTable = this.onScrollTable.bind(this)
+        this.checkWidthGrid = this.checkWidthGrid.bind(this)
+        this.getHeaderTable = this.getHeaderTable.bind(this)
+        this.getDataFillTable = this.getDataFillTable.bind(this)
+        this.getBodyRecordTable = this.getBodyRecordTable.bind(this)
         this.isOverflowVertical = this.isOverflowVertical.bind(this)
         this.isOverflowHorizontal = this.isOverflowHorizontal.bind(this)
-        this.caculateBottomBodyTable = this.caculateBottomBodyTable.bind(this)
         this.setSizeScrollerTable = this.setSizeScrollerTable.bind(this)
+        this.caculateWidthColumns = this.caculateWidthColumns.bind(this)
+        this.getBodyAndRecordTable = this.getBodyAndRecordTable.bind(this)
+        this.caculateBottomBodyTable = this.caculateBottomBodyTable.bind(this)
+        this.getColumnsLockAndNormal = this.getColumnsLockAndNormal.bind(this)
         this.setPositionHeaderBodyScrollerNormalVsLocked = this.setPositionHeaderBodyScrollerNormalVsLocked.bind(this)
+
+        this.state = {
+            isRender: true,
+            widthGrid: null,
+            widthGridLock: null,
+            numberRecordsOfPage: 20,
+            currentPaging: 1,
+        }
     }
+
     getDataFillTable() {
-        let me = this, records = []
+        // Filter
+        let me = this, records = [], totalRecords = 0,
+            currentPaging = me.state.currentPaging, totalPaging = 0,
+            numPaging = parseInt(me.props.NumPaging) || me.state.numberRecordsOfPage
         try {
             records = records.concat(JSON.parse(me.props.data))
         } catch (error) {
             return records
         }
+
+
+        records = me.filterData.bind(me)(records)
+
+        totalRecords = records.length
+        if (totalRecords % numPaging !== 0) {
+            totalPaging = parseInt(totalRecords / numPaging) + 1
+        }
+        else {
+            totalPaging = parseInt(totalRecords / numPaging)
+        }
+
+        records = records.filter((rec, index) => {
+            return index < numPaging * currentPaging && index >= numPaging * (currentPaging - 1)
+        }) || []
+        me.Paging = {
+            records: records,
+            totalRecords: totalRecords,
+            currentPaging: currentPaging,
+            totalPaging: totalPaging,
+            numPaging: numPaging
+        }
+        return me.Paging
+    }
+
+    filterData(records) {
+        let me = this, filterObject = me.props.Filter, keys = Object.keys(filterObject)
+        keys.forEach(key => {
+            let valKey = filterObject[key]
+            if (valKey === '' || valKey === null || valKey === undefined) {
+            }
+            else {
+                records = records.filter((rec, index) => {
+                    return rec[key].includes(valKey)
+                })
+            }
+        })
+
         return records
     }
+
     /**
      * tính toán bottom của table chứa data
      * nếu chiều ngang của cột bị overflow thì cần 8px cho scroller => bottom 8px
@@ -579,6 +676,7 @@ class TableNA extends Component {
         let me = this
         if (me.isOverflowHorizontal(me.headerLocked) ||
             me.isOverflowHorizontal(me.headerNormal)) {
+            me.scrollContainer.current.style.display = ''
             me.bodyTable.current.style.bottom = me.scrollLock.current.getBoundingClientRect().height + 'px'
         }
         else {
@@ -586,6 +684,7 @@ class TableNA extends Component {
             me.scrollContainer.current.style.display = 'none'
         }
     }
+
     /**
      * đây là 1 scroller ảo ...
      * nó sẽ là thanh overflow ngang của table để nhìn dữ liệu
@@ -596,10 +695,11 @@ class TableNA extends Component {
             scrollWidthNormal = me.headerNormal.current.scrollWidth - 1 + 'px',
             scrollWidthLocked = me.headerLocked.current.scrollWidth - 1 + 'px'
         me.scrollNormal.current.querySelector('.scroller-spacer').
-            style.transform = `translate3d(${scrollWidthNormal}, 0px, 0px)`;
+            style.transform = `translate3d(${scrollWidthNormal}, 0px, 0px)`
         me.scrollLock.current.querySelector('.scroller-spacer').
-            style.transform = `translate3d(${scrollWidthLocked}, 0px, 0px)`;
+            style.transform = `translate3d(${scrollWidthLocked}, 0px, 0px)`
     }
+
     /**
      * tính toán lại vị trí header, body, thanh scroll ngang
      * của cột đã đóng băng và cột bình thường
@@ -611,93 +711,298 @@ class TableNA extends Component {
         me.bodyNormal.current.style.left = widthLocked
         me.scrollContainer.current.style.setProperty('--width-scroller-lock', widthLocked)
     }
+
     /* ref có bị overflow ko */
     isOverflow(ref) {
         return this.isOverflowHorizontal(ref) || this.isOverflowVertical(ref)
     }
+
     /* ref có bị overflow dọc ko */
     isOverflowVertical(ref) {
         let element = ref.current
         return element.clientHeight < element.scrollHeight
     }
+
     /* ref có bị overflow ngang ko */
     isOverflowHorizontal(ref) {
         let element = ref.current
         return element.clientWidth < element.scrollWidth
     }
+
     /* chỉnh scroll của ref head và body theo scroll của scroller */
     onScrollTable(head, body, scroller) {
         const scrollLeft = scroller.current.scrollLeft
         body.current.scrollLeft = scrollLeft
         head.current.scrollLeft = scrollLeft
     }
-    /* trả về các danh sách thông tin cột đã đóng băng và cột bình thường */
-    getColumnsLockAndNormal() {
-        let me = this, columns = [], columnsLock = [], columnsNormal = []
+
+    /* Danh sách các cột là child */
+    getColumnGrid() {
+        let me = this, columns = []
         if (me.props.children) {
             columns = columns.concat(me.props.children)
-            columns = columns.filter(cloumn => { return cloumn.type.nameComponent === 'ColumnNA' })
-            columnsLock = columns.filter(cloumn => { return cloumn.props.isLocked === true })
-            columnsNormal = columns.filter(cloumn => { return cloumn.props.isLocked !== true })
+            columns = columns.filter(column => column.type.nameComponent === 'ColumnNA')
         }
+        return columns
+    }
+
+    /* Trả về các danh sách thông tin cột đã đóng băng và cột bình thường */
+    getColumnsLockAndNormal() {
+        let me = this, columns = me.getColumnGrid(), columnsLock = [], columnsNormal = []
+        columnsLock = columns.filter(cloumn => { return cloumn.props.isLocked === true })
+        columnsNormal = columns.filter(cloumn => { return cloumn.props.isLocked !== true })
         return [columnsLock, columnsNormal]
     }
-    /* truyền vào thông tin cột trả ra header html cột */
-    getHeaderTable(columns = [], isLocked = false) {
-        let me = this, header = []
-        columns.forEach(child => {
-            let text = child.props.text,
+
+    /* Truyền vào thông tin cột trả ra header html cột */
+    getHeaderTable(columns = [], widthCloumns, isLocked = false) {
+        let header = []
+        columns.forEach((column, index) => {
+            let text = column.props.text,
                 style = {
-                    width: `${child.props.Width}px`
+                    width: isLocked ? column.props.Width : widthCloumns[index]
                 }
-            header.push(<th style={style} className='column-header'>
+            header.push(<th style={style} key={index} className='column-header'>
                 <div className='column-header-inner' title={text}>{text}</div>
             </th>)
         })
         return <table className='table-item'><tbody><tr>{header}</tr></tbody></table>
     }
-    /* truyền vào thông tin cột trả ra body html cột */
-    getBodyRecordTable(columns = [], isLocked = false) {
-        let me = this, rowsInTable = [], records = me.getDataFillTable()
-        records.forEach(rec => {
+
+    /* Truyền vào thông tin cột trả ra body html cột */
+    getBodyRecordTable(columns = [], widthCloumns, isLocked = false) {
+        let me = this, rowsInTable = [], { records } = me.Paging
+        records.forEach((rec, i) => {
             let dataInRow = []
-            columns.forEach(column => {
+            columns.forEach((column, index) => {
                 let text = rec[column.props.DataIndex],
                     style = {
-                        width: `${column.props.Width}px`
+                        width: isLocked ? column.props.Width : widthCloumns[index]
                     }
-                dataInRow.push(<td className='table-cell' style={style}>
-                    <div className='table-cell-inner' title={text}>{text}</div></td>)
+                if (column.props.Command) {
+                    let styleBtn = {
+                        boxSizing: 'border-box',
+                        border: 'none',
+                        padding: 0,
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer'
+                    }
+                    style.textAlign = "center"
+                    dataInRow.push(<td key={index} className='table-cell' style={style}>
+                        <div className='table-cell-inner' title={text}>
+                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} recordid={rec.RecordID}><i className="fa fa-trash"></i> </button>
+                        </div></td>)
+                }
+                else {
+                    dataInRow.push(<td key={index} className='table-cell' style={style}>
+                        <div className='table-cell-inner' title={text}>{text}</div></td>)
+                }
             })
-            rowsInTable.push(<table className='table-item'><tbody>
+            rowsInTable.push(<table key={i} className='table-item' data-recordid={i}><tbody>
                 <tr className='table-row'>{dataInRow}</tr></tbody></table>)
         })
         return <div className='table-item-container'>{rowsInTable}</div>
     }
-    /* ném vào thông tin cột lấy ra html của header và body cột */
+
+    onClickDeleteRecord(e) {
+        let me = this, id = e.currentTarget.getAttribute('recordid')
+        alert('Đã xóa bản ghi:' + id)
+    }
+
+    /* Ném vào thông tin cột lấy ra html của header và body cột */
     getBodyAndRecordTable(columns = [], isLocked = false) {
-        return [this.getHeaderTable(columns, isLocked), this.getBodyRecordTable(columns, isLocked)];
+        let me = this
+        if (me.checkWidthGrid()) {
+            let widthCloumns = isLocked ? [] : me.caculateWidthColumns(columns)
+            return [this.getHeaderTable(columns, widthCloumns, isLocked), this.getBodyRecordTable(columns, widthCloumns, isLocked)];
+        } else {
+            return [[], []]
+        }
+    }
+
+    /* Tính toán width cho mỗi column normal */
+    caculateWidthColumns(columns) {
+        let me = this, widthCloumns = [], totalFlex = 0, totalWidth = 0,
+            widthGrid = me.state.widthGrid - me.state.widthGridLock
+        columns.forEach(column => {
+            const flex = parseInt(column.props.Flex) || 0,
+                width = parseInt(column.props.Width) || 0,
+                minWidth = parseInt(column.props.MinWidth) || 0
+            if (minWidth === 0 && flex === 0) {
+                totalWidth += width
+            }
+            else {
+                totalFlex += flex
+            }
+        })
+        if (totalWidth > widthGrid || totalFlex === 0) {
+            totalWidth = widthGrid
+            totalFlex = 1
+        }
+        columns.forEach((column, index) => {
+            let flex = parseInt(column.props.Flex) || 0,
+                width = parseInt(column.props.Width) || 0,
+                minWidth = parseInt(column.props.MinWidth) || 0
+            flex = (widthGrid - totalWidth) / totalFlex * flex
+            if (flex !== 0 || minWidth !== 0) {
+                width = Math.max(flex, minWidth)
+            }
+            widthCloumns[index] = width
+        })
+        return widthCloumns
+    }
+
+    /* Nếu width của grid chưa có hay chưa được render thì ko render */
+    checkWidthGrid() {
+        let width = this.state.widthGrid || 0
+        if (width === 0) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /* Cập nhật lại width grid nếu có thay đổi */
+    UpdateWidthGrid() {
+        const me = this, widthGridUpdate = me.tableWrapAll.current.getBoundingClientRect().width
+        if (me.state.widthGrid !== widthGridUpdate) {
+            let [columnsLock,] = me.getColumnsLockAndNormal(), widthColunnsLock = 0
+            columnsLock.forEach(column => {
+                widthColunnsLock += column.props.Width
+            })
+            this.setState({
+                widthGrid: widthGridUpdate,
+                widthGridLock: widthColunnsLock,
+            })
+        }
+    }
+
+    /**
+     * render html cho phân trang
+     */
+    renderPaging() {
+        const me = this,
+            { totalRecords, currentPaging, totalPaging } = me.Paging,
+            currentPagingText = `Trang ${currentPaging} / ${totalPaging} `
+        if (me.PagingGrid.current) {
+            me.PagingGrid.current.querySelector('input').value = currentPaging
+        }
+        return <div ref={me.PagingGrid} className='tablePaging'>
+            <div className='contentPaging'>
+                <div className='leftPaging'>
+                    <div className='titlePaging'>Tổng số nhân viên:&nbsp;</div>
+                    <div className='statTotal'>{totalRecords}</div>
+                </div>
+                <div className='rightPaging'>
+                    <div className='inputPaging child-rightPaging'>
+                        <input defaultValue={currentPaging} onKeyPress={me.onKeypressSearchPage.bind(me)} type="text" />
+                    </div>
+                    <div onClick={me.changeNumberPaging.bind(me, false)} className='prePaging child-rightPaging'>
+                        <i className="fa fa-fw fa-chevron-left"></i>
+                    </div>
+                    <div className='currentPaging child-rightPaging'>{currentPagingText}</div>
+                    <div onClick={me.changeNumberPaging.bind(me, true)} className='nextPaging child-rightPaging'>
+                        <i className="fa fa-fw fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    onKeypressSearchPage(event) {
+        if (event.charCode === NgocAnh.Enumeration.KeyCode.Enter ||
+            event.which === NgocAnh.Enumeration.KeyCode.Enter ||
+            event.keyCode === NgocAnh.Enumeration.KeyCode.Enter) {
+            let value = event.target.value,
+                numberValue = parseInt(value),
+                { currentPaging, totalPaging } = this.Paging
+            if (!isNaN(value) && 0 < numberValue && numberValue <= totalPaging) {
+                this.setState({
+                    currentPaging: numberValue
+                })
+            }
+            else {
+                event.target.value = currentPaging
+            }
+        }
+    }
+
+    changeNumberPaging(isIncrease = false) {
+        let { currentPage, totalPaging } = this.Paging
+        currentPage = this.state.currentPaging + (isIncrease ? 1 : -1)
+        if (currentPage === 0 || currentPage > totalPaging) {
+        }
+        else {
+            this.setState({
+                currentPaging: currentPage
+            })
+        }
+
+    }
+
+    initEventGrid() {
+        let me = this,
+            allRecords = me.tableWrapAll.current.querySelectorAll('.table-item[data-recordid]')
+        allRecords.forEach(table => {
+            let id = table.getAttribute('data-recordid'),
+                listTable = me.tableWrapAll.current.querySelectorAll(`.table-item[data-recordid='${id}']`)
+            table.addEventListener("mouseenter", () => {
+                listTable.forEach(item => {
+                    item.classList.add('active')
+                })
+            })
+            table.addEventListener("mouseleave", () => {
+                listTable.forEach(item => {
+                    item.classList.remove('active')
+                })
+            })
+            table.addEventListener("click", () => {
+                allRecords.forEach(item => {
+                    item.classList.remove('selected')
+                })
+                listTable.forEach(item => {
+                    item.classList.add('selected')
+                })
+            })
+        })
+    }
+
+    clearGrid() {
+        let me = this,
+            allRecords = me.tableWrapAll.current.querySelectorAll('.table-item[data-recordid]')
+        allRecords.forEach(item => {
+            item.classList.remove('selected')
+        })
     }
     componentDidMount() {
         let me = this
+        me.UpdateWidthGrid()
+        me.setSizeScrollerTable()
         me.caculateBottomBodyTable()
         me.setPositionHeaderBodyScrollerNormalVsLocked()
-        me.setSizeScrollerTable()
+
     }
+
     componentDidUpdate() {
         let me = this
+        me.UpdateWidthGrid()
+        me.setSizeScrollerTable()
+        me.clearGrid.bind(me)()
+        me.initEventGrid.bind(me)()
         me.caculateBottomBodyTable()
         me.setPositionHeaderBodyScrollerNormalVsLocked()
-        me.setSizeScrollerTable()
     }
+
     render() {
-        let me = this, [childLock, childNormal] = me.getColumnsLockAndNormal(),
-            [headerTableLock, recordsTableLock] = me.getBodyAndRecordTable(childLock),
-            [headerTableNormal, recordsTableNormal] = me.getBodyAndRecordTable(childNormal),
+        this.getDataFillTable()
+        let me = this,
+            [columnsLock, columnsNormal] = me.getColumnsLockAndNormal(),
+            [headerTableLock, recordsTableLock] = me.getBodyAndRecordTable(columnsLock, true),
+            [headerTableNormal, recordsTableNormal] = me.getBodyAndRecordTable(columnsNormal),
             styleTableWrap = {
                 width: me.props.Width || '100%',
                 height: me.props.Height || '100%',
-            }
+            }, paging = me.renderPaging()
         return (
             <div className='tableContainer' ref={me.tableWrapAll}>
                 <div style={styleTableWrap} className='tableWrap'>
@@ -734,8 +1039,11 @@ class TableNA extends Component {
                                 </div>
                             </div>
                         </div>
+
+                        <div className='tfooterEl'></div>
                     </div>
                 </div>
+                {paging}
             </div>
         )
     }

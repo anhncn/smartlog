@@ -53,6 +53,9 @@ body {
     width: calc(100% * 12 / 12);
 }
 
+.fa{
+    cursor: pointer;
+}
 @media only screen and (max-width: 600px) {
     .col-6 {
         width: 100%;
