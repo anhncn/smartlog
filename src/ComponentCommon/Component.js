@@ -3,6 +3,167 @@ import ReactDOM from 'react-dom'
 import 'font-awesome/css/font-awesome.min.css'
 import './component.css'
 
+class ConfigsAPI {
+    constructor() {
+        this.server = 'http://203.171.20.94:8801/'
+        this.apiUri = {
+            login: this.server + 'api/v1/login/',
+            statistic: this.server + 'api/v1/report/locker_statistical/',
+            user: {
+                get: {
+                    uri: this.server + 'api/v1/employee/get_employee/',
+                    method: 'GET',
+                    parameters: { name: '', dId: 0, code: '', email: '', tag: '', isTag: 0, isPin: 0, isGroup: 0, page: 1 }
+                },
+                create: {
+                    uri: this.server + 'api/v1/employee/create_employee/',
+                    method: 'POST',
+                    parameters: { name: '', code: '', email: '', dId: 0, tag: '', pin: false }
+                },
+                edit: {
+                    uri: this.server + 'api/v1/employee/modify_employee/',
+                    method: 'PUT',
+                },
+                remove: {
+                    uri: this.server + 'api/v1/employee/remove_employee/',
+                    method: 'DELETE',
+                }
+            },
+            controller: {
+                get: this.server + 'api/v1/controller/get_controller/',
+            },
+            department: {
+                get: this.server + 'api/v1/department/get_department/'
+            }
+        }
+    }
+
+    createURL({ url = this.apiUri.user.get.uri, objectParams }) {
+        let parameters = '?'
+        for (var key in objectParams) {
+            let valKey = objectParams[key]
+            if (valKey === '' || valKey === null || valKey === undefined) {
+                valKey = '&'
+            }
+            else {
+                valKey = '=' + valKey + '&'
+            }
+            parameters += key + valKey
+        }
+        let path = url + parameters
+        path = path.substring(0, path.length - 1)
+        return path
+    }
+}
+
+/**
+ * đối tượng lấy dữ liệu trả dữ liệu dạng stringify khi respone thành công
+ * văng error khi gặp catch
+ * nnanh 15.03.2020
+ */
+var httpRequest = {
+    get({ method, data, url, async = true }) {
+        return new Promise((resolve, reject) => {
+            try {
+                let xhttp = new XMLHttpRequest()
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        resolve(this.response)
+                    }
+                    if(this.status === 404 || this.status === 500){
+                        reject(this)
+                    }
+                }
+                xhttp.open(method, url, async)
+                xhttp.setRequestHeader('Access-Control-Allow-Origin', '*')
+                xhttp.setRequestHeader('Content-type', "application/json")
+                // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+                xhttp.send(JSON.stringify(data));
+            }
+            catch (e) {
+                reject('Error')
+            }
+        })
+    },
+
+    getEmployee(employee) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI()
+            let employeePrimitive = NgocAnh.CommonFunction.Clone(configsAPI.apiUri.user.get.parameters), configs
+            employeePrimitive = { ...employeePrimitive, ...employee }
+            configs = {
+                method: NgocAnh.Enumeration.HttpMethod.GET,
+                url: configsAPI.createURL({ objectParams: employeePrimitive })
+            }
+            httpRequest.get(configs)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(res => {
+                    reject(res)
+                })
+        })
+    },
+
+    saveEmployee(employee) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI()
+            let employeePrimitive = NgocAnh.CommonFunction.Clone(configsAPI.apiUri.user.create.parameters), configs
+            employeePrimitive = { ...employeePrimitive, ...employee }
+            configs = {
+                method: NgocAnh.Enumeration.HttpMethod.POST,
+                data: JSON.stringify(employeePrimitive),
+                url: configsAPI.createURL({ url: configsAPI.apiUri.user.create.uri }),
+            }
+            debugger
+            httpRequest.get(configs)
+                .then(res => {
+                    debugger
+                })
+                .catch(res => {
+                    debugger
+                })
+        })
+    },
+
+    getDepartement(department) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI()
+            let configs = {
+                method: NgocAnh.Enumeration.HttpMethod.GET,
+                url: configsAPI.createURL({ url: configsAPI.apiUri.department.get, objectParams: department })
+            }
+            httpRequest.get(configs)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(res => {
+                    reject(res)
+                })
+        })
+    },
+    getAllDepartement() {
+        let me = this, departments = []
+        return new Promise((resolve, reject) => {
+            me.getDepartement({ page: 1 }).then(res => {
+                let totalPage = JSON.parse(res).totalPage, listPromise = []
+                departments = departments.concat(JSON.parse(res).items)
+                for (let i = 2; i <= totalPage; i++) {
+                    listPromise[i - 2] = me.getDepartement({ page: i })
+                }
+                Promise.all(listPromise).then(ress => {
+                    for (let i = 0; i < ress.length; i++) {
+                        departments = departments.concat(JSON.parse(ress[i]).items)
+                    }
+                    resolve(departments)
+                })
+            }).catch(res => {
+                reject(departments)
+            })
+        })
+    },
+}
+
 var NgocAnh = {
     Enumeration: {
         KeyCode: {
@@ -10,6 +171,17 @@ var NgocAnh = {
             ArrowDown: 40,
             Enter: 13,
             KeyTab: 9,
+        },
+        HttpMethod: {
+            GET: 'GET',
+            POST: 'POST',
+            PUT: 'PUT',
+            DELETE: 'DELETE'
+        }
+    },
+    CommonFunction: {
+        Clone: function (sourceObject) {
+            return Object.assign({}, sourceObject)
         }
     }
 }
@@ -210,32 +382,6 @@ class BoxWrapNA extends Component {
 }
 
 /**
- * đối tượng lấy dữ liệu trả dữ liệu dạng stringify khi respone thành công
- * văng error khi gặp catch
- * nnanh 15.03.2020
- */
-var httpRequest = {
-    get({ method, data, url, async = true }) {
-        return new Promise((resolve, reject) => {
-            try {
-                let xhttp = new XMLHttpRequest()
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState === 4 && this.status === 200) {
-                        resolve(this.response)
-                    }
-                }
-                xhttp.open(method, url, async)
-                xhttp.setRequestHeader('Content-type', "application/json")
-                // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-                xhttp.send(JSON.stringify(data));
-            }
-            catch (e) {
-                reject('Error')
-            }
-        })
-    },
-}
-/**
  * Hỗ trợ tìm kiếm theo data text,
  * Làm mượt các hiệu ứng tìm kiếm
  * Many Feature
@@ -246,21 +392,11 @@ class ComboboxNA extends Component {
         this.inputRef = React.createRef()
         this.ulRefs = React.createRef()
         this.bodyInputRef = React.createRef()
-        this.setData = this.setData.bind(this)
-        this.getData = this.getData.bind(this)
-        this.getElementLabel = this.getElementLabel.bind(this)
-        this.createContainerCombobox = this.createContainerCombobox.bind(this)
+
         this.keyDownSelectLi = this.keyDownSelectLi.bind(this)
         this.inputTextSearch = this.inputTextSearch.bind(this)
-        this.openBoundingList = this.openBoundingList.bind(this)
-        this.closeBoundingList = this.closeBoundingList.bind(this)
-        this.isVisblePlaceData = this.isVisblePlaceData.bind(this)
         this.mousedownDocument = this.mousedownDocument.bind(this)
-        this.getAllIdCombobox = this.getAllIdCombobox.bind(this)
-        this.setScrollTopCombobox = this.setScrollTopCombobox.bind(this)
-        this.getContainerCombobox = this.getContainerCombobox.bind(this)
         this.onClickSetValueInput = this.onClickSetValueInput.bind(this)
-        this.caculatePositionContainerCombobox = this.caculatePositionContainerCombobox.bind(this)
         this.onClickToggleBoundingList = this.onClickToggleBoundingList.bind(this)
     }
     // lấy dữ liệu từ prop dạng json
@@ -388,12 +524,27 @@ class ComboboxNA extends Component {
         this.ulRefs.current.dataset.selectid = element.target.dataset.recordindex
         this.onClickToggleBoundingList()
     }
+
+    getRecordsSelected() {
+        let rec = this.inputRef.current['data-record']
+        if (rec) {
+            return JSON.parse(rec)
+        }
+        else {
+            return null
+        }
+    }
+
+    getValue() {
+        return this.getRecordsSelected() ? this.getRecordsSelected().value : null
+    }
     // sự kiện khi bấm trên input
     // lọc các giá trị xuất hiện trong combobox
     inputTextSearch(e) {
         const me = this,
             content = e.target.value.toLowerCase(),
-            data = me.data.filter(item => { return item.display.toLowerCase().includes(content) })
+            displayField = me.props.DisplayField,
+            data = me.data.filter(item => { return item[displayField].toLowerCase().includes(content) })
         me.renderCombobox(data, true)
     }
     // nếu combobox ẩn và bấm nút xuống thì hiện
@@ -589,22 +740,7 @@ class TableNA extends Component {
         this.scrollLock = React.createRef()
         this.scrollNormal = React.createRef()
 
-        this.isOverflow = this.isOverflow.bind(this)
-        this.renderPaging = this.renderPaging.bind(this)
-        this.getColumnGrid = this.getColumnGrid.bind(this)
         this.onScrollTable = this.onScrollTable.bind(this)
-        this.checkWidthGrid = this.checkWidthGrid.bind(this)
-        this.getHeaderTable = this.getHeaderTable.bind(this)
-        this.getDataFillTable = this.getDataFillTable.bind(this)
-        this.getBodyRecordTable = this.getBodyRecordTable.bind(this)
-        this.isOverflowVertical = this.isOverflowVertical.bind(this)
-        this.isOverflowHorizontal = this.isOverflowHorizontal.bind(this)
-        this.setSizeScrollerTable = this.setSizeScrollerTable.bind(this)
-        this.caculateWidthColumns = this.caculateWidthColumns.bind(this)
-        this.getBodyAndRecordTable = this.getBodyAndRecordTable.bind(this)
-        this.caculateBottomBodyTable = this.caculateBottomBodyTable.bind(this)
-        this.getColumnsLockAndNormal = this.getColumnsLockAndNormal.bind(this)
-        this.setPositionHeaderBodyScrollerNormalVsLocked = this.setPositionHeaderBodyScrollerNormalVsLocked.bind(this)
 
         this.state = {
             isRender: true,
@@ -615,54 +751,42 @@ class TableNA extends Component {
         }
     }
 
-    getDataFillTable() {
-        // Filter
-        let me = this, records = [], totalRecords = 0,
-            currentPaging = me.state.currentPaging, totalPaging = 0,
-            numPaging = parseInt(me.props.NumPaging) || me.state.numberRecordsOfPage
+    getDataGrid() {
         try {
-            records = records.concat(JSON.parse(me.props.data))
-        } catch (error) {
-            return records
-        }
+            let me = this, records = [], totalRecords = 0,
+                currentPaging = me.state.currentPaging, totalPaging = 0,
+                numPaging = parseInt(me.props.NumPaging) || me.state.numberRecordsOfPage
 
+            let res = JSON.parse(me.props.data)
+            totalRecords = res.total
+            numPaging = res.count
+            currentPaging = res.currentPage
+            records = res.items || []
+            totalPaging = res.totalPage
+            records = me.filterDataGrid(records)
+            //items count: 20 total: 2769 currentPage: 2 totalPage: 139
+            me.Paging = {
+                records: records,
+                totalRecords: totalRecords,
+                currentPaging: currentPaging,
+                totalPaging: totalPaging,
+                numPaging: numPaging
+            }
+        } catch (e) {
 
-        records = me.filterData.bind(me)(records)
-
-        totalRecords = records.length
-        if (totalRecords % numPaging !== 0) {
-            totalPaging = parseInt(totalRecords / numPaging) + 1
         }
-        else {
-            totalPaging = parseInt(totalRecords / numPaging)
-        }
-
-        records = records.filter((rec, index) => {
-            return index < numPaging * currentPaging && index >= numPaging * (currentPaging - 1)
-        }) || []
-        me.Paging = {
-            records: records,
-            totalRecords: totalRecords,
-            currentPaging: currentPaging,
-            totalPaging: totalPaging,
-            numPaging: numPaging
-        }
-        return me.Paging
     }
 
-    filterData(records) {
-        let me = this, filterObject = me.props.Filter, keys = Object.keys(filterObject)
+    filterDataGrid(records = []) {
+        let me = this, filterObject = me.props.Filter || {}, keys = Object.keys(filterObject)
         keys.forEach(key => {
             let valKey = filterObject[key]
-            if (valKey === '' || valKey === null || valKey === undefined) {
-            }
-            else {
-                records = records.filter((rec, index) => {
+            if (valKey && valKey !== '') {
+                records = records.filter(rec => {
                     return rec[key].includes(valKey)
                 })
             }
         })
-
         return records
     }
 
@@ -917,9 +1041,7 @@ class TableNA extends Component {
                 numberValue = parseInt(value),
                 { currentPaging, totalPaging } = this.Paging
             if (!isNaN(value) && 0 < numberValue && numberValue <= totalPaging) {
-                this.setState({
-                    currentPaging: numberValue
-                })
+                this.props.changePaging(numberValue)
             }
             else {
                 event.target.value = currentPaging
@@ -930,12 +1052,8 @@ class TableNA extends Component {
     changeNumberPaging(isIncrease = false) {
         let { currentPage, totalPaging } = this.Paging
         currentPage = this.state.currentPaging + (isIncrease ? 1 : -1)
-        if (currentPage === 0 || currentPage > totalPaging) {
-        }
-        else {
-            this.setState({
-                currentPaging: currentPage
-            })
+        if (currentPage > 0 && currentPage <= totalPaging) {
+            this.props.changePaging(currentPage)
         }
 
     }
@@ -967,6 +1085,14 @@ class TableNA extends Component {
         })
     }
 
+    SyncValueCurrentPage() {
+        if (this.Paging.currentPaging !== this.state.currentPaging) {
+            this.setState({
+                currentPaging: this.Paging.currentPaging
+            })
+        }
+    }
+
     clearGrid() {
         let me = this,
             allRecords = me.tableWrapAll.current.querySelectorAll('.table-item[data-recordid]')
@@ -980,6 +1106,7 @@ class TableNA extends Component {
         me.setSizeScrollerTable()
         me.caculateBottomBodyTable()
         me.setPositionHeaderBodyScrollerNormalVsLocked()
+        me.SyncValueCurrentPage()
 
     }
 
@@ -987,14 +1114,15 @@ class TableNA extends Component {
         let me = this
         me.UpdateWidthGrid()
         me.setSizeScrollerTable()
-        me.clearGrid.bind(me)()
-        me.initEventGrid.bind(me)()
+        me.clearGrid()
+        me.initEventGrid()
         me.caculateBottomBodyTable()
         me.setPositionHeaderBodyScrollerNormalVsLocked()
+        me.SyncValueCurrentPage()
     }
 
     render() {
-        this.getDataFillTable()
+        this.getDataGrid()
         let me = this,
             [columnsLock, columnsNormal] = me.getColumnsLockAndNormal(),
             [headerTableLock, recordsTableLock] = me.getBodyAndRecordTable(columnsLock, true),
@@ -1069,6 +1197,8 @@ const UserProvider = UserContext.Provider
 const UserConsumer = UserContext.Consumer
 export default InputNA;
 export {
+    NgocAnh,
+    ConfigsAPI,
     BoxWrapNA,
     SelectFormNA,
     httpRequest,

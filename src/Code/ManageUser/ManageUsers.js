@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import General from '../../General/General'
-import InputNA, { BoxWrapNA, SelectFormNA, httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA } from '../../ComponentCommon/Component'
+import InputNA, { NgocAnh, ConfigsAPI, BoxWrapNA, SelectFormNA, httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA } from '../../ComponentCommon/Component'
 import './manageUsers.css'
 /**
  * Quản lý người dùng
@@ -11,33 +11,91 @@ class ManageUsers extends Component {
         super()
         this.state = {
             placeWork: [],
-
+            dataGrid: '',
+            departement: [],
+            currentPageGrid: 1,
         }
+        this.txtFullName = React.createRef()
+        this.txtEmployeeCode = React.createRef()
+        this.comboboxRef = React.createRef()
+        this.btnSaveEmployee = React.createRef()
+        this.formCreateEmployee = React.createRef()
+        this.dIdNewEmployee = React.createRef()
+        this.newEmployeeCode = React.createRef()
+        this.newEmployeeFullName = React.createRef()
     }
-    data = [
-        { value: 1, display: 'Hà Nội' },
-        { value: 2, display: 'Hà Nội' },
-        { value: 3, display: 'Hà Nội' },
-        { value: 4, display: 'Hà Nội' },
-        { value: 5, display: 'Hà Nội' }
-    ]
+
+    onClickFilterGrid() {
+        this.getEmployees(1)
+    }
+
+    changePagingGrid(page) {
+        this.getEmployees(page)
+    }
+
+    getEmployees(page = 1) {
+        let me = this, employee = {},
+            fullName = me.txtFullName.current.getValue(),
+            employeeCode = me.txtEmployeeCode.current.getValue(),
+            departement = me.comboboxRef.current.getRecordsSelected()
+        if (fullName && fullName !== '') {
+            employee.name = fullName
+        }
+        if (employeeCode && employeeCode !== '') {
+            employee.code = employeeCode
+        }
+        if (departement && departement !== '') {
+            employee.dId = departement.value
+        }
+        employee.page = page
+
+        httpRequest.getEmployee(employee)
+            .then(res => {
+                me.setState({
+                    dataGrid: res,
+                    currentPageGrid: employee.page,
+                })
+            })
+    }
+
+    saveEmployee() {
+        let me = this,
+            setFields = me.formCreateEmployee.current.props.children
+                .filter(child => { return child.props.setField }),
+            newEmployee = {}
+        for (let i = 0; i < setFields.length; i++) {
+            let value = setFields[i].ref.current.getValue(),
+            setFieldObj = setFields[i].props.setField
+            value = isNaN(value) ? value: parseInt(value)
+            newEmployee[setFieldObj] = value
+        }
+        httpRequest.saveEmployee(newEmployee)
+    }
+
     componentDidMount() {
-        this.setState({
-            placeWork: this.data
-        })
+        this.getEmployees()
+        httpRequest.getAllDepartement()
+            .then(res => {
+                this.setState({
+                    departement: res,
+                    placeWork: this.data
+                })
+            })
     }
+
     render() {
         return (
             <General Title={'Quản lý người dùng'} className='manager-user-nnanh'>
                 <div className='col-3 left-panel'>
-                    <BoxWrapNA Title="Thêm người dùng">
+                    <BoxWrapNA Title="Thêm người dùng" ref={this.formCreateEmployee}>
                         <InputNA textLabel="Họ" placeholder="Ví dụ: Nguyễn" ></InputNA>
-                        <InputNA textLabel="Tên đệm và tên" placeholder="Ví dụ: Nguyễn Văn ABC" ></InputNA>
-                        <InputNA textLabel="Mã nhân viên" placeholder="Ví dụ: ABCnv01" ></InputNA>
-                        <ComboboxNA ID='ComboboxLeftPanel' placeholder="Chọn bộ phận/phòng ban"
-                            textLabel='Bộ phân làm việc' data={JSON.stringify(this.state.placeWork)} 
-                            DisplayField="display" ValueField="value"/>
-                        <InputNA typeChild="footer" hasLabel={false} value={"Thêm người dùng mới"} typeInput={'button'}></InputNA>
+                        <InputNA textLabel="Tên đệm và tên" ref={this.newEmployeeFullName} setField='name' placeholder="Ví dụ: Nguyễn Văn ABC" ></InputNA>
+                        <InputNA textLabel="Mã nhân viên" ref={this.newEmployeeCode} setField='code' placeholder="Ví dụ: ABCnv01" ></InputNA>
+                        <ComboboxNA ID='ComboboxLeftPanel' ref={this.dIdNewEmployee} setField='dId' placeholder="Chọn bộ phận/phòng ban"
+                            textLabel='Bộ phân làm việc' data={JSON.stringify(this.state.departement)}
+                            DisplayField="dName" ValueField="dId" />
+                        <InputNA typeChild="footer" hasLabel={false} value={"Thêm người dùng mới"} typeInput={'button'}
+                            ref={this.btnSaveEmployee} onClick={this.saveEmployee.bind(this)} ></InputNA>
                     </BoxWrapNA>
                     <div className='padding-bottom-20'></div>
                     <BoxWrapNA Title="Thêm email người dùng">
@@ -49,19 +107,19 @@ class ManageUsers extends Component {
                 <div className='col-9 right-panel'>
                     <BoxWrapNA Title="Danh người dùng hiện hành" className='' >
                         <div className='row' typeChild='header'>
-                            <InputNA className='col-3 padding-10' textLabel='Tên nhân viên' placeholder='nhập tên nhân viên' />
-                            <InputNA className='col-3 padding-10' textLabel='Mã định danh' placeholder='nhập mã nhân viên' />
+                            <InputNA className='col-3 padding-10' ref={this.txtFullName} textLabel='Tên nhân viên' placeholder='nhập tên nhân viên' />
+                            <InputNA className='col-3 padding-10' ref={this.txtEmployeeCode} textLabel='Mã nhân viên' placeholder='nhập mã nhân viên' />
                             <ComboboxNA className='col-3 padding-10' ID='ComboboxRightPanel' textLabel='Bộ phân làm việc'
-                                placeholder="Chọn bộ phận/phòng ban" data={JSON.stringify(this.state.placeWork)} 
-                                DisplayField="display" ValueField="value"/>
-                            <InputNA className='col-3 padding-10' typeInput='button' value='Lọc kết quả' textLabel='&nbsp;'></InputNA>
+                                placeholder="Chọn bộ phận/phòng ban" data={JSON.stringify(this.state.departement)}
+                                DisplayField="dName" ValueField="dId" ref={this.comboboxRef} />
+                            <InputNA className='col-3 padding-10' typeInput='button' value='Lọc kết quả' textLabel='&nbsp;' onClick={this.onClickFilterGrid.bind(this)}></InputNA>
                         </div>
 
-                        <TableNA Height={500} NumPaging={20}>
-                            <ColumnNA isLocked={true} Width={200} DataIndex='' text='Họ và tên' />
-                            <ColumnNA Width={200} text='Mã nhân viên' DataIndex='' />
-                            <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='' />
-                            <ColumnNA Width={300} text='Email cá nhận' DataIndex='' />
+                        <TableNA Height={500} NumPaging={20} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
+                            <ColumnNA isLocked={true} Width={200} DataIndex='name' text='Họ và tên' />
+                            <ColumnNA Width={200} text='Mã nhân viên' DataIndex='eCode' />
+                            <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='dId' />
+                            <ColumnNA Width={300} text='Email cá nhận' DataIndex='email' />
                             <ColumnNA Width={100} text='Tiện ích' Command='Yes' DataIndex='' />
                         </TableNA>
                     </BoxWrapNA>

@@ -468,15 +468,13 @@
 
 /* bên phải phân trang */
 .tablePaging .rightPaging{
-    display: flex;
-    width: 160px;
-    justify-content: space-around;
-    align-items: center;
+    
 }
 .tablePaging .rightPaging .child-rightPaging{
     height: 100%;
     align-items: center;
     display: flex;
+    float: left;
 }
 .tablePaging .rightPaging .inputPaging{
     width: 40px;

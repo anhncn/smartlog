@@ -10,21 +10,13 @@ import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA } from './Comp
 // import Home from './Code/HomePage/Home'
 // import Warn from './Code/WarningPage/WarningPage'
 // import ManagerCard from './Code/ManagerCardUsing/ManagerCard' 
-// import ManageUsers from './Code/ManageUser/ManageUsers' 
-import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
+import ManageUsers from './Code/ManageUser/ManageUsers' 
+//import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
 class App extends Component {
-  recordsComBobox =[
-    {value:1, display:'Vĩnh Phúc'},
-    {value:2, display:'Hà Nội'},
-    {value:3, display:'Thái Bình'},
-    {value:4, display:'Hải Dương'},
-    {value:5, display:'Thanh Hóa'},
-    {value:6, display:'HCM'},
-  ]
   render() {
     return (
       <UserProvider>
-        <ManagePINCode/>
+        <ManageUsers/>
       </UserProvider>
     )
   }
