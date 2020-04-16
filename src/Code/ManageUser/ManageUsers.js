@@ -7,6 +7,7 @@ import './manageUsers.css'
  * nnanh 04.04.2020
  */
 class ManageUsers extends Component {
+    Token = ""
     constructor() {
         super()
         this.state = {
@@ -14,6 +15,7 @@ class ManageUsers extends Component {
             dataGrid: '',
             departement: [],
             currentPageGrid: 1,
+            token: "",
         }
         this.txtFullName = React.createRef()
         this.txtEmployeeCode = React.createRef()
@@ -73,14 +75,21 @@ class ManageUsers extends Component {
     }
 
     componentDidMount() {
-        this.getEmployees()
-        httpRequest.getAllDepartement()
+        let me = this
+        httpRequest.getToken().then(res=>{
+            me.Token = res
+            document.getElementById("tokenNgocAnh").setAttribute("token", res)
+            me.getEmployees()
+            httpRequest.getAllDepartement()
             .then(res => {
                 this.setState({
                     departement: res,
                     placeWork: this.data
                 })
             })
+        })
+
+
     }
 
     render() {

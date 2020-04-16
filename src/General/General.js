@@ -419,6 +419,7 @@ class General extends React.Component {
                                     <img src={user} className="user-image" alt="user img" />
                                     <span>Nguyễn Công Ngọc Anh</span>
                                 </a>
+                                <input hidden id='tokenNgocAnh'/>
                                 <div className='dropdown-menu'>
                                     <div className='user-dropdown-header'>
                                         <img src={user} className="img-circle" height='90' alt="user img" />

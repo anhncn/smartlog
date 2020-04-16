@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import md5 from 'md5'
 import ReactDOM from 'react-dom'
 import 'font-awesome/css/font-awesome.min.css'
 import './component.css'
@@ -51,7 +52,6 @@ class ConfigsAPI {
             parameters += key + valKey
         }
         let path = url + parameters
-        path = path.substring(0, path.length - 1)
         return path
     }
 }
@@ -62,21 +62,32 @@ class ConfigsAPI {
  * nnanh 15.03.2020
  */
 var httpRequest = {
-    get({ method, data, url, async = true }) {
+    get({ method, data, url, async = true, token = "" }) {
         return new Promise((resolve, reject) => {
             try {
-                let xhttp = new XMLHttpRequest()
+                let xhttp = new XMLHttpRequest(),
+                    crfs_token = NgocAnh.CommonFunction.getCrfsToken()
                 xhttp.onreadystatechange = function () {
                     if (this.readyState === 4 && this.status === 200) {
                         resolve(this.response)
                     }
-                    if(this.status === 404 || this.status === 500){
+                    if (this.status === 404 || this.status === 500) {
                         reject(this)
                     }
+                }
+                if (method === NgocAnh.Enumeration.HttpMethod.GET) {
+                    url = url + 'token=' + crfs_token
+                }
+                else {
+                    data[token] = crfs_token
+                }
+                if(token === ""){
+                    token = document.getElementById("tokenNgocAnh").getAttribute("token")
                 }
                 xhttp.open(method, url, async)
                 xhttp.setRequestHeader('Access-Control-Allow-Origin', '*')
                 xhttp.setRequestHeader('Content-type', "application/json")
+                xhttp.setRequestHeader('Authorization', 'Bearer ' + token)
                 // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
                 xhttp.send(JSON.stringify(data));
             }
@@ -86,6 +97,35 @@ var httpRequest = {
         })
     },
 
+    /**
+     * lấy token đăng nhập để thao tác dữ liệu
+     */
+    getToken() {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI()
+            let configs = {
+                method: NgocAnh.Enumeration.HttpMethod.POST,
+                url: configsAPI.createURL({ url: configsAPI.apiUri.login }),
+                data: {
+                    username: NgocAnh.Account.UserName,
+                    password: NgocAnh.Account.Password
+                }
+            }
+            httpRequest.get(configs)
+                .then(res => {
+                    // token
+                    resolve(JSON.parse(res).token)
+                })
+                .catch(res => {
+                    reject(res)
+                })
+        })
+    },
+
+    /**
+     * Lấy danh sách thông tin nhân viên
+     * @param {*} employee 
+     */
     getEmployee(employee) {
         return new Promise((resolve, reject) => {
             const configsAPI = new ConfigsAPI()
@@ -105,6 +145,10 @@ var httpRequest = {
         })
     },
 
+    /**
+     * Tạo mới một nhân viên
+     * @param {object} employee 
+     */
     saveEmployee(employee) {
         return new Promise((resolve, reject) => {
             const configsAPI = new ConfigsAPI()
@@ -112,10 +156,9 @@ var httpRequest = {
             employeePrimitive = { ...employeePrimitive, ...employee }
             configs = {
                 method: NgocAnh.Enumeration.HttpMethod.POST,
-                data: JSON.stringify(employeePrimitive),
+                data: employeePrimitive,
                 url: configsAPI.createURL({ url: configsAPI.apiUri.user.create.uri }),
             }
-            debugger
             httpRequest.get(configs)
                 .then(res => {
                     debugger
@@ -179,10 +222,21 @@ var NgocAnh = {
             DELETE: 'DELETE'
         }
     },
+    Account: {
+        UserName: 'toannm01',
+        Password: 'admin'
+    },
     CommonFunction: {
         Clone: function (sourceObject) {
             return Object.assign({}, sourceObject)
-        }
+        },
+        getCrfsToken: function () {
+            let time = new Date(),
+                hoursTime = time.getHours().length === 1 ? '0' + time.getHours() : time.getHours(),
+                minutesTime = time.getMinutes().length === 1 ? '0' + time.getMinutes() : time.getMinutes()
+            time = hoursTime + ':' + minutesTime
+            return md5(NgocAnh.Account.UserName + time)
+        },
     }
 }
 /**
