@@ -13,21 +13,23 @@ class ConfigsAPI {
             user: {
                 get: {
                     uri: this.server + 'api/v1/employee/get_employee/',
-                    method: 'GET',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
                     parameters: { name: '', dId: 0, code: '', email: '', tag: '', isTag: 0, isPin: 0, isGroup: 0, page: 1 }
                 },
                 create: {
                     uri: this.server + 'api/v1/employee/create_employee/',
-                    method: 'POST',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
                     parameters: { name: '', code: '', email: '', dId: 0, tag: '', pin: false }
                 },
                 edit: {
                     uri: this.server + 'api/v1/employee/modify_employee/',
-                    method: 'PUT',
+                    method: NgocAnh.Enumeration.HttpMethod.PUT,
+                    parameters: { 'eId': 0, 'name': '', 'email': '', 'dId': 0, }
                 },
                 remove: {
                     uri: this.server + 'api/v1/employee/remove_employee/',
-                    method: 'DELETE',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { eId: 0 }
                 }
             },
             controller: {
@@ -79,9 +81,10 @@ var httpRequest = {
                     url = url + 'token=' + crfs_token
                 }
                 else {
-                    data[token] = crfs_token
+                    data.token = crfs_token
+
                 }
-                if(token === ""){
+                if (token === "") {
                     token = document.getElementById("tokenNgocAnh").getAttribute("token")
                 }
                 xhttp.open(method, url, async)
@@ -128,11 +131,11 @@ var httpRequest = {
      */
     getEmployee(employee) {
         return new Promise((resolve, reject) => {
-            const configsAPI = new ConfigsAPI()
-            let employeePrimitive = NgocAnh.CommonFunction.Clone(configsAPI.apiUri.user.get.parameters), configs
+            const configsAPI = new ConfigsAPI(), inForPrimitive = configsAPI.apiUri.user.get
+            let employeePrimitive = NgocAnh.CommonFunction.Clone(inForPrimitive.parameters), configs
             employeePrimitive = { ...employeePrimitive, ...employee }
             configs = {
-                method: NgocAnh.Enumeration.HttpMethod.GET,
+                method: inForPrimitive.method,
                 url: configsAPI.createURL({ objectParams: employeePrimitive })
             }
             httpRequest.get(configs)
@@ -151,13 +154,13 @@ var httpRequest = {
      */
     saveEmployee(employee) {
         return new Promise((resolve, reject) => {
-            const configsAPI = new ConfigsAPI()
-            let employeePrimitive = NgocAnh.CommonFunction.Clone(configsAPI.apiUri.user.create.parameters), configs
+            const configsAPI = new ConfigsAPI(), inForPrimitive = configsAPI.apiUri.user.create
+            let employeePrimitive = NgocAnh.CommonFunction.Clone(inForPrimitive.parameters), configs
             employeePrimitive = { ...employeePrimitive, ...employee }
             configs = {
-                method: NgocAnh.Enumeration.HttpMethod.POST,
+                method: inForPrimitive.method,
                 data: employeePrimitive,
-                url: configsAPI.createURL({ url: configsAPI.apiUri.user.create.uri }),
+                url: inForPrimitive.uri
             }
             httpRequest.get(configs)
                 .then(res => {
@@ -165,6 +168,46 @@ var httpRequest = {
                 })
                 .catch(res => {
                     debugger
+                })
+        })
+    },
+
+    updateEmployee(employee) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(), inForPrimitive = configsAPI.apiUri.user.edit
+            let employeePrimitive = NgocAnh.CommonFunction.Clone(inForPrimitive.parameters), configs
+            employeePrimitive = { ...employeePrimitive, ...employee }
+            configs = {
+                method: inForPrimitive.method,
+                data: employeePrimitive,
+                url: inForPrimitive.uri
+            }
+            httpRequest.get(configs)
+            .then(res=>{
+                debugger
+            })
+            .catch(res=>{
+                debugger
+            })
+        })
+    },
+
+    deleteEmployee(eId) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(), inForPrimitive = configsAPI.apiUri.user.remove,
+                configs = {
+                    method: inForPrimitive.method,
+                    data: {
+                        'eId': eId
+                    },
+                    url: inForPrimitive.uri
+                }
+            httpRequest.get(configs)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(res => {
+                    reject(res)
                 })
         })
     },
@@ -205,6 +248,10 @@ var httpRequest = {
             })
         })
     },
+
+
+
+
 }
 
 var NgocAnh = {
@@ -222,18 +269,29 @@ var NgocAnh = {
             DELETE: 'DELETE'
         }
     },
+
     Account: {
         UserName: 'toannm01',
         Password: 'admin'
     },
+
     CommonFunction: {
         Clone: function (sourceObject) {
             return Object.assign({}, sourceObject)
         },
+
         getCrfsToken: function () {
-            let time = new Date(),
-                hoursTime = time.getHours().length === 1 ? '0' + time.getHours() : time.getHours(),
-                minutesTime = time.getMinutes().length === 1 ? '0' + time.getMinutes() : time.getMinutes()
+            let time = new Date(), hourUTC = time.getUTCHours(), minutesUTC = time.getUTCMinutes(),
+                hoursTime = hourUTC < 10 ? '0' + hourUTC : hourUTC,
+                minutesTime = minutesUTC < 10 ? '0' + minutesUTC : minutesUTC
+            time = hoursTime + ':' + minutesTime
+            return md5(NgocAnh.Account.UserName + time)
+        },
+
+        getCrfsTokenLocalTime: function () {
+            let time = new Date(), hourUTC = time.getHours(), minutesUTC = time.getMinutes(),
+                hoursTime = hourUTC < 10 ? '0' + hourUTC : hourUTC,
+                minutesTime = minutesUTC < 10 ? '0' + minutesUTC : minutesUTC
             time = hoursTime + ':' + minutesTime
             return md5(NgocAnh.Account.UserName + time)
         },
@@ -968,7 +1026,7 @@ class TableNA extends Component {
                     style.textAlign = "center"
                     dataInRow.push(<td key={index} className='table-cell' style={style}>
                         <div className='table-cell-inner' title={text}>
-                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} recordid={rec.RecordID}><i className="fa fa-trash"></i> </button>
+                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} recordid={rec[me.props.ItemId]}><i className="fa fa-trash"></i> </button>
                         </div></td>)
                 }
                 else {
@@ -984,7 +1042,11 @@ class TableNA extends Component {
 
     onClickDeleteRecord(e) {
         let me = this, id = e.currentTarget.getAttribute('recordid')
-        alert('Đã xóa bản ghi:' + id)
+        if (typeof (me.props.onClickDelete) === 'function') {
+            me.props.onClickDelete(id)
+        }
+        // alert('Đã xóa bản ghi:' + id)
+
     }
 
     /* Ném vào thông tin cột lấy ra html của header và body cột */

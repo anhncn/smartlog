@@ -53,8 +53,15 @@ class ManageUsers extends Component {
 
         httpRequest.getEmployee(employee)
             .then(res => {
+                res = JSON.parse(res)
+                if(res && res.items && res.items.length > 0){
+                    for(let i = 0 ; i < res.items.length;i ++){
+                        res.items[i].dName = me.state.departement.filter(item => item.dId == res.items[i].dId)[0].dName
+                    }
+
+                }
                 me.setState({
-                    dataGrid: res,
+                    dataGrid: JSON.stringify(res),
                     currentPageGrid: employee.page,
                 })
             })
@@ -71,7 +78,17 @@ class ManageUsers extends Component {
             value = isNaN(value) ? value: parseInt(value)
             newEmployee[setFieldObj] = value
         }
-        httpRequest.saveEmployee(newEmployee)
+        httpRequest.saveEmployee(newEmployee).then(res=>{
+            me.getEmployees(1)
+        })
+    }
+
+    deleteEmployee(eId){
+        httpRequest.deleteEmployee(eId).then(res=>{
+            this.getEmployees(1)
+        }).catch(res=>{
+            debugger
+        })
     }
 
     componentDidMount() {
@@ -79,13 +96,13 @@ class ManageUsers extends Component {
         httpRequest.getToken().then(res=>{
             me.Token = res
             document.getElementById("tokenNgocAnh").setAttribute("token", res)
-            me.getEmployees()
             httpRequest.getAllDepartement()
             .then(res => {
                 this.setState({
                     departement: res,
                     placeWork: this.data
                 })
+                me.getEmployees()
             })
         })
 
@@ -124,10 +141,10 @@ class ManageUsers extends Component {
                             <InputNA className='col-3 padding-10' typeInput='button' value='Lọc kết quả' textLabel='&nbsp;' onClick={this.onClickFilterGrid.bind(this)}></InputNA>
                         </div>
 
-                        <TableNA Height={500} NumPaging={20} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
+                        <TableNA Height={500} NumPaging={20} ItemId='eId' onClickDelete={this.deleteEmployee.bind(this)} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
                             <ColumnNA isLocked={true} Width={200} DataIndex='name' text='Họ và tên' />
                             <ColumnNA Width={200} text='Mã nhân viên' DataIndex='eCode' />
-                            <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='dId' />
+                            <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='dName' />
                             <ColumnNA Width={300} text='Email cá nhận' DataIndex='email' />
                             <ColumnNA Width={100} text='Tiện ích' Command='Yes' DataIndex='' />
                         </TableNA>
