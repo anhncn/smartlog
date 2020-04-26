@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA } from './ComponentCommon/Component'
 /**
  * updated nnanh 08/03/2020
@@ -6,71 +7,25 @@ import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA } from './Comp
  * ex : Folder LoginBase, Folder Base
  */
 
-// import Login from './Code/LoginPage/Login'
-// import Home from './Code/HomePage/Home'
-// import Warn from './Code/WarningPage/WarningPage'
-// import ManagerCard from './Code/ManagerCardUsing/ManagerCard' 
-import ManageUsers from './Code/ManageUser/ManageUsers' 
+import Login from './Code/LoginPage/Login'
+import Warn from './Code/WarningPage/WarningPage'
+import ManagerCard from './Code/ManagerCardUsing/ManagerCard' 
+import Home from './Code/HomePage/Home'
+import ManageUsers from './Code/ManageUser/ManageUsers'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
+const Index = () => <h2>Home</h2>
 class App extends Component {
   render() {
     return (
-      <UserProvider>
-        <ManageUsers/>
-      </UserProvider>
-    )
-  }
-}
-class Sibling extends Component {
-  constructor() {
-    super()
-    this.state = {
-      countPP: 0,
-    }
-    this.onClickProp = this.onClickProp.bind(this)
-  }
-  onClickProp() {
-    this.context.setState({
-      count: this.context.state.count + 1,
-    }, () => {
-    })
-    this.setState({
-      countPP: this.context.state.count,
-    })
-  }
-  render() {
-    console.log('render')
-    return (
-      <div onClick={this.onClickProp}>
-        clicked
-        {this.state.countPP}
-        {this.context.state.count}
-      </div>
-    )
-  }
-}
-Sibling.contextType = UserContext
-class Children extends Component {
-  render() {
-    return (
-      <Sibling></Sibling>
+      <Router>
+        <Route path='/Home/' exact component={Home}></Route>
+        <Route path='/Manage/User/' exact component={ManageUsers}></Route>
+        <Route path='/Manage/Card/' exact component={ManagerCard}></Route>
+        <Route path='/Warn/Index/' exact component={Warn}></Route>
+      </Router>
     )
   }
 }
 
-class Parent extends Component {
-  constructor() {
-    super()
-    this.state = {
-      count: 0,
-    }
-  }
-  render() {
-    return (
-      <UserProvider value={this}>
-        <Children></Children>
-      </UserProvider>
-    )
-  }
-}
+
 export default App;

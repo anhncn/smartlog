@@ -285,6 +285,7 @@ var NgocAnh = {
                 hoursTime = hourUTC < 10 ? '0' + hourUTC : hourUTC,
                 minutesTime = minutesUTC < 10 ? '0' + minutesUTC : minutesUTC
             time = hoursTime + ':' + minutesTime
+            debugger
             return md5(NgocAnh.Account.UserName + time)
         },
 

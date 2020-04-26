@@ -1,55 +1,38 @@
 import React from 'react'
 import General from '../../General/General'
+import InputNA, { NgocAnh, ConfigsAPI, BoxWrapNA, SelectFormNA, httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA } from '../../ComponentCommon/Component'
 import './warningpage.css'
-class WarningPage extends React.Component{
-  constructor(){
+class WarningPage extends React.Component {
+  constructor() {
     super()
     this.onClickToggleBoxContent = this.onClickToggleBoxContent.bind(this)
   }
-  onClickToggleBoxContent(){
+  onClickToggleBoxContent() {
     this.refs.boxContent.classList.toggle('toggle-box')
   }
-    render() {
-        return (
-          <General Title='Cảnh báo'>
-            <div className="col-12">
-              <div className="box-header">
-                <div className="title-box">Báo cáo trạng sự kiện tủ theo thời gian thực</div>
-                <div className="box-tool">
-                  <button onClick={this.onClickToggleBoxContent} className="btn btn-box-tool">
-                    +
-                    <i className="fa fa-minus"></i>
-                  </button>
-                </div>
-              </div>
-              <div ref={'boxContent'} className="box-content">
-                <div style={{ overflow: "auto" }}>
-                  <table style={{ borderCollapse: 'collapse', width: '100%', }}>
-                    <thead>
-                      <tr>
-                        <th>Toa nha</th>
-                        <th>Tang</th>
-                        <th>Nhan hien thi</th>
-                        <th>Hanh dong</th>
-                        <th>Trang thai</th>
-                        <th>Nguoi dung cuoi</th>
-                        <th>Ma nhan vien</th>
-                        <th>Thoi gian</th>
-                        <th>Toa nha</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td colSpan="9">No data to dislay</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+  render() {
+    return (
+      <General Title='Cảnh báo'>
+        <div className="col-12">
+          <BoxWrapNA Title="Báo cáo trạng sự kiện tủ theo thời gian thực" className='' >
+            <div className='row' typeChild='header'>
             </div>
-          </General>
-        )
-      }
+
+            <TableNA Height={500} NumPaging={20} ItemId='eId'>
+              <ColumnNA isLocked={true} Width={200} DataIndex='' text='Toa nha' />
+              <ColumnNA Width={200} text='Tang' DataIndex='' />
+              <ColumnNA MinWidth={200} Flex={1} text='Nhan hien thi' DataIndex='' />
+              <ColumnNA Width={300} text='Hanh dong' DataIndex='email' />
+              <ColumnNA Width={300} text='Trang thai' DataIndex='email' />
+              <ColumnNA Width={300} text='Nguoi dung cuoi' DataIndex='email' />
+              <ColumnNA Width={300} text='Ma nhan vien' DataIndex='email' />
+              <ColumnNA Width={100} text='Thoi gian' Command='Yes' DataIndex='' />
+            </TableNA>
+          </BoxWrapNA>
+        </div>
+      </General>
+    )
+  }
 }
 
 export default WarningPage

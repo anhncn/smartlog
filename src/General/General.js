@@ -17,7 +17,7 @@ class General extends React.Component {
         {
             className: 'fa fa-home',
             textTitle: 'Trang chủ',
-            href: '#',
+            href: '/Home',
             title: [],
         },
         {
@@ -31,13 +31,13 @@ class General extends React.Component {
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý người sử dụng',
-                    href: '#',
+                    href: '/Manage/User',
                     title: [],
                 },
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý sử dụng thẻ',
-                    href: '#',
+                    href: '/Manage/Card',
                     title: [],
                 },
                 {
@@ -103,7 +103,7 @@ class General extends React.Component {
         {
             className: 'fa fa-exclamation-triangle',
             textTitle: 'Cảnh báo',
-            href: '#',
+            href: '/Warn/Index/',
             title: [],
         },
         {
@@ -206,9 +206,9 @@ class General extends React.Component {
         </a>
     }
 
-    createElementLi({ className = '', textTitle = '', title = [] }) {
+    createElementLi({ className = '', textTitle = '',href, title = [] }) {
         let me = this, elementUL,
-            elementA = me.createTitleElementA({ className: className, textTitle: textTitle })
+            elementA = me.createTitleElementA({ className: className, textTitle: textTitle, href: href })
         if (title && title.length > 1) {
             elementUL = me.createElementUL({ title: title }, false)
         }
@@ -225,7 +225,13 @@ class General extends React.Component {
         }
         title.forEach((til, index) => {
             if (index > 0) {
-                listLI.push(me.createElementLi({ className: til.className, textTitle: til.textTitle, title: til.title }))
+                let obj = {
+                    href: til.href,
+                    title: til.title, 
+                    className: til.className, 
+                    textTitle: til.textTitle, 
+                }
+                listLI.push(me.createElementLi(obj))
             }
         })
         let style = {
