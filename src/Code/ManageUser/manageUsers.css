@@ -2,6 +2,12 @@
     padding-right: 10px;
     padding-left: 10px;
 }
-.padding-bottom-20{
+.manager-user-nnanh .padding-bottom-20{
     padding-bottom: 20px;
+}
+.manager-user-nnanh .left-panel{
+    padding-right: 10px;
+}
+.manager-user-nnanh .right-panel{
+    padding-left: 10px;
 }

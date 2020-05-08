@@ -12,15 +12,18 @@ import Warn from './Code/WarningPage/WarningPage'
 import ManagerCard from './Code/ManagerCardUsing/ManagerCard' 
 import Home from './Code/HomePage/Home'
 import ManageUsers from './Code/ManageUser/ManageUsers'
+import ManageBuilding from './Code/ManageBuilding/ManageBuilding'
+import ManageLocker from './Code/ManageLocker/ManageLocker'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
-const Index = () => <h2>Home</h2>
 class App extends Component {
   render() {
     return (
       <Router>
+        <Route path='/' exact component={ManageLocker}></Route>
         <Route path='/Home/' exact component={Home}></Route>
         <Route path='/Manage/User/' exact component={ManageUsers}></Route>
         <Route path='/Manage/Card/' exact component={ManagerCard}></Route>
+        <Route path='/Manage/Building/' exact component={ManageBuilding}></Route>
         <Route path='/Warn/Index/' exact component={Warn}></Route>
       </Router>
     )

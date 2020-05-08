@@ -54,9 +54,16 @@ class ManageUsers extends Component {
         httpRequest.getEmployee(employee)
             .then(res => {
                 res = JSON.parse(res)
-                if(res && res.items && res.items.length > 0){
-                    for(let i = 0 ; i < res.items.length;i ++){
-                        res.items[i].dName = me.state.departement.filter(item => item.dId == res.items[i].dId)[0].dName
+                let records = res.items
+                if (res && records && records.length > 0) {
+                    for (let i = 0; i < records.length; i++) {
+                        let record = records[i]
+                        const departementMatch = me.state.departement.filter(item => item.dId == record.dId)
+                        if (departementMatch && departementMatch.length === 1) {
+                            record.dName = departementMatch[0].dName
+                        } else {
+                            record.dName = ""
+                        }
                     }
 
                 }
@@ -74,36 +81,43 @@ class ManageUsers extends Component {
             newEmployee = {}
         for (let i = 0; i < setFields.length; i++) {
             let value = setFields[i].ref.current.getValue(),
-            setFieldObj = setFields[i].props.setField
-            value = isNaN(value) ? value: parseInt(value)
+                setFieldObj = setFields[i].props.setField
+            value = isNaN(value) ? value : parseInt(value)
             newEmployee[setFieldObj] = value
         }
-        httpRequest.saveEmployee(newEmployee).then(res=>{
+        httpRequest.saveEmployee(newEmployee).then(res => {
             me.getEmployees(1)
         })
     }
 
-    deleteEmployee(eId){
-        httpRequest.deleteEmployee(eId).then(res=>{
+    deleteEmployee(eId) {
+        httpRequest.deleteEmployee(eId).then(res => {
             this.getEmployees(1)
-        }).catch(res=>{
+        }).catch(res => {
             debugger
         })
     }
 
     componentDidMount() {
         let me = this
-        httpRequest.getToken().then(res=>{
+        
+
+        httpRequest.getToken().then(res => {
             me.Token = res
             document.getElementById("tokenNgocAnh").setAttribute("token", res)
-            httpRequest.getAllDepartement()
-            .then(res => {
-                this.setState({
-                    departement: res,
-                    placeWork: this.data
-                })
-                me.getEmployees()
+            httpRequest.getBuilding({}).then(res=>{
+                res = JSON.parse(res)
+                
             })
+            httpRequest.getAllDepartement()
+                .then(res => {
+                    debugger
+                    this.setState({
+                        departement: res,
+                        placeWork: this.data
+                    })
+                    me.getEmployees()
+                })
         })
 
 

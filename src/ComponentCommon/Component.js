@@ -10,16 +10,167 @@ class ConfigsAPI {
         this.apiUri = {
             login: this.server + 'api/v1/login/',
             statistic: this.server + 'api/v1/report/locker_statistical/',
+            department: {
+                get: this.server + 'api/v1/department/get_department/'
+            },
+            locker: {
+                getLocker: {
+                    uri: this.server + 'api/v1/locker/get_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { bId: 0, lvId: 0, imei: '', label: '', gLocker: 0, gStatus: 0, page: 1 }
+                },
+                getUsage: {
+                    uri: this.server + 'api/v1/locker/get_usage/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { bId: 0, lvId: 0, eCode: '', imei: '', label: '', page: 1 }
+                },
+                getManage: {
+                    uri: this.server + 'api/v1/locker/get_manage_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { bId: 0, lId: 0, imei: '', label: '' }
+                },
+                getLockerCanAddExistPermission: {
+                    uri: this.server + 'api/v1/locker/get_restrict_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { bId: 0, lvId: 0, imei: '', eCode: '', label: '', gStatus: 0, page: 1, }
+                },
+                create: {
+                    uri: this.server + 'api/v1/locker/create_layout/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0, lNum: 0, lCol: 0, lRow: 0, lPage: 0, label: '', imei: '' }
+                },
+                openExistLocker: {
+                    uri: this.server + 'api/v1/locker/open_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                freeSessionOccupiedLocker: {
+                    uri: this.server + 'api/v1/locker/free_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                freeLockerExistController: {
+                    uri: this.server + 'api/v1/locker/free_all_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { imei: '' }
+                },
+                disabledExistLocker: {
+                    uri: this.server + 'api/v1/locker/disable_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                enabledDisablingLocker: {
+                    uri: this.server + 'api/v1/locker/enable_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                reportLockerHealth: {
+                    uri: this.server + 'api/v1/locker/error_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                confirmOpenLocker: {
+                    uri: this.server + 'api/v1/locker/confirm_open_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { lId: 0 }
+                },
+                remove: {
+                    uri: this.server + 'api/v1/locker/remove_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { lId: 0 },
+                },
+            },
+            building: {
+                get: {
+                    uri: this.server + 'api/v1/building/get_building/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { name: '', addr: '', bId: 0, page: 0 }
+                },
+                create: {
+                    uri: this.server + 'api/v1/building/create_building/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { name: '', addr: '', des: '' }
+                },
+                edit: {
+                    uri: this.server + 'api/v1/building/modify_building/',
+                    method: NgocAnh.Enumeration.HttpMethod.PUT,
+                    parameters: { bId: 0, name: '', addr: '', des: '' }
+                },
+            },
+            level: {
+                get: {
+                    uri: this.server + 'api/v1/level/get_level/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { bId: 0, page: 1 }
+                },
+                create: {
+                    uri: this.server + 'api/v1/level/create_level/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { bId: 0, lLv: 0, des: '' }
+                },
+                edit: {
+                    uri: this.server + 'api/v1/level/modify_level/',
+                    method: NgocAnh.Enumeration.HttpMethod.PUT,
+                    parameters: { bId: 0, lId: 0, lLv: 0, des: '', },
+                },
+                delete: {
+                    uri: this.server + 'api/v1/level/remove_level/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { lId: 0 },
+                },
+            },
+            controller: {
+                get: {
+                    uri: this.server + 'api/v1/controller/get_controller/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { lId: 0, bId: 0, imei: '', mac: '', zone: '', page: 1 }
+                },
+                getExport: {
+                    uri: this.server + 'api/v1/report/export_controller/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { lId: 0, bId: 0, imei: '', mac: '', zone: '', page: 1 }
+                },
+                create: {
+                    uri: this.server + 'api/v1/controller/create_controller/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { bId: 0, lId: 0, imei: '', mac: 0, zone: '', des: '' }
+                },
+                edit: {
+                    uri: this.server + 'api/v1/controller/modify_controller/',
+                    method: NgocAnh.Enumeration.HttpMethod.PUT,
+                    parameters: { cId: 0, bId: 0, lId: 0, imei: '', mac: '', zone: '', des: '' }
+                },
+                remove: {
+                    uri: this.server + 'api/v1/controller/remove_controller/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { cId: 0 }
+                }
+            },
             user: {
                 get: {
                     uri: this.server + 'api/v1/employee/get_employee/',
                     method: NgocAnh.Enumeration.HttpMethod.GET,
-                    parameters: { name: '', dId: 0, code: '', email: '', tag: '', isTag: 0, isPin: 0, isGroup: 0, page: 1 }
+                    parameters: { name: '', dId: 0, code: '', email: '', tag: '', isTag: 0, isPin: 0, isGroup: 0, page: 1 },
+                },
+                getLockerCanUse: {
+                    uri: this.server + 'api/v1/employee/get_usage/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { eName: '', eCode: '', label: '', dId: 0, bId: 0, page: 1 },
+                },
+                getExport: {
+                    uri: this.server + 'api/v1/report/export_user/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { name: '', dId: 0, code: '', email: '', tag: '', isTag: 0, isPin: 0, isGroup: 0 },
                 },
                 create: {
                     uri: this.server + 'api/v1/employee/create_employee/',
                     method: NgocAnh.Enumeration.HttpMethod.POST,
                     parameters: { name: '', code: '', email: '', dId: 0, tag: '', pin: false }
+                },
+                sendPinCode: {
+                    uri: this.server + 'api/v1/employee/send_pin/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { eId: 0 },
                 },
                 edit: {
                     uri: this.server + 'api/v1/employee/modify_employee/',
@@ -29,15 +180,39 @@ class ConfigsAPI {
                 remove: {
                     uri: this.server + 'api/v1/employee/remove_employee/',
                     method: NgocAnh.Enumeration.HttpMethod.DELETE,
-                    parameters: { eId: 0 }
-                }
+                    parameters: { eId: 0 },
+                },
+                removePinCode: {
+                    uri: this.server + 'api/v1/employee/unmap_pin/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { eId: 0 },
+                },
+                removeRFIDTag: {
+                    uri: this.server + 'api/v1/employee/unmap_tag/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { eId: 0 },
+                },
+                removePermissionUseLocker: {
+                    uri: this.server + 'api/v1/employee/unmap_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { eCode: 0, lId: 0, all: false, },
+                },
+                createPINCode: {
+                    uri: this.server + 'api/v1/employee/map_pin/',
+                    method: NgocAnh.Enumeration.HttpMethod.PATCH,
+                    parameters: { eId: 0, },
+                },
+                setPermissionUseLocker: {
+                    uri: this.server + 'api/v2/employee/map_new_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.PATCH,
+                    parameters: { listEmp: [], listLk: [], reuse: false, },
+                },
+                addLockerExistPermission: {
+                    uri: this.server + 'api/v1/employee/map_existed_locker/',
+                    method: NgocAnh.Enumeration.HttpMethod.PATCH,
+                    parameters: { eCode: 0, listLk: [], reuse: false, },
+                },
             },
-            controller: {
-                get: this.server + 'api/v1/controller/get_controller/',
-            },
-            department: {
-                get: this.server + 'api/v1/department/get_department/'
-            }
         }
     }
 
@@ -73,12 +248,12 @@ var httpRequest = {
                     if (this.readyState === 4 && this.status === 200) {
                         resolve(this.response)
                     }
-                    if (this.status === 404 || this.status === 500) {
+                    if (this.status === 404 || this.status === 500 || this.status === 400) {
                         reject(this)
                     }
                 }
                 if (method === NgocAnh.Enumeration.HttpMethod.GET) {
-                    url = url + 'token=' + crfs_token
+                    url += 'token=' + crfs_token
                 }
                 else {
                     data.token = crfs_token
@@ -148,6 +323,12 @@ var httpRequest = {
         })
     },
 
+    getEmployeeLockCanUse(object) {
+        const me = this, configsAPI = new ConfigsAPI(),
+            inforPrimitive = configsAPI.apiUri.user.getLockerCanUse
+        return me.excuteObject(object, inforPrimitive)
+    },
+
     /**
      * Tạo mới một nhân viên
      * @param {object} employee 
@@ -183,12 +364,12 @@ var httpRequest = {
                 url: inForPrimitive.uri
             }
             httpRequest.get(configs)
-            .then(res=>{
-                debugger
-            })
-            .catch(res=>{
-                debugger
-            })
+                .then(res => {
+                    debugger
+                })
+                .catch(res => {
+                    debugger
+                })
         })
     },
 
@@ -228,6 +409,7 @@ var httpRequest = {
                 })
         })
     },
+
     getAllDepartement() {
         let me = this, departments = []
         return new Promise((resolve, reject) => {
@@ -249,8 +431,132 @@ var httpRequest = {
         })
     },
 
+    getBuilding(building) {
+        const me = this, configsAPI = new ConfigsAPI(),
+            inforPrimitive = configsAPI.apiUri.building.get
+        return me.excuteObject(building, inforPrimitive)
+    },
+
+    createBuilding(building) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(),
+                inforPrimitive = configsAPI.apiUri.building.create
+            return this.excuteObject(building, inforPrimitive)
+        })
+    },
+
+    editBuilding(object) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(),
+                inforPrimitive = configsAPI.apiUri.building.edit
+            return this.excuteObject(object, inforPrimitive)
+        })
+    },
+
+    getLevel(object) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(),
+                inforPrimitive = configsAPI.apiUri.level.get
+            return this.excuteObject(object, inforPrimitive)
+        })
+    },
+
+    createLevel(object) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(),
+                inforPrimitive = configsAPI.apiUri.level.create
+            return this.excuteObject(object, inforPrimitive)
+        })
+    },
+
+    editLevel(object) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI(),
+                inforPrimitive = configsAPI.apiUri.level.edit
+            return this.excuteObject(object, inforPrimitive)
+        })
+    },
 
 
+    getLocker(locker) {
+        const me = this, configsAPI = new ConfigsAPI(),
+            inforPrimitive = configsAPI.apiUri.locker.getLocker
+        return me.excuteObject(locker, inforPrimitive)
+    },
+
+    getLockerUsage(object) {
+        const me = this, configsAPI = new ConfigsAPI(),
+            inforPrimitive = configsAPI.apiUri.locker.getUsage
+        return me.excuteObject(object, inforPrimitive)
+    },
+
+    getLockerManage(object) {
+        const me = this, configsAPI = new ConfigsAPI(),
+            inforPrimitive = configsAPI.apiUri.locker.getManage
+        return me.excuteObject(object, inforPrimitive)
+    },
+
+    /**
+     * nnanh 05.02.2020
+     * tạo 1 nhà máy sản xuất ra request với đầu vào là
+     * @param {object} object 
+     * object cần gửi xuống controller
+     * @param {string} objectName 
+     * tên đối tượng tham chiếu
+     * @param {string} objectMethod 
+     * tên phương thức và thông số mặc định mà request call
+     */
+    excuteFactory(object, objectName = 'user', objectMethod = 'get') {
+        return new Promise((resolve, reject) => {
+            try {
+                const configsAPI = new ConfigsAPI(),
+                    inforPrimitive = configsAPI.apiUri[objectName][objectMethod]
+                return this.excuteObject(object, inforPrimitive)
+            } catch (error) {
+                alert("Sai tên trong excuteFactory rồi!")
+            }
+        })
+    },
+
+    /**
+     * nnanh
+     * call api với object do dev lấy,
+     * infor là thông tin mặc định trong api document
+     */
+    excuteObject(object, inforPrimitive) {
+        return new Promise((resolve, reject) => {
+            const configsAPI = new ConfigsAPI()
+            let objectPremitive = NgocAnh.CommonFunction.Clone(inforPrimitive.parameters), configs
+            let keysObjectPremitive = Object.keys(objectPremitive)
+            for(let i = 0 ; i < keysObjectPremitive.length; i++){
+                let key = keysObjectPremitive[i]
+                if(!object[key]){
+                    object[key] = objectPremitive[key]
+                }
+            }
+            objectPremitive = { ...objectPremitive, ...object }
+            if (inforPrimitive.method === NgocAnh.Enumeration.HttpMethod.GET) {
+                configs = {
+                    method: inforPrimitive.method,
+                    url: configsAPI.createURL({ url: inforPrimitive.uri, objectParams: objectPremitive })
+                }
+            }
+            else {
+                configs = {
+                    method: inforPrimitive.method,
+                    data: objectPremitive,
+                    url: inforPrimitive.uri
+                }
+            }
+            httpRequest.get(configs)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(res => {
+                    reject(res)
+                })
+        })
+    },
 
 }
 
@@ -266,7 +572,8 @@ var NgocAnh = {
             GET: 'GET',
             POST: 'POST',
             PUT: 'PUT',
-            DELETE: 'DELETE'
+            DELETE: 'DELETE',
+            PATCH: 'PATCH',
         }
     },
 
@@ -285,7 +592,6 @@ var NgocAnh = {
                 hoursTime = hourUTC < 10 ? '0' + hourUTC : hourUTC,
                 minutesTime = minutesUTC < 10 ? '0' + minutesUTC : minutesUTC
             time = hoursTime + ':' + minutesTime
-            debugger
             return md5(NgocAnh.Account.UserName + time)
         },
 
@@ -819,7 +1125,7 @@ class ComboboxNA extends Component {
                                 placeholder={me.props.placeholder} onInput={me.inputTextSearch}
                                 readOnly={readonly} type="text" className="combobox" />
                         </div>
-                        <div id={`${id}-trigger-picker`} className="combobox-trigger-picker" onClick={me.onClickToggleBoundingList}></div>
+                        <div id={`${id}-trigger-picker`} className="combobox-trigger-picker fa fa-caret-down" onClick={me.onClickToggleBoundingList}></div>
                     </div>
                 </div>
             </div>
@@ -862,6 +1168,10 @@ class TableNA extends Component {
             numberRecordsOfPage: 20,
             currentPaging: 1,
         }
+    }
+
+    getNumberPage() {
+        return this.Paging.currentPaging
     }
 
     getDataGrid() {
@@ -1309,6 +1619,18 @@ class ColumnNA extends Component {
     }
 }
 
+class FormSubmit extends Component {
+    render() {
+        let me = this, className = me.props.className ? me.props.className : '',
+            typeChild = me.props.typeChild ? me.props.typeChild : ''
+        return (
+            <div className={className} typeChild={typeChild} ref={me.lockerHeader}>
+                {me.props.children}
+            </div>
+        )
+    }
+}
+
 const UserContext = React.createContext()
 const UserProvider = UserContext.Provider
 const UserConsumer = UserContext.Consumer
@@ -1325,6 +1647,7 @@ export {
     ComboboxNA,
     TableNA,
     ColumnNA,
+    FormSubmit,
 }
 
 

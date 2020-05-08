@@ -131,11 +131,12 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    --size-trigger-picker: 35px;
 }
 
 .combobox-body .combobox-triggerWrap .combobox-inputWrap {
     float: left;
-    width: calc(100% - 30px);
+    width: calc(100% - var(--size-trigger-picker));
     border: 0;
     margin: 0;
     height: 100%;
@@ -153,13 +154,22 @@
 
 .combobox-body .combobox-triggerWrap .combobox-trigger-picker {
     float: right;
-    width: 30px;
+    width: var(--size-trigger-picker);
     border: 0;
     padding: 0;
     margin: 0;
     height: 100%;
-    background-color: #ccc;
+    background-color: #fff;
+    color: #444;
     cursor: pointer;
+    box-sizing: border-box;
+    border-left: 1px solid #ccc;
+    font-size: calc(var(--size-trigger-picker) / 2);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
 }
 
 .hidden-bound-list[data-componentid] {
@@ -467,9 +477,9 @@
 
 
 /* bên phải phân trang */
-.tablePaging .rightPaging{
+/* .tablePaging .rightPaging{
     
-}
+} */
 .tablePaging .rightPaging .child-rightPaging{
     height: 100%;
     align-items: center;
