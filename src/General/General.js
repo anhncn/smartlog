@@ -21,7 +21,7 @@ class General extends React.Component {
             title: [],
         },
         {
-            className: 'fa fa-home',
+            className: 'fa fa-user-plus',
             textTitle: 'Quản lý người dùng',
             href: '#',
             title: [
@@ -61,7 +61,7 @@ class General extends React.Component {
             ]
         },
         {
-            className: 'fa fa-exclamation-triangle',
+            className: 'fa fa-deviantart',
             textTitle: 'Quản lý thiết bị',
             href: '#',
             title: [
@@ -135,7 +135,7 @@ class General extends React.Component {
             ]
         },
         {
-            className: 'fa fa-tasks',
+            className: 'fa fa-assistive-listening-systems',
             textTitle: 'Quản trị hệ thống',
             href: '#',
             title: [

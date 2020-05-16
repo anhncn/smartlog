@@ -528,9 +528,9 @@ var httpRequest = {
             const configsAPI = new ConfigsAPI()
             let objectPremitive = NgocAnh.CommonFunction.Clone(inforPrimitive.parameters), configs
             let keysObjectPremitive = Object.keys(objectPremitive)
-            for(let i = 0 ; i < keysObjectPremitive.length; i++){
+            for (let i = 0; i < keysObjectPremitive.length; i++) {
                 let key = keysObjectPremitive[i]
-                if(!object[key]){
+                if (!object[key]) {
                     object[key] = objectPremitive[key]
                 }
             }
@@ -574,7 +574,7 @@ var NgocAnh = {
             PUT: 'PUT',
             DELETE: 'DELETE',
             PATCH: 'PATCH',
-        }
+        },
     },
 
     Account: {
@@ -601,6 +601,22 @@ var NgocAnh = {
                 minutesTime = minutesUTC < 10 ? '0' + minutesUTC : minutesUTC
             time = hoursTime + ':' + minutesTime
             return md5(NgocAnh.Account.UserName + time)
+        },
+
+        showMaskLoading: function (id) {
+            var container = document.querySelector('#' + id);
+            if (container.style.position === "") {
+                container.style.position = "relative"
+            }
+            container.insertAdjacentHTML('beforeend', "<div class='wrap-loader'><div class='loader'></div></div>");
+        },
+
+        hideMaskLoading: function (id) {
+            var container = document.querySelector('#' + id + ' .wrap-loader')
+            container.remove();
+
+            // NgocAnh.CommonFunction.showMaskLoading(idContainer)
+            // NgocAnh.CommonFunction.hideMaskLoading(idContainer)
         },
     }
 }
@@ -1548,6 +1564,10 @@ class TableNA extends Component {
         me.SyncValueCurrentPage()
     }
 
+    getID() {
+        return this.tableWrapAll.current.getAttribute('id')
+    }
+
     render() {
         this.getDataGrid()
         let me = this,
@@ -1559,7 +1579,7 @@ class TableNA extends Component {
                 height: me.props.Height || '100%',
             }, paging = me.renderPaging()
         return (
-            <div className='tableContainer' ref={me.tableWrapAll}>
+            <div className='tableContainer' ref={me.tableWrapAll} id={this.props.ID}>
                 <div style={styleTableWrap} className='tableWrap'>
                     <div className='tableEl'>
                         <div className='theadEl'>

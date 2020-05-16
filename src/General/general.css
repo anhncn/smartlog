@@ -258,3 +258,37 @@
     transition: margin-left .3s ease-in-out;
     border-top: 1px solid #ccc;
 }
+.wrap-loader{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+    background-color: #ccc;
+}
+
+.loader {
+    position: absolute;
+    border: 2px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #3498db;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(- 50%, -50%);
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

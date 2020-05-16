@@ -25,6 +25,7 @@ class ManageUsers extends Component {
         this.dIdNewEmployee = React.createRef()
         this.newEmployeeCode = React.createRef()
         this.newEmployeeFullName = React.createRef()
+        this.tableManageUser = React.createRef()
     }
 
     onClickFilterGrid() {
@@ -51,6 +52,8 @@ class ManageUsers extends Component {
         }
         employee.page = page
 
+        var containerID =this.tableManageUser.current.getID()
+        NgocAnh.CommonFunction.showMaskLoading(containerID);
         httpRequest.getEmployee(employee)
             .then(res => {
                 res = JSON.parse(res)
@@ -71,6 +74,7 @@ class ManageUsers extends Component {
                     dataGrid: JSON.stringify(res),
                     currentPageGrid: employee.page,
                 })
+                NgocAnh.CommonFunction.hideMaskLoading(containerID)
             })
     }
 
@@ -100,8 +104,6 @@ class ManageUsers extends Component {
 
     componentDidMount() {
         let me = this
-        
-
         httpRequest.getToken().then(res => {
             me.Token = res
             document.getElementById("tokenNgocAnh").setAttribute("token", res)
@@ -111,7 +113,6 @@ class ManageUsers extends Component {
             })
             httpRequest.getAllDepartement()
                 .then(res => {
-                    debugger
                     this.setState({
                         departement: res,
                         placeWork: this.data
@@ -155,7 +156,7 @@ class ManageUsers extends Component {
                             <InputNA className='col-3 padding-10' typeInput='button' value='Lọc kết quả' textLabel='&nbsp;' onClick={this.onClickFilterGrid.bind(this)}></InputNA>
                         </div>
 
-                        <TableNA Height={500} NumPaging={20} ItemId='eId' onClickDelete={this.deleteEmployee.bind(this)} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
+                        <TableNA Height={500} ref={this.tableManageUser} NumPaging={20} ID="tableManageUser" ItemId='eId' onClickDelete={this.deleteEmployee.bind(this)} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
                             <ColumnNA isLocked={true} Width={200} DataIndex='name' text='Họ và tên' />
                             <ColumnNA Width={200} text='Mã nhân viên' DataIndex='eCode' />
                             <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='dName' />
