@@ -1,4 +1,6 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
+import { NgocAnh, } from '../ComponentCommon/Component'
 import 'font-awesome/css/font-awesome.min.css'
 import './general.css'
 import logo from '../staticna/logo.png'
@@ -250,162 +252,24 @@ class General extends React.Component {
             this.props.ToggleSideBar()
         }
     }
+
+    logout(){
+        localStorage.removeItem(NgocAnh.Enumeration.Token.LocalStorageName);
+        this.setState({
+            isRender: true,
+        })
+    }
     render() {
         const me = this, className = `${me.props.className || ''} ngocanh`,
             elementUL = me.createElementUL({ title: me.title })
+        if(!localStorage.getItem(NgocAnh.Enumeration.Token.LocalStorageName)){
+            return <Redirect to='/Login' />
+        }
         return (
             <div className={className} ref="ngocanh">
                 <div className="sidebar">
                     <div className='user-panel'></div>
                     {elementUL}
-                    {/* <ul className='user-sidebar-menu'>
-                        <li>
-                            <a href='# '>
-                                <i className='fa fa-home'></i>
-                                <span>Trang chủ</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href='# '>
-                                <i className="fa fa-home"></i>
-                                <span>Quản lý người dùng</span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý người sử dụng</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý sử dụng thẻ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý sử dụng PINCode</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý bộ phận phòng ban</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý sử dụng tủ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href='# '>
-                                <i className='fa fa-exclamation-triangle'></i>
-                                <span>Quản lý thiết bị</span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý tòa nhà</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý tầng</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý tủ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý kho thẻ từ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý thiết bị điều khiển</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href='# '>
-                                <i className='fa fa-exclamation-triangle'></i>
-                                <span>Cảnh báo</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href='# '>
-                                <i className='fa fa-tasks'></i>
-                                <span>Báo cáo</span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Báo cáo sự kiện thời gian thực</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Báo cáo trạng thái</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Báo cáo lịch sử dụng tủ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href='# '>
-                                <i className='fa fa-tasks'></i>
-                                <span>Quản trị hệ thống</span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Thêm tài khoản quản trị</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý quyền hạn của quản trị</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Thêm thẻ từ mới</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-fw fa-chevron-right"></i>
-                                        <span>Quản lý sử dụng thẻ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul> */}
                 </div>
 
                 <div className="header">
@@ -433,7 +297,7 @@ class General extends React.Component {
                                     </div>
                                     <div className='user-dropdown-footer'>
                                         <a href="# ">Đổi mật khẩu</a>
-                                        <a href="# ">Đăng xuất</a>
+                                        <a href="# " onClick={this.logout.bind(this)}>Đăng xuất</a>
                                     </div>
                                 </div>
                             </div>

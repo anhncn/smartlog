@@ -6,6 +6,18 @@ class InputField extends React.Component{
         this.state = {
             clsInput:"input-field ",
         }
+        this.inputEl = React.createRef()
+        this.onClick = this.onClick.bind(this);
+    }
+    onClick(e){
+        e.preventDefault();
+        var me = this;
+        if(me.props.typeInput === "submit" && typeof(me.props.onClick) === 'function'){
+            me.props.onClick();
+        }
+    }
+    getValue(){
+        return this.inputEl.current.value;
     }
     render(){
         var padding = ""
@@ -29,7 +41,8 @@ class InputField extends React.Component{
                     <label htmlFor={this.props.id} >{this.props.textLabel}</label>
                 </div>}
                 <div className={clsInput}>
-                    <input value={this.props.value} id={this.props.id} type={this.props.typeInput} ></input>
+                    <input ref={this.inputEl} value={this.props.value} id={this.props.id} 
+                    type={this.props.typeInput} onClick={this.onClick}></input>
                 </div>
             </div>
         )

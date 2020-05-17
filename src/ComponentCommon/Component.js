@@ -10,15 +10,18 @@ class ConfigsAPI {
         this.apiUri = {
             login: this.server + 'api/v1/login/',
             statistic: this.server + 'api/v1/report/locker_statistical/',
+            /** bô phận phòng ban */
             department: {
                 get: this.server + 'api/v1/department/get_department/'
             },
             locker: {
+                /* danh sách khóa tủ */
                 getLocker: {
                     uri: this.server + 'api/v1/locker/get_locker/',
                     method: NgocAnh.Enumeration.HttpMethod.GET,
                     parameters: { bId: 0, lvId: 0, imei: '', label: '', gLocker: 0, gStatus: 0, page: 1 }
                 },
+                /* danh sách tủ đang được sử dụng */
                 getUsage: {
                     uri: this.server + 'api/v1/locker/get_usage/',
                     method: NgocAnh.Enumeration.HttpMethod.GET,
@@ -260,7 +263,13 @@ var httpRequest = {
 
                 }
                 if (token === "") {
-                    token = document.getElementById("tokenNgocAnh").getAttribute("token")
+                    let tokenEl = document.getElementById("tokenNgocAnh")
+                    if (tokenEl && tokenEl.getAttribute("token")) {
+                        token = tokenEl.getAttribute("token")
+                    } else {
+                        const tokenName = NgocAnh.Enumeration.Token.LocalStorageName
+                        token = localStorage.getItem(tokenName)
+                    }
                 }
                 xhttp.open(method, url, async)
                 xhttp.setRequestHeader('Access-Control-Allow-Origin', '*')
@@ -277,22 +286,21 @@ var httpRequest = {
 
     /**
      * lấy token đăng nhập để thao tác dữ liệu
+     * @param {object} data 
+     * data là object có 'username' 'password'
      */
-    getToken() {
+    getToken(data = { username: NgocAnh.Account.UserName, password: NgocAnh.Account.Password }) {
         return new Promise((resolve, reject) => {
-            const configsAPI = new ConfigsAPI()
+            const configsAPI = new ConfigsAPI(), url = configsAPI.apiUri.login
             let configs = {
                 method: NgocAnh.Enumeration.HttpMethod.POST,
-                url: configsAPI.createURL({ url: configsAPI.apiUri.login }),
-                data: {
-                    username: NgocAnh.Account.UserName,
-                    password: NgocAnh.Account.Password
-                }
+                url: configsAPI.createURL({ url: url }),
+                data: data,
             }
             httpRequest.get(configs)
                 .then(res => {
-                    // token
-                    resolve(JSON.parse(res).token)
+                    const token = JSON.parse(res).token
+                    resolve(token)
                 })
                 .catch(res => {
                     reject(res)
@@ -323,7 +331,7 @@ var httpRequest = {
         })
     },
 
-    getEmployeeLockCanUse(object) {
+    getEmployeeLockCanUse(object = {}) {
         const me = this, configsAPI = new ConfigsAPI(),
             inforPrimitive = configsAPI.apiUri.user.getLockerCanUse
         return me.excuteObject(object, inforPrimitive)
@@ -431,7 +439,7 @@ var httpRequest = {
         })
     },
 
-    getBuilding(building) {
+    getBuilding(building = {}) {
         const me = this, configsAPI = new ConfigsAPI(),
             inforPrimitive = configsAPI.apiUri.building.get
         return me.excuteObject(building, inforPrimitive)
@@ -490,7 +498,7 @@ var httpRequest = {
         return me.excuteObject(object, inforPrimitive)
     },
 
-    getLockerManage(object) {
+    getLockerManage(object = {}) {
         const me = this, configsAPI = new ConfigsAPI(),
             inforPrimitive = configsAPI.apiUri.locker.getManage
         return me.excuteObject(object, inforPrimitive)
@@ -575,6 +583,9 @@ var NgocAnh = {
             DELETE: 'DELETE',
             PATCH: 'PATCH',
         },
+        Token: {
+            LocalStorageName: 'token_ngocanh',
+        }
     },
 
     Account: {

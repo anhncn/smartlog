@@ -14,16 +14,19 @@ import Home from './Code/HomePage/Home'
 import ManageUsers from './Code/ManageUser/ManageUsers'
 import ManageBuilding from './Code/ManageBuilding/ManageBuilding'
 import ManageLocker from './Code/ManageLocker/ManageLocker'
+import ManageDepartement from './Code/ManageDepartement/ManageDepartement'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
 class App extends Component {
   render() {
     return (
       <Router>
         <Route path='/' exact component={ManageLocker}></Route>
+        <Route path='/Login/' exact component={Login}></Route>
         <Route path='/Home/' exact component={Home}></Route>
         <Route path='/Manage/User/' exact component={ManageUsers}></Route>
         <Route path='/Manage/Card/' exact component={ManagerCard}></Route>
         <Route path='/Manage/Building/' exact component={ManageBuilding}></Route>
+        <Route path='/Manage/Departement/' exact component={ManageDepartement}></Route>
         <Route path='/Warn/Index/' exact component={Warn}></Route>
       </Router>
     )

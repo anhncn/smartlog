@@ -44,18 +44,12 @@ class ManageBuilding extends Component {
 
     componentDidMount() {
         let me = this
-        httpRequest.getToken().then(res => {
-            me.Token = res
-            document.getElementById("tokenNgocAnh").setAttribute("token", res)
-            httpRequest.getBuilding({}).then(res => {
-                this.setState({
-                    dataGrid: res,
-                })
-                res = JSON.parse(res)
-                debugger
+        httpRequest.getBuilding().then(res => {
+            this.setState({
+                dataGrid: res,
             })
+            res = JSON.parse(res)
         })
-
     }
 
     render() {
