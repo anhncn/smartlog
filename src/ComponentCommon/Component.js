@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import md5 from 'md5'
 import ReactDOM from 'react-dom'
+import md5 from 'md5'
+import uuidv4 from 'uuid/dist/v4'
+import styled from 'styled-components'
 import 'font-awesome/css/font-awesome.min.css'
 import './component.css'
 
@@ -254,6 +256,10 @@ var httpRequest = {
                     if (this.status === 404 || this.status === 500 || this.status === 400) {
                         reject(this)
                     }
+                    if (this.status === 401) {
+                        localStorage.removeItem(NgocAnh.Enumeration.Token.LocalStorageName)
+                        reject(this)
+                    }
                 }
                 if (method === NgocAnh.Enumeration.HttpMethod.GET) {
                     url += 'token=' + crfs_token
@@ -492,7 +498,7 @@ var httpRequest = {
         return me.excuteObject(locker, inforPrimitive)
     },
 
-    getLockerUsage(object) {
+    getLockerUsage(object = {}) {
         const me = this, configsAPI = new ConfigsAPI(),
             inforPrimitive = configsAPI.apiUri.locker.getUsage
         return me.excuteObject(object, inforPrimitive)
@@ -519,7 +525,12 @@ var httpRequest = {
             try {
                 const configsAPI = new ConfigsAPI(),
                     inforPrimitive = configsAPI.apiUri[objectName][objectMethod]
-                return this.excuteObject(object, inforPrimitive)
+                this.excuteObject(object, inforPrimitive).
+                    then(res => {
+                        resolve(res)
+                    }).catch(res => {
+                        reject(res)
+                    })
             } catch (error) {
                 alert("Sai tên trong excuteFactory rồi!")
             }
@@ -585,6 +596,9 @@ var NgocAnh = {
         },
         Token: {
             LocalStorageName: 'token_ngocanh',
+        },
+        Overay: {
+            ID: 'overlayCutom',
         }
     },
 
@@ -615,7 +629,10 @@ var NgocAnh = {
         },
 
         showMaskLoading: function (id) {
-            var container = document.querySelector('#' + id);
+            var container = document.querySelector('#' + id)
+            if (!container) {
+                return;
+            }
             if (container.style.position === "") {
                 container.style.position = "relative"
             }
@@ -623,11 +640,44 @@ var NgocAnh = {
         },
 
         hideMaskLoading: function (id) {
-            var container = document.querySelector('#' + id + ' .wrap-loader')
+            var container = document.querySelector('#' + id + ' .wrap-loader');
+
+            if (!container) {
+                return;
+            }
             container.remove();
 
             // NgocAnh.CommonFunction.showMaskLoading(idContainer)
             // NgocAnh.CommonFunction.hideMaskLoading(idContainer)
+        },
+
+        showOverlay: function () {
+            var overlay = document.querySelector('#' + NgocAnh.Enumeration.Overay.ID)
+            if (overlay) {
+                overlay.style.display = 'block'
+            }
+        },
+
+        hideOverlay: function () {
+            var overlay = document.querySelector('#' + NgocAnh.Enumeration.Overay.ID)
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        },
+
+        matchPropertiesOfListObject(records, enumerations, propMatch, propNew) {
+            if (!records || records.length === 0) {
+                return
+            }
+            for (let i = 0; i < records.length; i++) {
+                let record = records[i]
+                const objectMatch = enumerations.filter(item => item[propMatch] == record[propMatch])
+                if (objectMatch && objectMatch.length === 1) {
+                    record[propNew] = objectMatch[0][propNew]
+                } else {
+                    record[propNew] = ""
+                }
+            }
         },
     }
 }
@@ -648,10 +698,17 @@ class InputNA extends Component {
      * hasLabel == false thì không hiển thị label
      */
     getElementLabel(id, hasLabel = true, contentLabel) {
-        return !hasLabel ||
-            <div className="label-element">
+        if (!hasLabel) {
+            return
+        }
+        if (contentLabel) {
+            return <div className="label-element">
                 <label htmlFor={id} >{contentLabel}</label>
             </div>
+        }
+        return <div className="label-element">
+            <label htmlFor={id} >&nbsp;</label>
+        </div>
     }
 
     getValue() {
@@ -804,7 +861,7 @@ class BoxWrapNA extends Component {
             <div className={classList}>
                 <div className="box-header">
                     <div className='head-box-header'>
-                        <div className="title-box">{this.props.Title || 'Title props'}</div>
+                        {this.props.Title && <div className="title-box">{this.props.Title || 'Title props'}</div>}
                         <div className="box-tool">
                             <button onClick={this.onClickBox} className="btn btn-box-tool">
                                 <i className="fa fa-minus"></i>
@@ -885,7 +942,6 @@ class ComboboxNA extends Component {
                 liElements.push(liElement)
             }
         }
-
         element = <div className="bound-list">
             <div className="picker-listWrap" >
                 <ul ref={me.ulRefs} data-selectid={-1}>
@@ -895,6 +951,9 @@ class ComboboxNA extends Component {
         </div>
         ReactDOM.render(element, container)
         isShow ? me.openBoundingList() : me.closeBoundingList()
+        // trông có vẻ thừa nhưng trang web đang tính sai, chỉ tính đúng ở lần thứ 2 
+        // cần thêm 1 lần tính âm thầm trước đó ở đây
+        me.caculatePositionContainerCombobox()
     }
     // tạo một thùng chứa combobox
     createContainerCombobox() {
@@ -951,8 +1010,8 @@ class ComboboxNA extends Component {
         let me = this, placeData = me.getContainerCombobox(),
             bodyInput = me.bodyInputRef.current,
             boundBodyInput = bodyInput.getBoundingClientRect()
-        placeData.style.top = bodyInput.offsetTop + boundBodyInput.height + 'px'
-        placeData.style.left = bodyInput.offsetLeft + 'px'
+        placeData.style.top = boundBodyInput.top + boundBodyInput.height + 'px'
+        placeData.style.left = boundBodyInput.left + 'px'
     }
     // đặt giá trị cho input khi click vào li
     onClickSetValueInput(element) {
@@ -1143,7 +1202,7 @@ class ComboboxNA extends Component {
         let className = me.props.className || '' + ' container-combobox',
             label = me.getElementLabel(me.props.textLabel, id, me.props.hasLabel)
         return (
-            <div id={`${id}_Container`} className={className}>
+            <div id={`${id}_Container`} className={className} style={{ paddingBottom: '10px' }}>
                 {label}
                 <div id={`${id}-bodyEl`} ref={me.bodyInputRef} className="combobox-body" tabIndex='-1' onKeyDown={me.keyDownSelectLi}>
                     <div id={`${id}-triggerWrap`} className="combobox-triggerWrap">
@@ -1166,6 +1225,7 @@ class ComboboxNA extends Component {
  */
 class TableNA extends Component {
     static nameComponent = 'TableNA'
+    numPagingPre = null
     Paging = {
         records: [],
         totalRecords: 0,
@@ -1515,28 +1575,46 @@ class TableNA extends Component {
     initEventGrid() {
         let me = this,
             allRecords = me.tableWrapAll.current.querySelectorAll('.table-item[data-recordid]')
+        if (me.numPagingPre === me.Paging.currentPaging) {
+            return
+        }
         allRecords.forEach(table => {
             let id = table.getAttribute('data-recordid'),
                 listTable = me.tableWrapAll.current.querySelectorAll(`.table-item[data-recordid='${id}']`)
-            table.addEventListener("mouseenter", () => {
+            function mouseEnter(e) {
                 listTable.forEach(item => {
                     item.classList.add('active')
                 })
-            })
-            table.addEventListener("mouseleave", () => {
+            }
+            table.addEventListener("mouseenter", mouseEnter)
+
+            function mouseLeave(e) {
                 listTable.forEach(item => {
                     item.classList.remove('active')
                 })
-            })
-            table.addEventListener("click", () => {
+            }
+            table.addEventListener("mouseleave", mouseLeave)
+
+            function clickRowGrid(e) {
                 allRecords.forEach(item => {
                     item.classList.remove('selected')
                 })
                 listTable.forEach(item => {
                     item.classList.add('selected')
                 })
-            })
+                me.onClickRowGrid(me.Paging.records[id])
+            }
+
+            table.addEventListener("click", clickRowGrid)
         })
+        me.numPagingPre = me.Paging.currentPaging
+    }
+
+    onClickRowGrid(record) {
+        let me = this
+        if (me.props.onClickRowGrid && typeof (me.props.onClickRowGrid) === 'function') {
+            me.props.onClickRowGrid(record)
+        }
     }
 
     SyncValueCurrentPage() {
@@ -1650,6 +1728,191 @@ class ColumnNA extends Component {
     }
 }
 
+/**
+ * nnanh 20.05.2020
+ * tạo một component popup
+ */
+class ComponentPopup extends Component {
+    constructor() {
+        super()
+        let id = uuidv4() + 'popup_container'
+        this.state = {
+            id: id,
+            idContent: id + '_Content',
+            isShouldRender: true,
+        }
+    }
+
+    // tạo một thùng chứa combobox
+    createContainerPopup() {
+        let me = this
+        if (!me.getContainerPopup()) {
+            let container = document.createElement('DIV')
+            container.className = 'popup popup-custom'
+            container.setAttribute('id', this.state.id)
+            document.querySelector('body').appendChild(container)
+        }
+        return me.getContainerPopup()
+    }
+
+    // lấy ra thùng chứa popup
+    getContainerPopup() {
+        return document.querySelector(`[id='${this.state.id}']`)
+    }
+
+    getContainerPopupContent() {
+        return document.querySelector(`[id='${this.state.idContent}']`)
+    }
+
+    setWidth(value = 200) {
+        var me = this, container = me.getContainerPopupContent()
+        if (container) {
+            container.style.width = value + 'px'
+        }
+    }
+
+    setHeight(value = 200) {
+        var me = this, container = me.getContainerPopupContent()
+        if (container) {
+            container.style.height = value + 'px'
+        }
+    }
+
+    setCenter() {
+        var me = this, container = me.getContainerPopupContent()
+        if (container) {
+
+        }
+    }
+
+    renderElementToPopup() {
+        let me = this, container = me.getContainerPopup(), id = this.state.id + '_Content',
+            style = {
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                background: '#fff',
+                zIndex: 199,
+                transform: 'translate(-50%, -50%)',
+                display: 'flex',
+                flexDirection: 'column',
+            },
+            styleHeader = {
+                position: 'relative',
+                height: '24px',
+            },
+            styleBtnClose = {
+                position: 'absolute',
+                right: '4px',
+                top: '4px',
+                fontSize: '12px',
+                fontFamily: 'cursive',
+                cursor: 'pointer',
+                border: '1px solid #ccc',
+                borderRadius: '50%',
+                width: '12px',
+                height: '12px',
+                textAlign: 'center',
+                lineHeight: '12px'
+            },
+            styleBody = {
+                maxHeight: '100%',
+                flex: 1,
+            },
+            element = <div className='' id={id} style={style}>
+                <div className='header' style={styleHeader}>
+                    <div className='btn-close' style={styleBtnClose} onClick={this.closePopup.bind(this)}>X</div>
+                </div>
+                <div className='body-el' style={styleBody}>{this.props.children}</div>
+            </div>
+        ReactDOM.render(element, container)
+    }
+
+    closePopup() {
+        this.hide()
+    }
+
+    hide() {
+        document.getElementById(this.state.id).style.display = 'none'
+        NgocAnh.CommonFunction.hideOverlay()
+    }
+
+    show() {
+        document.getElementById(this.state.id).style.display = 'block'
+        NgocAnh.CommonFunction.showOverlay()
+    }
+
+    componentWillUnmount() {
+        NgocAnh.CommonFunction.hideOverlay()
+    }
+
+    componentDidUpdate() {
+        var me = this
+        me.renderElementToPopup()
+        this.show()
+        this.setWidth(me.props.Width)
+        this.setHeight(me.props.Height)
+        this.setCenter()
+    }
+
+    componentDidMount() {
+        const me = this
+        me.createContainerPopup()
+        me.renderElementToPopup()
+        me.show()
+    }
+    render() {
+        let me = this
+        return (
+            <div></div>
+        )
+    }
+}
+
+class LayoutLocker extends Component {
+    constructor() {
+        super()
+    }
+
+    render() {
+        let children = []
+
+        for (var row = 1; row <= 3; row++) {
+            for (var col = 1; col <= 7; col++) {
+                children.push(<ComponentLayoutLocker Row={row} Column={col} />)
+            }
+        }
+        return (
+            <div className='layout-locker-wrap'>
+                Trang {this.props.Page}
+                <div className='layout-locker-content'>
+                    {children}
+                </div>
+            </div>
+
+        )
+    }
+}
+
+
+class ComponentLayoutLocker extends Component {
+    render() {
+        var me = this, order = me.props.Row + ' ' + me.props.Column
+        return (
+            <div className='component-layout-locker-wrap'>
+                <div className='component-layout-locker-content'>
+                    <div className='txt-component-layout-locker-common'>
+                        05.079
+                    </div>
+                    <div className='txt-component-layout-locker-common'>
+                        Số thứ tự: <span>{order}</span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
 class FormSubmit extends Component {
     render() {
         let me = this, className = me.props.className ? me.props.className : '',
@@ -1679,6 +1942,8 @@ export {
     TableNA,
     ColumnNA,
     FormSubmit,
+    ComponentPopup,
+    LayoutLocker,
 }
 
 

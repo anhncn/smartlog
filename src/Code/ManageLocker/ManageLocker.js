@@ -48,7 +48,6 @@ class ManageLocker extends Component {
 
     onclickFilterGrid() {
         let me = this
-        debugger
         if(me && me.lockerHeader && me.lockerHeader.current.props.children.length > 0){
             let childrens = me.lockerHeader.current.props.children, object = {}
             for(let i = 0 ; i < childrens.length ;i++){
@@ -58,7 +57,6 @@ class ManageLocker extends Component {
                 }
             }
             object.page = 1
-            debugger
             httpRequest.getEmployeeLockCanUse(object).then(res => {
                 me.setState({
                     dataGrid: res,
@@ -69,7 +67,6 @@ class ManageLocker extends Component {
     }
 
     changePaging(page) {
-        debugger
         httpRequest.getEmployeeLockCanUse({ page: page }).then(res => {
             this.setState({
                 dataGrid: res,
@@ -80,32 +77,28 @@ class ManageLocker extends Component {
 
     componentDidMount() {
         let me = this
-        httpRequest.getToken().then(res => {
-            me.Token = res
-            document.getElementById("tokenNgocAnh").setAttribute("token", res)
-            httpRequest.getAllDepartement().then(res => {
-                this.setState({
-                    departement: res
-                })
+        httpRequest.getAllDepartement().then(res => {
+            this.setState({
+                departement: res
             })
-            httpRequest.getBuilding({}).then(res => {
-                this.setState({
-                    //dataGrid: res,
-                    building: JSON.parse(res).items,
-                })
-                res = JSON.parse(res)
+        })
+        httpRequest.getBuilding({}).then(res => {
+            this.setState({
+                //dataGrid: res,
+                building: JSON.parse(res).items,
             })
-            // httpRequest.getLockerUsage({}).then(res=>{
-            //     debugger
-            // })
-            httpRequest.getLockerManage({}).then(res => {
-                debugger
-            })
-            httpRequest.getEmployeeLockCanUse({}).then(res => {
-                debugger
-                this.setState({
-                    dataGrid: res
-                })
+            res = JSON.parse(res)
+        })
+        // httpRequest.getLockerUsage({}).then(res=>{
+        //     debugger
+        // })
+        httpRequest.getLockerManage().then(res => {
+            debugger
+        })
+        httpRequest.getEmployeeLockCanUse().then(res => {
+            debugger
+            this.setState({
+                dataGrid: res
             })
         })
     }

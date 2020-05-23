@@ -51,13 +51,13 @@ class General extends React.Component {
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý bộ phận phòng ban',
-                    href: '#',
+                    href: '/Manage/Departement',
                     title: [],
                 },
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý sử dụng tủ',
-                    href: '#',
+                    href: '/Manage/EmployeeLocker',
                     title: [],
                 },
             ]

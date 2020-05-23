@@ -217,6 +217,7 @@
 .ngocanh .container .content .title .home-title {
     align-items: center;
     display: flex;
+    font-size: 12px;
 }
 
 .ngocanh .container .grid {
