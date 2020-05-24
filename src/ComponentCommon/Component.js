@@ -599,7 +599,12 @@ var NgocAnh = {
         },
         Overay: {
             ID: 'overlayCutom',
-        }
+        },
+        EntityState: {
+            Add: 1,
+            Update: 2,
+            Delete: 3,
+        },
     },
 
     Account: {
@@ -711,6 +716,13 @@ class InputNA extends Component {
         </div>
     }
 
+    onClick(){
+        let me = this
+        if(me.props.onClick && typeof(me.props.onClick) == 'function'){
+            me.props.onClick(me, me.props.data)
+        }
+    }
+
     getValue() {
         return this.inputRef.current.querySelector('.input-element input').value
     }
@@ -724,15 +736,19 @@ class InputNA extends Component {
      * type kiểu dữ liệu, value dữ liệu của input
      */
     render() {
-        let me = this, id = this.props.ID, value = this.props.value,
-            classList = `${this.props.className || ''} form-inputna`,
-            placeholder = this.props.placeholder, typeInput = this.props.typeInput,
-            label = me.getElementLabel(id, this.props.hasLabel, this.props.textLabel)
+        let me = this, id = me.props.ID, value = me.props.value,
+            classList = `${me.props.className || ''} form-inputna`,
+            placeholder = me.props.placeholder, typeInput = me.props.typeInput,
+            label = me.getElementLabel(id, me.props.hasLabel, me.props.textLabel)
+        if (me.props.setField && me.props.data && JSON.parse(me.props.data)) {
+            value = JSON.parse(me.props.data)[me.props.setField]
+        }
         return (
             <div className={classList} ref={me.inputRef}>
                 {label}
                 <div className="input-element">
-                    <input id={id} type={typeInput} value={value} placeholder={placeholder} onClick={this.props.onClick} ></input>
+                    {me.props.isDisabled == true ? <input id={id} disabled type={typeInput} value={value} placeholder={placeholder} onClick={me.props.onClick} ></input> :
+                        <input id={id} type={typeInput} value={value} placeholder={placeholder} onClick={me.onClick.bind(me)} ></input>}
                 </div>
             </div>
         )
@@ -931,7 +947,7 @@ class ComboboxNA extends Component {
                 recordindex = index,
                 onClick = me.onClickSetValueInput,
                 liElement = <li role='option' aria-selected={true} unselectable='on'
-                    tabIndex='-1' data-recordindex={recordindex}
+                    tabIndex='-1' data-recordindex={recordindex} record-data={JSON.stringify(rec)}
                     data-recordid={recordid} className='x-boundlist-item'
                     data-boundview={`${this.props.ID}-picker`}
                     onClick={onClick} key={recordindex}>{text}</li>
@@ -1013,23 +1029,44 @@ class ComboboxNA extends Component {
         placeData.style.top = boundBodyInput.top + boundBodyInput.height + 'px'
         placeData.style.left = boundBodyInput.left + 'px'
     }
+    onChangeValueCombobox(record) {
+        let me = this;
+        if (me.props.onChange && typeof (me.props.onChange) == 'function') {
+            me.props.onChange(me, record)
+        }
+    }
+
     // đặt giá trị cho input khi click vào li
     onClickSetValueInput(element) {
-        let dataRecord = {
+        let me = this, dataRecord = {
             value: element.target.dataset.recordid,
             text: element.target.textContent,
             index: element.target.dataset.recordindex,
+        }, recordOrigin = element.currentTarget.getAttribute('record-data')
+        if (me.inputRef.current.value != dataRecord.text) {
+            me.onChangeValueCombobox(dataRecord)
         }
-        this.inputRef.current['data-record'] = JSON.stringify(dataRecord)
-        this.inputRef.current.value = dataRecord.text
+        me.inputRef.current['data-record'] = JSON.stringify(dataRecord)
+        me.inputRef.current['record-origin'] = recordOrigin
+        me.inputRef.current.value = dataRecord.text
 
         // Thêm active cho phần tử được chọn
-        this.ulRefs.current.querySelectorAll('li').forEach(item => { item.classList.remove('active') })
+        me.ulRefs.current.querySelectorAll('li').forEach(item => { item.classList.remove('active') })
         element.target.classList.add('active')
-        this.ulRefs.current.dataset.selectid = element.target.dataset.recordindex
-        this.onClickToggleBoundingList()
+        me.ulRefs.current.dataset.selectid = element.target.dataset.recordindex
+        me.onClickToggleBoundingList()
     }
 
+    getRecordOrigin(){
+        let rec = this.inputRef.current['record-origin']
+        if (rec) {
+            return JSON.parse(rec)
+        }
+        else {
+            return null
+        }
+    }
+    
     getRecordsSelected() {
         let rec = this.inputRef.current['data-record']
         if (rec) {
@@ -1748,7 +1785,7 @@ class ComponentPopup extends Component {
         let me = this
         if (!me.getContainerPopup()) {
             let container = document.createElement('DIV')
-            container.className = 'popup popup-custom'
+            container.className = 'popup popup-custom ' + me.props.className || ''
             container.setAttribute('id', this.state.id)
             document.querySelector('body').appendChild(container)
         }
@@ -1830,6 +1867,9 @@ class ComponentPopup extends Component {
 
     closePopup() {
         this.hide()
+        if (this.props.onClosePopup && typeof (this.props.onClosePopup) == 'function') {
+            this.props.onClosePopup()
+        }
     }
 
     hide() {
@@ -1873,22 +1913,69 @@ class LayoutLocker extends Component {
     constructor() {
         super()
     }
+    getData() {
+        let me = this, items = []
+        try {
+            if (me.props.data && JSON.parse(me.props.data)) {
+                items = JSON.parse(me.props.data).items
+                if (items && items.length > 0) {
+                    return items
+                }
+            }
+        } catch (error) {
 
+        }
+        return []
+    }
+    onClickComponent(data) {
+        let me = this
+        if (me.props.onClickComponent && typeof (me.props.onClickComponent) == 'function') {
+            me.props.onClickComponent(data)
+        }
+    }
     render() {
-        let children = []
-
+        let me = this, children = [],
+            items = me.getData(), page = me.props.Page
         for (var row = 1; row <= 3; row++) {
             for (var col = 1; col <= 7; col++) {
-                children.push(<ComponentLayoutLocker Row={row} Column={col} />)
+                let data = null,
+                    rec = items.filter(
+                        item => {
+                            return item.lPg == page &&
+                                item.lRw == (row - 1) &&
+                                item.lCl == (col - 1)
+                        })
+                if (rec.length == 1) {
+                    data = rec[0]
+                }
+                children.push(<ComponentLayoutLocker
+                    onClick={me.onClickComponent.bind(me)}
+                    Row={row} Column={col} data={data} Page={page} />)
             }
         }
         return (
-            <div className='layout-locker-wrap'>
-                Trang {this.props.Page}
+            < div className='layout-locker-wrap' >
+                Trang {page}
                 <div className='layout-locker-content'>
                     {children}
                 </div>
-            </div>
+                {/* aStatus: "FREE"
+                            bName: "D'Capitale"
+                            eCode: ""
+                            eName: ""
+                            gId: 1113
+                            health: "ERROR"
+                            imei: "4769495c310bbe1e"
+                            lCl: 0
+                            lId: 2946
+                            lLb: "05.080"
+                            lLv: 0
+                            lNum: 2
+                            lPg: 1
+                            lRw: 1
+                            lZone: "10"
+                            lvlId: 1054 */}
+            </div >
 
         )
     }
@@ -1896,16 +1983,39 @@ class LayoutLocker extends Component {
 
 
 class ComponentLayoutLocker extends Component {
+    onClick() {
+        let me = this
+        if (me.props.onClick && typeof (me.props.onClick) == 'function') {
+            let data = me.props.data
+            if (data) {
+                data.entityState = NgocAnh.Enumeration.EntityState.Update
+            }
+            else {
+                data = {
+                    entityState: NgocAnh.Enumeration.EntityState.Add,
+                    lRw: me.props.Row,
+                    lCl: me.props.Column,
+                    lPg: me.props.Page,
+                }
+            }
+            me.props.onClick(data)
+        }
+    }
     render() {
-        var me = this, order = me.props.Row + ' ' + me.props.Column
+        var me = this, order = me.props.Row + ' ' + me.props.Column,
+            data = me.props.data, label = '', txtOrdered = ''
+        if (data) {
+            label = <div title={data.lLb} >{data.lLb}</div>
+            txtOrdered = <div title={`Số thứ tự: ${data.lNum}`}>Số thứ tự: <span>{data.lNum}</span></div>
+        }
         return (
-            <div className='component-layout-locker-wrap'>
+            <div className='component-layout-locker-wrap' onClick={me.onClick.bind(this)}>
                 <div className='component-layout-locker-content'>
                     <div className='txt-component-layout-locker-common'>
-                        05.079
+                        {label}
                     </div>
                     <div className='txt-component-layout-locker-common'>
-                        Số thứ tự: <span>{order}</span>
+                        {txtOrdered}
                     </div>
                 </div>
             </div>
