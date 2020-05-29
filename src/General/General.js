@@ -85,7 +85,7 @@ class General extends React.Component {
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý tủ',
-                    href: '#',
+                    href: '/Manage/LockerLayout',
                     title: [],
                 },
                 {

@@ -28,7 +28,7 @@ class ManageEmployeeLocker extends Component {
             dataPopup: [],
             isRender: true,
             departement: [],
-            isShowPopup: true,
+            isShowPopup: false,
         }
     }
 
@@ -171,7 +171,7 @@ class ManageEmployeeLocker extends Component {
                         </div>
                         <TableNA Height={500} ID={"tableManageEmployeeLockerRight"} data={JSON.stringify(me.state.dataGridRight)}
                             NumPaging={5} Filter={filterGrid} changePaging={me.nextPrePage.bind(me)}
-                            ref={me.tableManageEmployeeLockerRight} onClickRowGrid={me.onClickRowGrid}>
+                            ref={me.tableManageEmployeeLockerRight} onClickRowGrid={me.onClickRowGrid.bind(me)}>
                             <ColumnNA isLocked={true} Width={300} DataIndex='bName' text='Tòa nhà' />
                             <ColumnNA MinWidth={100} Flex='1' text='Tầng' DataIndex='lLv' />
                             <ColumnNA Width={100} text='Nhãn' DataIndex='lLb' />

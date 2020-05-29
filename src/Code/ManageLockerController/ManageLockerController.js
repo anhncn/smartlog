@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import General from '../../General/General'
 import InputNA, {
     NgocAnh, ConfigsAPI, BoxWrapNA, SelectFormNA, httpRequest,
     UserContext, TableNA, ComboboxNA, ColumnNA, LayoutLocker,
-    ComponentPopup, FormSubmit
+    ComponentPopup, FormSubmit, LockerManage
 } from '../../ComponentCommon/Component'
-import './manageLockerLayout.css'
+import './manageLockerController.css'
 /**
  * Quản lý layout tủ
  * nnanh 04.04.2020
  */
-class ManageLockerLayout extends Component {
+class ManageLockerController extends Component {
     constructor() {
         super()
         this.state = {
@@ -110,13 +111,55 @@ class ManageLockerLayout extends Component {
         httpRequest.excuteFactory(dataApi, 'locker', 'create').then(res => {
         })
     }
-    onClickRemoveLocker(controls){
+    onClickRemoveLocker(controls) {
         let param = {
             lId: this.state.dataPopup.lId
         }
-        httpRequest.excuteFactory(param, 'locker', 'remove').then(res=>{
+        httpRequest.excuteFactory(param, 'locker', 'remove').then(res => {
             debugger
         })
+    }
+
+    onClickOption(component, stt) {
+        let me = this,
+            lId = component.props.data.lId,
+            object = {},
+            objectName = 'locker',
+            objectMethod = null
+        stt = parseInt(stt)
+        switch (stt) {
+            case NgocAnh.Enumeration.OptionPopup.ReportErrorLocker:
+                object.lId = lId
+                objectMethod = 'reportLockerHealth'
+                break;
+            case NgocAnh.Enumeration.OptionPopup.StopReportErrorLocker:
+                break;
+            case NgocAnh.Enumeration.OptionPopup.Edit:
+                break
+            case NgocAnh.Enumeration.OptionPopup.ConfirmOpenRightNow:
+                break
+            case NgocAnh.Enumeration.OptionPopup.OpenLocker:
+                objectMethod = 'openExistLocker'
+                break
+            case NgocAnh.Enumeration.OptionPopup.FreeLocker:
+                objectMethod = 'freeSessionOccupiedLocker'
+                break
+            case NgocAnh.Enumeration.OptionPopup.DisabledLocker:
+                objectMethod = 'disabledExistLocker'
+                break
+            case NgocAnh.Enumeration.OptionPopup.ActiveLocker:
+                objectMethod = 'enabledDisablingLocker'
+                break
+            default:
+                break
+        }
+        if (objectName && objectMethod) {
+            httpRequest.excuteFactory(object, objectName, objectMethod).then(res => {
+                ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
+            }).catch(e => {
+                ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
+            })
+        }
     }
 
     renderPopupExcuteLoker() {
@@ -138,7 +181,7 @@ class ManageLockerLayout extends Component {
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='position' textLabel='Mô tả vị trí' />
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='lLv' isDisabled={true} textLabel='Tầng' />
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='imei' isDisabled={true} textLabel='Thiết bị quản lý' />
-                    </FormSubmit>
+                    </FormSubmit>   
                 </div>
             </BoxWrapNA>
             <div>
@@ -167,9 +210,10 @@ class ManageLockerLayout extends Component {
     }
 
     render() {
-        let me = this, popup = me.renderPopupExcuteLoker()
+        let me = this,
+            popup = me.renderPopupExcuteLoker()
         return (
-            <General Title={'Quản lý layout tủ'} className='manager-locker-layout-nnanh'>
+            <General Title={'Quản lý layout tủ'} className='manager-locker-controller-nnanh'>
                 <div className='col-12'>
                     <BoxWrapNA Title=' ' className='' >
                         <div className='row' typeChild='header'>
@@ -190,8 +234,8 @@ class ManageLockerLayout extends Component {
                                     ref={this.btnSave} onClick={this.getLockerByController.bind(this)} />
                             </div>
                         </div>
-                        <LayoutLocker Page={1} data={JSON.stringify(me.state.dataLayout)} onClickComponent={me.onClickComponent.bind(me)}></LayoutLocker>
-                        <LayoutLocker Page={2} data={JSON.stringify(me.state.dataLayout)} onClickComponent={me.onClickComponent.bind(me)}></LayoutLocker>
+                        <LockerManage Page={1} data={JSON.stringify(me.state.dataLayout)} onClickOption={me.onClickOption.bind(me)} onClickComponent={me.onClickComponent.bind(me)}></LockerManage>
+                        <LockerManage Page={2} data={JSON.stringify(me.state.dataLayout)} onClickOption={me.onClickOption.bind(me)} onClickComponent={me.onClickComponent.bind(me)}></LockerManage>
                     </BoxWrapNA>
                     {popup}
                 </div>
@@ -200,4 +244,4 @@ class ManageLockerLayout extends Component {
     }
 }
 
-export default ManageLockerLayout
+export default ManageLockerController

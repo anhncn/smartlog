@@ -600,11 +600,24 @@ var NgocAnh = {
         Overay: {
             ID: 'overlayCutom',
         },
+        PopupOptionLocker: {
+            ID: 'popupOptionLocker',
+        },
         EntityState: {
             Add: 1,
             Update: 2,
             Delete: 3,
         },
+        OptionPopup: {
+            Edit: 1,
+            OpenLocker: 2,
+            FreeLocker: 3,
+            ConfirmOpenRightNow: 4,
+            DisabledLocker: 5,
+            ActiveLocker: 6,
+            ReportErrorLocker: 7,
+            StopReportErrorLocker: 8,
+        }
     },
 
     Account: {
@@ -716,9 +729,9 @@ class InputNA extends Component {
         </div>
     }
 
-    onClick(){
+    onClick() {
         let me = this
-        if(me.props.onClick && typeof(me.props.onClick) == 'function'){
+        if (me.props.onClick && typeof (me.props.onClick) == 'function') {
             me.props.onClick(me, me.props.data)
         }
     }
@@ -1057,7 +1070,7 @@ class ComboboxNA extends Component {
         me.onClickToggleBoundingList()
     }
 
-    getRecordOrigin(){
+    getRecordOrigin() {
         let rec = this.inputRef.current['record-origin']
         if (rec) {
             return JSON.parse(rec)
@@ -1066,7 +1079,7 @@ class ComboboxNA extends Component {
             return null
         }
     }
-    
+
     getRecordsSelected() {
         let rec = this.inputRef.current['data-record']
         if (rec) {
@@ -1286,6 +1299,7 @@ class TableNA extends Component {
         this.onScrollTable = this.onScrollTable.bind(this)
 
         this.state = {
+            clsCheckboxActive: 'selected-checked',
             isRender: true,
             widthGrid: null,
             widthGridLock: null,
@@ -1407,6 +1421,62 @@ class TableNA extends Component {
         head.current.scrollLeft = scrollLeft
     }
 
+    onChangeToggleAllCheckbox(e) {
+        let me = this, element = e.currentTarget, clsActive = me.state.clsCheckboxActive,
+            listTable = me.tableWrapAll.current.querySelectorAll(`.table-item[data-recordid]`),
+            listCheckbox = me.tableWrapAll.current.querySelectorAll(`.table-cell input[type='checkbox'][data-recordid]`)
+        if (element.checked) {
+            listTable.forEach(item => {
+                item.classList.add(clsActive)
+            })
+
+        } else {
+            listTable.forEach(item => {
+                item.classList.remove(clsActive)
+            })
+        }
+        listCheckbox.forEach(item => {
+            item.checked = element.checked
+        })
+        me.onClickCheckboxGridCustomOutSize()
+    }
+
+    onChangeValueCellGrid(e) {
+        let me = this, element = e.currentTarget, id = element.dataset.recordid, clsActive = me.state.clsCheckboxActive,
+            listTable = me.tableWrapAll.current.querySelectorAll(`.table-item[data-recordid='${id}']`)
+        if (element.checked) {
+            listTable.forEach(item => {
+                item.classList.add(clsActive)
+            })
+        } else {
+            listTable.forEach(item => {
+                item.classList.remove(clsActive)
+            })
+        }
+        me.onClickCheckboxGridCustomOutSize()
+    }
+
+    /**
+     * Hàm khi click vào checkbox thò ra để cho bên ngoài sử dụng
+     * nnanh 28.05.2020
+     */
+    onClickCheckboxGridCustomOutSize() {
+        let me = this, records = me.getSelectedRecords()
+        if (me && me.props && typeof (me.props.onClickCheckboxColumn) == 'function') {
+            me.props.onClickCheckboxColumn(me, records)
+        }
+    }
+
+    /** Lấy ra các bản ghi đã checked bằng check box */
+    getSelectedRecords() {
+        let me = this, clsActive = me.state.clsCheckboxActive, records = [],
+            listTable = me.tableWrapAll.current.querySelectorAll(`.table-item.${clsActive}[data-recordid] .checkbox-grid`)
+        listTable.forEach((cell) => {
+            records.push(JSON.parse(cell.dataset.rec))
+        })
+        return records
+    }
+
     /* Danh sách các cột là child */
     getColumnGrid() {
         let me = this, columns = []
@@ -1427,7 +1497,17 @@ class TableNA extends Component {
 
     /* Truyền vào thông tin cột trả ra header html cột */
     getHeaderTable(columns = [], widthCloumns, isLocked = false) {
-        let header = []
+        let me = this, header = []
+        if (me.props.isSelection && isLocked) {
+            let style = {
+                width: 50
+            }
+            header.push(<th style={style} className='column-header'>
+                <div className='column-header-inner'>
+                    <input type="checkbox" onChange={me.onChangeToggleAllCheckbox.bind(me)} />
+                </div>
+            </th>)
+        }
         columns.forEach((column, index) => {
             let text = column.props.text,
                 style = {
@@ -1445,6 +1525,20 @@ class TableNA extends Component {
         let me = this, rowsInTable = [], { records } = me.Paging
         records.forEach((rec, i) => {
             let dataInRow = []
+            if (me.props.isSelection && isLocked) {
+                let style = {
+                    width: 50,
+                },
+                    styleCenter = {
+                        textAlign: 'center',
+                    }
+                dataInRow.push(<td className='table-cell' style={style}>
+                    <div className='table-cell-inner' style={styleCenter}>
+                        <input type="checkbox" className="checkbox-grid"
+                            data-rec={JSON.stringify(rec)} data-recordid={i}
+                            recordid={rec[me.props.ItemId]}
+                            onChange={me.onChangeValueCellGrid.bind(me)} /></div></td>)
+            }
             columns.forEach((column, index) => {
                 let text = rec[column.props.DataIndex],
                     style = {
@@ -1647,6 +1741,7 @@ class TableNA extends Component {
         me.numPagingPre = me.Paging.currentPaging
     }
 
+    /** Chọn 1 bản ghi trên grid bằng click chứ ko phải checkbox */
     onClickRowGrid(record) {
         let me = this
         if (me.props.onClickRowGrid && typeof (me.props.onClickRowGrid) === 'function') {
@@ -1959,22 +2054,6 @@ class LayoutLocker extends Component {
                 <div className='layout-locker-content'>
                     {children}
                 </div>
-                {/* aStatus: "FREE"
-                            bName: "D'Capitale"
-                            eCode: ""
-                            eName: ""
-                            gId: 1113
-                            health: "ERROR"
-                            imei: "4769495c310bbe1e"
-                            lCl: 0
-                            lId: 2946
-                            lLb: "05.080"
-                            lLv: 0
-                            lNum: 2
-                            lPg: 1
-                            lRw: 1
-                            lZone: "10"
-                            lvlId: 1054 */}
             </div >
 
         )
@@ -2023,6 +2102,177 @@ class ComponentLayoutLocker extends Component {
     }
 }
 
+class LockerManage extends Component {
+    constructor() {
+        super()
+    }
+    getData() {
+        let me = this, items = []
+        try {
+            if (me.props.data && JSON.parse(me.props.data)) {
+                items = JSON.parse(me.props.data).items
+                if (items && items.length > 0) {
+                    return items
+                }
+            }
+        } catch (error) {
+
+        }
+        return []
+    }
+    onClickComponent(data) {
+        let me = this
+        if (me.props.onClickComponent && typeof (me.props.onClickComponent) == 'function') {
+            me.props.onClickComponent(data)
+        }
+    }
+
+    onClickOption(childControl, stt) {
+        let me = this
+        if (me.props && typeof (me.props.onClickOption) == 'function') {
+            me.props.onClickOption(childControl, stt)
+        }
+    }
+    render() {
+        let me = this, children = [],
+            items = me.getData(), page = me.props.Page,
+            isRenderPage = false // nếu ko có phần tử nào thuộc vào page đó thì ko render page đó
+        for (var row = 1; row <= 3; row++) {
+            for (var col = 1; col <= 7; col++) {
+                let data = null,
+                    rec = items.filter(
+                        item => {
+                            return item.lPg == page &&
+                                item.lRw == (row - 1) &&
+                                item.lCl == (col - 1)
+                        })
+                if (rec.length == 1) {
+                    data = rec[0]
+                    isRenderPage = true
+                }
+                children.push(<ComponentLockerManage
+                    onClick={me.onClickComponent.bind(me)}
+                    onClickOption={me.onClickOption.bind(me)}
+                    Row={row} Column={col} data={data} Page={page} />)
+            }
+        }
+        return (
+            isRenderPage && < div className='layout-locker-wrap' >
+                Trang {page}
+                <div className='layout-locker-content'>
+                    {children}
+                </div>
+            </div >
+
+        )
+    }
+}
+
+
+class ComponentLockerManage extends Component {
+    items = [
+        { stt: 1, icon: '', text: 'Chỉnh sửa', },
+        { stt: 2, icon: '', text: 'Mở tủ', },
+        { stt: 3, icon: '', text: 'Giải phóng tủ', },
+        { stt: 4, icon: '', text: 'Xác nhận mở tại chỗ', },
+        { stt: 5, icon: '', text: 'Vô hiệu hóa tủ', },
+        { stt: 6, icon: '', text: 'Kích hoạt tủ', },
+        { stt: 7, icon: '', text: 'Báo lỗi tủ', },
+        { stt: 8, icon: '', text: 'Dừng báo lỗi tủ', },
+    ]
+    constructor() {
+        super()
+        this.state = {
+            isShowPopupOption: false,
+            currentData: null,
+        }
+    }
+    onContextMenu(e) {
+        e.preventDefault()
+        let me = this
+        me.renderOptionCombobox(e)
+        this.setState({
+            isShowPopupOption: true,
+        })
+    }
+    renderOptionCombobox(e) {
+        let me = this, listItems = []
+        for (var i = 0; i < me.items.length; i++) {
+            let item = me.items[i]
+            listItems.push(<div className='popup-item-option-locker-wrap' data-id={item.stt} onClick={me.onClickOption.bind(me)}>
+                <div className='popup-item-option-locker-content'>
+                    <div className={'icon ' + item.icon}></div>
+                    <div className={'txt-item-option-locker'}>{item.text}</div>
+                </div>
+            </div>)
+        }
+        let style = {
+            top: e.clientY,
+            left: e.clientX + 10,
+        },
+            x = <div style={style} className='popup-option-locker-wrap'>
+                <div className='popup-option-locker-content'>
+                    {listItems}
+                </div>
+            </div>
+        me.renderToContainer(x)
+    }
+
+    onClickOption(e) {
+        let me = this, stt = e.currentTarget.dataset.id
+        if (me.props && typeof (me.props.onClickOption) == 'function') {
+            me.props.onClickOption(me, stt)
+        }
+    }
+
+    mousedownDocument(e) {
+        let me = this, className = ''
+        for (var i = 0; i < e.target.classList.length; i++) {
+            let classes = e.target.classList[i]
+            className += '.' + classes;
+        }
+        if (document.querySelectorAll("#" + NgocAnh.Enumeration.PopupOptionLocker.ID + ' ' + className).length > 0) {
+        }
+        else {
+            me.renderToContainer(null)
+
+        }
+    }
+
+    renderToContainer(el) {
+        let container = document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID)
+        ReactDOM.render(el, container)
+    }
+
+    componentDidMount() {
+        let me = this;
+        document.onmousedown = me.mousedownDocument.bind(me)
+    }
+
+    render() {
+        var me = this, order = me.props.Row + ' ' + me.props.Column,
+            data = me.props.data, label = '', txtOrdered = '', className = 'component-locker-controller-wrap '
+        if (data) {
+            label = <div title={data.lLb} >{data.lLb}</div>
+            txtOrdered = <div title={`Số thứ tự: ${data.lNum}`}>Số thứ tự: <span>{data.lNum}</span></div>
+        } else {
+            className += 'visibility-hidden'
+        }
+        return (
+            <div className={className} onContextMenu={me.onContextMenu.bind(this)}>
+                <div className='component-locker-controller-content'>
+                    <div className='txt-component-locker-controller-common'>
+                        {label}
+                    </div>
+                    <div className='txt-component-locker-controller-common'>
+                        {txtOrdered}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
 class FormSubmit extends Component {
     render() {
         let me = this, className = me.props.className ? me.props.className : '',
@@ -2030,6 +2280,79 @@ class FormSubmit extends Component {
         return (
             <div className={className} typeChild={typeChild} ref={me.lockerHeader}>
                 {me.props.children}
+            </div>
+        )
+    }
+}
+
+class ContainerWrapRecord extends Component {
+    constructor() {
+        super()
+    }
+
+    /**
+     *  render ra danh sách các thẻ con bên trong 
+     */
+    renderListComponent() {
+        try {
+            let me = this, components = [], datas = JSON.parse(me.props.data),
+                listDataIndex = JSON.parse(me.props.listDataIndex),
+                sperator = me.props.sperator || ''
+            if (datas && datas.length > 0 && listDataIndex && listDataIndex.length > 0) {
+                for (let i = 0; i < datas.length; i++) {
+                    let text = '', data = datas[i]
+                    for (let j = 0; j < listDataIndex.length; j++) {
+                        let dataIndex = listDataIndex[j],
+                            valueIndex = data[dataIndex] || ''
+                        if (j + 1 == listDataIndex.length) {
+                            text += valueIndex
+                        } else {
+                            text += valueIndex + " " + sperator + " "
+
+                        }
+                    }
+                    let component = <div className='item-container-wrap-record-wrap'>
+                        <div className='item-container-wrap-record-content'>
+                            {text}
+                        </div>
+                    </div>
+                    components.push(component)
+                }
+            }
+            return components
+        } catch (error) {
+            return null
+        }
+    }
+
+    renderLabel() {
+        try {
+            let me = this
+            if (me.props.isHasLabel == false) {
+                return null
+            } else {
+                let text = me.props.textLabel || ' '
+                return <div class="label-element"><label>{text}</label></div>
+            }
+
+        } catch (error) {
+            return null
+        }
+    }
+
+    render() {
+        let me = this, listComponent = me.renderListComponent(),
+            label = me.renderLabel()
+        return (
+            <div className='container-wrap-component-wrap-nnanh'>
+                <div className='container-wrap-component-content-nnanh'>
+                    {label}
+                    <div className='menu-container-wrap-record-wrap'>
+                        <div className='menu-container-wrap-record-content'>
+                            {listComponent}
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -2054,6 +2377,8 @@ export {
     FormSubmit,
     ComponentPopup,
     LayoutLocker,
+    LockerManage,
+    ContainerWrapRecord
 }
 
 

@@ -17,6 +17,7 @@ import ManageLocker from './Code/ManageLocker/ManageLocker'
 import ManageDepartement from './Code/ManageDepartement/ManageDepartement'
 import ManageEmployeeLocker from './Code/ManageEmployeeLocker/ManageEmployeeLocker'
 import ManageLockerLayout from './Code/ManageLockerLayout/ManageLockerLayout'
+import ManageLockerController from './Code/ManageLockerController/ManageLockerController'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
 class App extends Component {
 
@@ -33,6 +34,22 @@ class App extends Component {
     return me.getContainerOverLay()
   }
 
+  createContainerPopupOptionLocker() {
+    let me = this
+    if (!me.getContainerPopupOptionLocker()) {
+      let container = document.createElement('DIV'), id = NgocAnh.Enumeration.PopupOptionLocker.ID
+      container.className = 'popup-option-locker-cutom'
+      container.setAttribute('id', id)
+      document.querySelector('body').appendChild(container)
+    }
+    return me.getContainerOverLay()
+  }
+
+  getContainerPopupOptionLocker() {
+    const id = NgocAnh.Enumeration.PopupOptionLocker.ID
+    return document.querySelector(`[id='${id}']`)
+  }
+
   getContainerOverLay() {
     const id = NgocAnh.Enumeration.Overay.ID
     return document.querySelector(`[id='${id}']`)
@@ -40,7 +57,8 @@ class App extends Component {
 
   componentDidMount() {
     this.createContainerOverLay()
-    
+    this.createContainerPopupOptionLocker()
+
   }
   render() {
     return (
@@ -54,6 +72,7 @@ class App extends Component {
         <Route path='/Manage/Departement/' exact component={ManageDepartement}></Route>
         <Route path='/Manage/EmployeeLocker/' exact component={ManageEmployeeLocker}></Route>
         <Route path='/Manage/LockerLayout/' exact component={ManageLockerLayout}></Route>
+        <Route path='/Manage/LockerController/' exact component={ManageLockerController}></Route>
         <Route path='/Warn/Index/' exact component={Warn}></Route>
       </Router>
     )

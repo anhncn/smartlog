@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import General from '../../General/General'
 import InputNA, {
     NgocAnh, ConfigsAPI, BoxWrapNA, SelectFormNA,
-    httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA
+    httpRequest, UserContext, TableNA, ComboboxNA, ColumnNA,
+    ContainerWrapRecord
 } from '../../ComponentCommon/Component'
 import './manageUsers.css'
 /**
@@ -102,6 +103,11 @@ class ManageUsers extends Component {
         })
     }
 
+    onClickGridCell(controls, records) {
+        var me = this
+        debugger
+    }
+
     componentDidMount() {
         let me = this
         httpRequest.getBuilding().then(res => {
@@ -117,8 +123,17 @@ class ManageUsers extends Component {
         })
     }
 
+    data = [
+        { name: 'Anh', full: 'Van' },
+        { name: 'Anh2', full: 'Van' },
+        { name: 'Anh2', full: 'Van' },
+        { name: 'Anh2', full: 'Van' },
+        { name: 'Anh2', full: 'Van' },
+        { name: 'Anh2', full: 'Van' },
+    ]
+
     render() {
-        const me = this
+        const me = this, data = JSON.stringify(me.data), listDataIndex = JSON.stringify(['name','full'])
         return (
             <General Title={'Quản lý người dùng'} className='manager-user-nnanh'>
                 <div className='col-3 left-panel'>
@@ -129,6 +144,7 @@ class ManageUsers extends Component {
                         <ComboboxNA ID='ComboboxLeftPanel' ref={me.dIdNewEmployee} setField='dId' placeholder="Chọn bộ phận/phòng ban"
                             textLabel='Bộ phân làm việc' data={JSON.stringify(me.state.departement)}
                             DisplayField="dName" ValueField="dId" />
+                        <ContainerWrapRecord listDataIndex={listDataIndex} sperator="-" textLabel={'Bộ phân làm việc'} />
                         <InputNA typeChild="footer" hasLabel={false} value={"Thêm người dùng mới"} typeInput={'button'}
                             ref={me.btnSaveEmployee} onClick={me.saveEmployee.bind(me)} />
                     </BoxWrapNA>
@@ -148,11 +164,14 @@ class ManageUsers extends Component {
                                 placeholder="Chọn bộ phận/phòng ban" data={JSON.stringify(me.state.departement)}
                                 DisplayField="dName" ValueField="dId" ref={me.comboboxRef} />
                             <InputNA className='col-3 padding-10' typeInput='button'
-                                value='Lọc kết quả' textLabel='&nbsp;' 
+                                value='Lọc kết quả' textLabel='&nbsp;'
                                 onClick={me.onClickFilterGrid.bind(me)} />
                         </div>
 
-                        <TableNA Height={500} ref={this.tableManageUser} NumPaging={20} ID="tableManageUser" ItemId='eId' onClickDelete={this.deleteEmployee.bind(this)} data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
+                        <TableNA Height={500} ref={this.tableManageUser} isSelection={true}
+                            NumPaging={20} ID="tableManageUser" ItemId='eId' onClickDelete={this.deleteEmployee.bind(this)}
+                            onClickCheckboxColumn={me.onClickGridCell.bind(me)}
+                            data={this.state.dataGrid} changePaging={this.changePagingGrid.bind(this)}>
                             <ColumnNA isLocked={true} Width={200} DataIndex='name' text='Họ và tên' />
                             <ColumnNA Width={200} text='Mã nhân viên' DataIndex='eCode' />
                             <ColumnNA MinWidth={200} Flex={1} text='Bộ phận làm việc' DataIndex='dName' />
