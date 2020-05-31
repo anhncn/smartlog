@@ -2312,7 +2312,7 @@ class ContainerWrapRecord extends Component {
                         }
                     }
                     let component = <div className='item-container-wrap-record-wrap'>
-                        <div className='item-container-wrap-record-content'>
+                        <div className='item-container-wrap-record-content' title={text}>
                             {text}
                         </div>
                     </div>

@@ -19,6 +19,7 @@ class ManageUsers extends Component {
             departement: [],
             currentPageGrid: 1,
             token: "",
+            dataWrapComponent: "",
         }
         this.txtFullName = React.createRef()
         this.txtEmployeeCode = React.createRef()
@@ -106,6 +107,9 @@ class ManageUsers extends Component {
     onClickGridCell(controls, records) {
         var me = this
         debugger
+        me.setState({
+            dataWrapComponent: JSON.stringify(records)
+        })
     }
 
     componentDidMount() {
@@ -133,7 +137,7 @@ class ManageUsers extends Component {
     ]
 
     render() {
-        const me = this, data = JSON.stringify(me.data), listDataIndex = JSON.stringify(['name','full'])
+        const me = this, data = JSON.stringify(me.data), listDataIndex = JSON.stringify(['name','eCode'])
         return (
             <General Title={'Quản lý người dùng'} className='manager-user-nnanh'>
                 <div className='col-3 left-panel'>
@@ -144,7 +148,7 @@ class ManageUsers extends Component {
                         <ComboboxNA ID='ComboboxLeftPanel' ref={me.dIdNewEmployee} setField='dId' placeholder="Chọn bộ phận/phòng ban"
                             textLabel='Bộ phân làm việc' data={JSON.stringify(me.state.departement)}
                             DisplayField="dName" ValueField="dId" />
-                        <ContainerWrapRecord listDataIndex={listDataIndex} sperator="-" textLabel={'Bộ phân làm việc'} />
+                        <ContainerWrapRecord data={me.state.dataWrapComponent} listDataIndex={listDataIndex} sperator="-" textLabel={'Bộ phân làm việc'} />
                         <InputNA typeChild="footer" hasLabel={false} value={"Thêm người dùng mới"} typeInput={'button'}
                             ref={me.btnSaveEmployee} onClick={me.saveEmployee.bind(me)} />
                     </BoxWrapNA>
