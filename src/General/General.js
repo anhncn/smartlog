@@ -208,7 +208,7 @@ class General extends React.Component {
         </a>
     }
 
-    createElementLi({ className = '', textTitle = '',href, title = [] }) {
+    createElementLi({ className = '', textTitle = '', href, title = [] }) {
         let me = this, elementUL,
             elementA = me.createTitleElementA({ className: className, textTitle: textTitle, href: href })
         if (title && title.length > 1) {
@@ -229,9 +229,9 @@ class General extends React.Component {
             if (index > 0) {
                 let obj = {
                     href: til.href,
-                    title: til.title, 
-                    className: til.className, 
-                    textTitle: til.textTitle, 
+                    title: til.title,
+                    className: til.className,
+                    textTitle: til.textTitle,
                 }
                 listLI.push(me.createElementLi(obj))
             }
@@ -252,17 +252,26 @@ class General extends React.Component {
             this.props.ToggleSideBar()
         }
     }
-
-    logout(){
+    logout() {
         localStorage.removeItem(NgocAnh.Enumeration.Token.LocalStorageName);
         this.setState({
             isRender: true,
         })
     }
+
+    componentDidMount() {
+        let me = this
+        document.getElementsByTagName("BODY")[0].onresize = function () {
+            let onResize = me.props.onResize
+            if (onResize && typeof (onResize) == 'function') {
+                onResize();
+            }
+        }
+    }
     render() {
         const me = this, className = `${me.props.className || ''} ngocanh`,
             elementUL = me.createElementUL({ title: me.title })
-        if(!localStorage.getItem(NgocAnh.Enumeration.Token.LocalStorageName)){
+        if (!localStorage.getItem(NgocAnh.Enumeration.Token.LocalStorageName)) {
             return <Redirect to='/Login' />
         }
         return (
@@ -289,7 +298,7 @@ class General extends React.Component {
                                     <img src={user} className="user-image" alt="user img" />
                                     <span>Nguyễn Công Ngọc Anh</span>
                                 </a>
-                                <input hidden id='tokenNgocAnh'/>
+                                <input hidden id='tokenNgocAnh' />
                                 <div className='dropdown-menu'>
                                     <div className='user-dropdown-header'>
                                         <img src={user} className="img-circle" height='90' alt="user img" />

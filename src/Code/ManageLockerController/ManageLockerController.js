@@ -15,6 +15,8 @@ class ManageLockerController extends Component {
     constructor() {
         super()
         this.state = {
+            isRender: false,
+
             dataGrid: '',
             departement: [],
             building: [],
@@ -28,6 +30,8 @@ class ManageLockerController extends Component {
         this.formBuilding = React.createRef()
         this.refController = React.createRef()
         this.formPopup = React.createRef()
+
+        this.boxWrap = React.createRef()
     }
 
     getLockerByController() {
@@ -139,27 +143,42 @@ class ManageLockerController extends Component {
             case NgocAnh.Enumeration.OptionPopup.ConfirmOpenRightNow:
                 break
             case NgocAnh.Enumeration.OptionPopup.OpenLocker:
+                object.lId = lId
                 objectMethod = 'openExistLocker'
                 break
             case NgocAnh.Enumeration.OptionPopup.FreeLocker:
+                object.lId = lId
                 objectMethod = 'freeSessionOccupiedLocker'
                 break
             case NgocAnh.Enumeration.OptionPopup.DisabledLocker:
+                object.lId = lId
                 objectMethod = 'disabledExistLocker'
                 break
             case NgocAnh.Enumeration.OptionPopup.ActiveLocker:
+                object.lId = lId
                 objectMethod = 'enabledDisablingLocker'
                 break
             default:
                 break
         }
+        let containerID = me.boxWrap.current.getID()
         if (objectName && objectMethod) {
+            NgocAnh.CommonFunction.showMaskLoading(containerID)
             httpRequest.excuteFactory(object, objectName, objectMethod).then(res => {
                 ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
+                NgocAnh.CommonFunction.hideMaskLoading(containerID)
             }).catch(e => {
                 ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
+                NgocAnh.CommonFunction.hideMaskLoading(containerID)
+                const res = JSON.parse(e.response)
+                alert(res.message)
             })
+        } else {
+            ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
         }
+    }
+    onResize() {
+        this.setState({ isRender: true })
     }
 
     renderPopupExcuteLoker() {
@@ -181,7 +200,7 @@ class ManageLockerController extends Component {
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='position' textLabel='Mô tả vị trí' />
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='lLv' isDisabled={true} textLabel='Tầng' />
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='imei' isDisabled={true} textLabel='Thiết bị quản lý' />
-                    </FormSubmit>   
+                    </FormSubmit>
                 </div>
             </BoxWrapNA>
             <div>
@@ -209,28 +228,30 @@ class ManageLockerController extends Component {
 
     }
 
+
+
     render() {
         let me = this,
             popup = me.renderPopupExcuteLoker()
         return (
-            <General Title={'Quản lý layout tủ'} className='manager-locker-controller-nnanh'>
+            <General Title={'Quản lý layout tủ'} className='manager-locker-controller-nnanh' onResize={me.onResize.bind(me)} >
                 <div className='col-12'>
-                    <BoxWrapNA Title=' ' className='' >
+                    <BoxWrapNA Title=' ' className='' ref={me.boxWrap} >
                         <div className='row' typeChild='header'>
                             <div className='col-12 padding-parent'>
-                                <ComboboxNA className='col-3' ID='ComboboxBuilding' textLabel='Toà nhà'
+                                <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxBuilding' textLabel='Toà nhà'
                                     placeholder="Chọn một tòa nhà" onChange={me.onChangeComboboxBuilding.bind(me)}
                                     setField='bId' DisplayField="bName" ValueField="bId"
                                     data={JSON.stringify(me.state.building)} />
-                                <ComboboxNA className='col-3' ID='ComboboxLevel' textLabel='Tầng'
+                                <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxLevel' textLabel='Tầng'
                                     placeholder="Chọn một tầng"
                                     setField='lLv' DisplayField="lDes" ValueField="lLv"
                                     data={JSON.stringify(me.state.level)} />
-                                <ComboboxNA className='col-3' ID='ComboboxController' textLabel='Thiết bị điều khiển'
+                                <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxController' textLabel='Thiết bị điều khiển'
                                     placeholder="Thiết bị điều khiển" ref={this.refController}
                                     setField='cId' DisplayField="imei" ValueField="cId"
                                     data={JSON.stringify(me.state.controller)} />
-                                <InputNA typeChild="footer" className='col-3' value={"Lọc kết quả"} typeInput={'button'}
+                                <InputNA typeChild="footer" className='col-3 padding-both-size-4' value={"Lọc kết quả"} typeInput={'button'}
                                     ref={this.btnSave} onClick={this.getLockerByController.bind(this)} />
                             </div>
                         </div>
@@ -239,7 +260,7 @@ class ManageLockerController extends Component {
                     </BoxWrapNA>
                     {popup}
                 </div>
-            </General>
+            </ General>
         )
     }
 }

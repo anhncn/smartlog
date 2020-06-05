@@ -18,8 +18,15 @@ import ManageDepartement from './Code/ManageDepartement/ManageDepartement'
 import ManageEmployeeLocker from './Code/ManageEmployeeLocker/ManageEmployeeLocker'
 import ManageLockerLayout from './Code/ManageLockerLayout/ManageLockerLayout'
 import ManageLockerController from './Code/ManageLockerController/ManageLockerController'
+import AddPermissionEmployeeLocker from './Code/AddPermissionEmployeeLocker/AddPermissionEmployeeLocker'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
 class App extends Component {
+  constructor(){
+    super()
+    this.state ={
+      isRender: false,
+    }
+  }
 
   createContainerOverLay() {
     let me = this
@@ -56,9 +63,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    let me = this
     this.createContainerOverLay()
     this.createContainerPopupOptionLocker()
-
   }
   render() {
     return (
@@ -74,6 +81,7 @@ class App extends Component {
         <Route path='/Manage/LockerLayout/' exact component={ManageLockerLayout}></Route>
         <Route path='/Manage/LockerController/' exact component={ManageLockerController}></Route>
         <Route path='/Warn/Index/' exact component={Warn}></Route>
+        <Route path='/Manage/AddPermissionEmployeeLocker' exact component={AddPermissionEmployeeLocker}></Route>
       </Router>
     )
   }

@@ -253,7 +253,8 @@ var httpRequest = {
                     if (this.readyState === 4 && this.status === 200) {
                         resolve(this.response)
                     }
-                    if (this.status === 404 || this.status === 500 || this.status === 400) {
+                    //this.status === 404 || this.status === 500 || this.status === 400
+                    if ([404, 500, 400].includes(this.status) && this.readyState === 4) {
                         reject(this)
                     }
                     if (this.status === 401) {
@@ -525,6 +526,10 @@ var httpRequest = {
             try {
                 const configsAPI = new ConfigsAPI(),
                     inforPrimitive = configsAPI.apiUri[objectName][objectMethod]
+                if (!inforPrimitive) {
+                    alert("Sai tên trong excuteFactory rồi!")
+                    return
+                }
                 this.excuteObject(object, inforPrimitive).
                     then(res => {
                         resolve(res)
@@ -617,7 +622,11 @@ var NgocAnh = {
             ActiveLocker: 6,
             ReportErrorLocker: 7,
             StopReportErrorLocker: 8,
-        }
+        },
+        StatusClassify: [
+            { gStatus: 0, gStatusName: "Chưa được phân nhóm" },
+            { gStatus: 1, gStatusName: "Đã được phân nhóm" },
+        ],
     },
 
     Account: {
@@ -647,7 +656,7 @@ var NgocAnh = {
         },
 
         showMaskLoading: function (id) {
-            var container = document.querySelector('#' + id)
+            var container = document.getElementById(id)
             if (!container) {
                 return;
             }
@@ -658,8 +667,8 @@ var NgocAnh = {
         },
 
         hideMaskLoading: function (id) {
-            var container = document.querySelector('#' + id + ' .wrap-loader');
-
+            var container = document.getElementById(id);
+            container = container.querySelector('.wrap-loader');
             if (!container) {
                 return;
             }
@@ -848,6 +857,9 @@ class BoxWrapNA extends Component {
     constructor() {
         super()
         this.onClickBox = this.onClickBox.bind(this)
+        this.state = {
+            id: uuidv4()
+        }
     }
     onClickBox() {
         this.refs.boxBody.classList.toggle('toggle-box')
@@ -875,6 +887,9 @@ class BoxWrapNA extends Component {
         }
         return [header, body, footer]
     }
+    getID() {
+        return this.state.id
+    }
     componentDidMount() {
         console.log('mouth BoxWrapNA')
     }
@@ -887,7 +902,7 @@ class BoxWrapNA extends Component {
             classList = `${this.props.className || ''} box-wrap`,
             [childHeader, childrenBody, childrenFooter] = this.getChildren(children)
         return (
-            <div className={classList}>
+            <div className={classList} id={this.state.id}>
                 <div className="box-header">
                     <div className='head-box-header'>
                         {this.props.Title && <div className="title-box">{this.props.Title || 'Title props'}</div>}
@@ -1039,7 +1054,8 @@ class ComboboxNA extends Component {
         let me = this, placeData = me.getContainerCombobox(),
             bodyInput = me.bodyInputRef.current,
             boundBodyInput = bodyInput.getBoundingClientRect()
-        placeData.style.top = boundBodyInput.top + boundBodyInput.height + 'px'
+        /**fix bug ko hiện thi đúng khi bi scrool nnanh */
+        placeData.style.top = boundBodyInput.top + boundBodyInput.height + document.documentElement.scrollTop + 'px'
         placeData.style.left = boundBodyInput.left + 'px'
     }
     onChangeValueCombobox(record) {
@@ -1275,7 +1291,7 @@ class ComboboxNA extends Component {
  */
 class TableNA extends Component {
     static nameComponent = 'TableNA'
-    numPagingPre = null
+    pagingPre = null
     Paging = {
         records: [],
         totalRecords: 0,
@@ -1555,7 +1571,7 @@ class TableNA extends Component {
                     style.textAlign = "center"
                     dataInRow.push(<td key={index} className='table-cell' style={style}>
                         <div className='table-cell-inner' title={text}>
-                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} recordid={rec[me.props.ItemId]}><i className="fa fa-trash"></i> </button>
+                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} data-record={JSON.stringify(rec)} recordid={rec[me.props.ItemId]}><i className="fa fa-trash"></i> </button>
                         </div></td>)
                 }
                 else {
@@ -1570,9 +1586,11 @@ class TableNA extends Component {
     }
 
     onClickDeleteRecord(e) {
-        let me = this, id = e.currentTarget.getAttribute('recordid')
+        let me = this, id = e.currentTarget.getAttribute('recordid'),
+        rec = e.currentTarget.dataset.record;
+        debugger
         if (typeof (me.props.onClickDelete) === 'function') {
-            me.props.onClickDelete(id)
+            me.props.onClickDelete(id, rec)
         }
         // alert('Đã xóa bản ghi:' + id)
 
@@ -1706,7 +1724,7 @@ class TableNA extends Component {
     initEventGrid() {
         let me = this,
             allRecords = me.tableWrapAll.current.querySelectorAll('.table-item[data-recordid]')
-        if (me.numPagingPre === me.Paging.currentPaging) {
+        if (me.pagingPre && me.pagingPre.currentPaging === me.Paging.currentPaging && me.pagingPre.totalRecords === me.Paging.totalRecords) {
             return
         }
         allRecords.forEach(table => {
@@ -1738,7 +1756,7 @@ class TableNA extends Component {
 
             table.addEventListener("click", clickRowGrid)
         })
-        me.numPagingPre = me.Paging.currentPaging
+        me.pagingPre = me.Paging
     }
 
     /** Chọn 1 bản ghi trên grid bằng click chứ ko phải checkbox */
@@ -1783,6 +1801,25 @@ class TableNA extends Component {
         me.caculateBottomBodyTable()
         me.setPositionHeaderBodyScrollerNormalVsLocked()
         me.SyncValueCurrentPage()
+    }
+
+    shouldComponentUpdate(nextProp, nextState){
+        try {
+            let isRender = true;
+            for(let prop in this.props){
+                if(this.props[prop].toString() != nextProp[prop].toString()){
+                    return isRender;
+                }
+            }
+            for(let state in this.state){
+                if(this.state[state].toString() != nextState[state].toString()){
+                    return isRender;
+                }
+            }
+            return false
+        } catch (error) {
+            return true
+        }
     }
 
     getID() {
@@ -1928,6 +1965,8 @@ class ComponentPopup extends Component {
                 transform: 'translate(-50%, -50%)',
                 display: 'flex',
                 flexDirection: 'column',
+                width: me.props.Width ? me.props.Width + "px" : "",
+                height: me.props.Height ? me.props.Height + "px" : "",
             },
             styleHeader = {
                 position: 'relative',
@@ -1973,6 +2012,7 @@ class ComponentPopup extends Component {
     }
 
     show() {
+        let me = this
         document.getElementById(this.state.id).style.display = 'block'
         NgocAnh.CommonFunction.showOverlay()
     }
@@ -2251,13 +2291,25 @@ class ComponentLockerManage extends Component {
 
     render() {
         var me = this, order = me.props.Row + ' ' + me.props.Column,
-            data = me.props.data, label = '', txtOrdered = '', className = 'component-locker-controller-wrap '
+            data = me.props.data, label = '', txtOrdered = '', className = 'component-locker-controller-wrap ',
+            txtError = '', txtStatus = ''
         if (data) {
-            label = <div title={data.lLb} >{data.lLb}</div>
+            label = <div title={data.lLb} >{data.lLb} - Zone: {data.lZone} </div>
             txtOrdered = <div title={`Số thứ tự: ${data.lNum}`}>Số thứ tự: <span>{data.lNum}</span></div>
+            if (data.health == "ERROR") {
+                txtError = <div>Tủ có lỗi kỹ thuật</div>
+                className += 'color-gray'
+            }
+            if (data.aStatus == "DISABLED") {
+                txtStatus = <div>Tủ bị vô hiệu hóa</div>
+                className += 'color-gray-gray'
+            }else{
+                txtStatus = <div>Tủ chưa được phân</div>
+            }
         } else {
             className += 'visibility-hidden'
         }
+
         return (
             <div className={className} onContextMenu={me.onContextMenu.bind(this)}>
                 <div className='component-locker-controller-content'>
@@ -2266,6 +2318,8 @@ class ComponentLockerManage extends Component {
                     </div>
                     <div className='txt-component-locker-controller-common'>
                         {txtOrdered}
+                        {txtError}
+                        {txtStatus}
                     </div>
                 </div>
             </div>
@@ -2358,27 +2412,67 @@ class ContainerWrapRecord extends Component {
     }
 }
 
+class LabelInput extends Component {
+
+    constructor() {
+        super()
+        this.state = {
+            id: uuidv4()
+        }
+        this.input = React.createRef()
+    }
+
+    getValue() {
+        return this.input.current.checked
+    }
+
+    getLabel() {
+        let me = this
+        if (me.props.TextLabel) {
+            return me.props.TextLabel
+        }
+        return ""
+    }
+    render() {
+        let me = this, txtLabel = me.getLabel(),
+            divWrap = {
+                paddingTop: '8px',
+                paddingBottom: '16px',
+            },
+            divContent = {
+                position: 'relative',
+                height: '100%',
+                display: 'flex',
+            },
+            labelStyle = {
+                position: 'relative',
+                top: '0px',
+                left: '4px',
+                fontSize: '14px',
+            }
+        return (
+            <div style={divWrap} className="label-component-single-wrap">
+                <div style={divContent} className='label-component-single-content'>
+                    <input ref={me.input} type='checkbox' id={me.state.id} className='input-label-component-single'></input>
+                    <label style={labelStyle} htmlFor={me.state.id} className='txt-label-component-single' title={txtLabel}>{txtLabel}</label>
+                </div>
+            </div>
+        )
+    }
+}
+
 const UserContext = React.createContext()
 const UserProvider = UserContext.Provider
 const UserConsumer = UserContext.Consumer
 export default InputNA;
 export {
-    NgocAnh,
-    ConfigsAPI,
-    BoxWrapNA,
-    SelectFormNA,
-    httpRequest,
-    UserProvider,
-    UserConsumer,
-    UserContext,
-    ComboboxNA,
-    TableNA,
-    ColumnNA,
-    FormSubmit,
-    ComponentPopup,
-    LayoutLocker,
-    LockerManage,
-    ContainerWrapRecord
+    NgocAnh, ConfigsAPI, BoxWrapNA,
+    SelectFormNA, httpRequest, UserProvider,
+    UserConsumer, UserContext, ComboboxNA,
+    TableNA, ColumnNA, FormSubmit,
+    ComponentPopup, LayoutLocker, LockerManage,
+    ContainerWrapRecord,
+    LabelInput,
 }
 
 
