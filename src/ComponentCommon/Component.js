@@ -1571,7 +1571,7 @@ class TableNA extends Component {
                     style.textAlign = "center"
                     dataInRow.push(<td key={index} className='table-cell' style={style}>
                         <div className='table-cell-inner' title={text}>
-                            <button style={styleBtn} onClick={me.onClickDeleteRecord.bind(me)} data-record={JSON.stringify(rec)} recordid={rec[me.props.ItemId]}><i className="fa fa-trash"></i> </button>
+                            <button style={styleBtn} delete-row onClick={me.onClickDeleteRecord.bind(me)} data-record={JSON.stringify(rec)} recordid={rec[me.props.ItemId]}><i className="fa fa-trash"></i> </button>
                         </div></td>)
                 }
                 else {
@@ -1588,7 +1588,6 @@ class TableNA extends Component {
     onClickDeleteRecord(e) {
         let me = this, id = e.currentTarget.getAttribute('recordid'),
         rec = e.currentTarget.dataset.record;
-        debugger
         if (typeof (me.props.onClickDelete) === 'function') {
             me.props.onClickDelete(id, rec)
         }
@@ -1677,7 +1676,7 @@ class TableNA extends Component {
         return <div ref={me.PagingGrid} className='tablePaging'>
             <div className='contentPaging'>
                 <div className='leftPaging'>
-                    <div className='titlePaging'>Tổng số nhân viên:&nbsp;</div>
+                    <div className='titlePaging'>Tổng số bản ghi:&nbsp;</div>
                     <div className='statTotal'>{totalRecords}</div>
                 </div>
                 <div className='rightPaging'>
@@ -1751,7 +1750,11 @@ class TableNA extends Component {
                 listTable.forEach(item => {
                     item.classList.add('selected')
                 })
-                me.onClickRowGrid(me.Paging.records[id])
+                if(e.target.nodeName != 'I'){
+                    me.onClickRowGrid(me.Paging.records[id])
+                }
+                else{
+                }
             }
 
             table.addEventListener("click", clickRowGrid)

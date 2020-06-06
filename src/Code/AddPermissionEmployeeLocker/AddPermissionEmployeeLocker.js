@@ -162,6 +162,15 @@ class AddPermissionEmployeeLocker extends Component {
         })
     }
 
+    onChangeLevelLeft(ref, rec){
+        httpRequest.excuteFactory({lId: rec.value}, 'controller', 'get').then(res => {
+            let items = JSON.parse(res).items
+            this.setState({
+                controller: items,
+            })
+        })
+    }
+
     onClickGridCellTop(controls, records) {
         var me = this
         me.setState({
@@ -265,7 +274,8 @@ class AddPermissionEmployeeLocker extends Component {
                                     data={building} onChange={me.onChangeComboboxBuilding.bind(me)} />
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxLevelGridBot' textLabel='Tầng'
                                     placeholder="Chọn một tầng" ref={me.levelBotRef}
-                                    setField='lLv' DisplayField="lDes" ValueField="lLv"
+                                    setField='lId' DisplayField="lLv" ValueField="lId"
+                                    onChange={me.onChangeLevelLeft.bind(me)}
                                     data={JSON.stringify(me.state.level)} />
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxControllerGridBot' textLabel='Thiết bị điều khiển'
                                     placeholder="Thiết bị điều khiển" ref={this.controllerBotRef}

@@ -45,6 +45,7 @@ class ManageLockerController extends Component {
     getDataLayoutByImei(imei, callback) {
         httpRequest.excuteFactory({ imei: imei }, 'locker', 'getManage').then(res => {
             let record = JSON.parse(res)
+            debugger
             this.setState({
                 dataLayout: record
             })
@@ -120,7 +121,7 @@ class ManageLockerController extends Component {
             lId: this.state.dataPopup.lId
         }
         httpRequest.excuteFactory(param, 'locker', 'remove').then(res => {
-            debugger
+            window.location.reload();
         })
     }
 
@@ -165,17 +166,32 @@ class ManageLockerController extends Component {
         if (objectName && objectMethod) {
             NgocAnh.CommonFunction.showMaskLoading(containerID)
             httpRequest.excuteFactory(object, objectName, objectMethod).then(res => {
-                ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
-                NgocAnh.CommonFunction.hideMaskLoading(containerID)
+                this.setState({
+                    isRender: true
+                })
             }).catch(e => {
-                ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
-                NgocAnh.CommonFunction.hideMaskLoading(containerID)
                 const res = JSON.parse(e.response)
                 alert(res.message)
+            }).finally(()=>{
+                ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
+                NgocAnh.CommonFunction.hideMaskLoading(containerID)
             })
         } else {
             ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
         }
+    }
+
+    freeGroupLockerByController(){
+        let me = this, refController = me.refController.current,
+        param = {
+            imei: refController.getRecordsSelected().text,
+        }   
+        httpRequest.excuteFactory(param, 'locker', 'freeLockerExistController').then(res=>{
+            alert("Giải phóng thành công cụm tủ!");
+            window.location.reload();
+        }).catch(res=>{
+
+        })
     }
     onResize() {
         this.setState({ isRender: true })
@@ -188,12 +204,6 @@ class ManageLockerController extends Component {
             className='popup-locker-layout-nnanh' ref={this.popup} Height={600} Width={700}>
             <BoxWrapNA Title="Chỉnh sửa tủ" className='box-wrap-custom' >
                 <div className='row'>
-                    {/* aStatus: "FREE" bName: "D'Capitale" eCode: ""eName: ""
-                            gId: 1113 health: "ERROR"
-                            imei: "4769495c310bbe1e" lCl: 0lId: 2946
-                            lLb: "05.080" lLv: 0 lNum: 2
-                            lPg: 1 lRw: 1
-                            lZone: "10" lvlId: 1054 */}
                     <FormSubmit ref={me.formPopup} className='col-12 padding-parent'>
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='lLb' textLabel='Nhãn hiển thị' placeholder='ví dụ: 22.092' />
                         <InputNA className='col-12' ref={React.createRef()} data={data} setField='lNum' textLabel='Số thứ tự tủ' placeholder='ví dụ: 5' />
@@ -251,8 +261,12 @@ class ManageLockerController extends Component {
                                     placeholder="Thiết bị điều khiển" ref={this.refController}
                                     setField='cId' DisplayField="imei" ValueField="cId"
                                     data={JSON.stringify(me.state.controller)} />
-                                <InputNA typeChild="footer" className='col-3 padding-both-size-4' value={"Lọc kết quả"} typeInput={'button'}
-                                    ref={this.btnSave} onClick={this.getLockerByController.bind(this)} />
+                                <div className='col-3'>
+                                    <InputNA typeChild="footer" className='col-6 padding-both-size-4' value={"Lọc kết quả"} typeInput={'button'}
+                                        ref={this.btnSave} onClick={this.getLockerByController.bind(this)} />
+                                    <InputNA typeChild="footer" className='col-6 padding-both-size-4' value={"Giải phóng cụm tủ"} typeInput={'button'}
+                                        ref={this.btnFreeGroupLocker} onClick={this.freeGroupLockerByController.bind(this)} />
+                                </div>
                             </div>
                         </div>
                         <LockerManage Page={1} data={JSON.stringify(me.state.dataLayout)} onClickOption={me.onClickOption.bind(me)} onClickComponent={me.onClickComponent.bind(me)}></LockerManage>

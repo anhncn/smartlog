@@ -381,13 +381,15 @@
     box-sizing: border-box;
     font-size: 14px;
 }
-.table-item[data-recordid].active .table-cell-inner,
-.table-item[data-recordid].selected .table-cell-inner,
 .table-item[data-recordid]:nth-child(even) .table-cell-inner{
+    background-color: #eee;
+    cursor: pointer;
+}
+.table-item[data-recordid].active .table-cell-inner,
+.table-item[data-recordid].selected .table-cell-inner{
     background-color: #cccccc;
     color: #fff;
     cursor: pointer;
-    
 }
 
 .table-item[data-recordid].selected-checked .table-cell-inner{

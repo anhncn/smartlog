@@ -66,10 +66,8 @@ class ManageEmployeeLocker extends Component {
 
     showPopupAddLocker() {
         let me = this, eCode = me.state.eCodeClick
-        debugger
         httpRequest.excuteFactory({ eCode: eCode }, 'locker', 'getLockerCanAddExistPermission').then(res => {
             res = JSON.parse(res)
-            debugger
             NgocAnh.CommonFunction.matchPropertiesOfListObject(res.items, me.state.building, "bId", 'bName')
             me.setState({
                 isShowPopup: true,
@@ -105,7 +103,8 @@ class ManageEmployeeLocker extends Component {
     }
 
     filterGridLeft() {
-        this.nextPrePage(1)
+        debugger
+        this.nextPrePage()
     }
 
     onClickRowGrid(record) {
@@ -122,7 +121,6 @@ class ManageEmployeeLocker extends Component {
     }
 
     nextPrePageGridRight(num = 1) {
-        debugger
         var me = this, idContainer = me.tableManageEmployeeLocker.current.getID(),
             idContainerRight = me.tableManageEmployeeLockerRight.current.getID(),
             eCode = me.state.eCodeClick,
@@ -147,6 +145,10 @@ class ManageEmployeeLocker extends Component {
         })
     }
 
+    nextPrePagePopup(){
+        debugger
+    }
+
     onClickCheckboxColumnPopup(controls, records) {
         this.setState({
             dataWrapComponent: JSON.stringify(records)
@@ -154,14 +156,35 @@ class ManageEmployeeLocker extends Component {
     }
 
     onClickDeleteGridRight(id, rec) {
-        var me = this, record = JSON.parse(rec)
-        httpRequest.excuteFactory({ lId: record.lId }, "locker", "remove").then(res => {
+        var me = this, record = JSON.parse(rec),
+        param = {
+            lId: record.lId,
+            all: false,
+            eCode: me.state.eCodeClick,
+        }
+        httpRequest.excuteFactory(param, "user", "removePermissionUseLocker").then(res => {
             alert("Xóa thành công khóa!");
             this.setState({
                 isRender: true,
             })
+            window.location.reload();
         })
 
+    }
+
+    onClickDeleteGridLeft(id ,rec){
+        var me = this, record = JSON.parse(rec),
+        param = {
+            all: true,
+            eCode: me.state.eCodeClick,
+        }
+        httpRequest.excuteFactory(param, "user", "removePermissionUseLocker").then(res => {
+            alert("Xóa thành công!");
+            this.setState({
+                isRender: true,
+            })
+            window.location.reload();
+        })
     }
 
     addLockerToExistedPermission() {
@@ -179,6 +202,7 @@ class ManageEmployeeLocker extends Component {
         httpRequest.excuteFactory(param, "user", "addLockerExistPermission").then(res => {
             alert("Thêm thành công khóa tủ cho nhân viên!");
             me.popup.current.closePopup()
+            window.location.reload();
         })
     }
 
@@ -236,10 +260,7 @@ class ManageEmployeeLocker extends Component {
         const me = this
         let statusUse = JSON.stringify(me.state.statusUse),
             placeWork = JSON.stringify(me.province),
-            listDataIndex = JSON.stringify(["lLb"]),
-            filterGrid = {
-                FullName: me.fullNameRef.current ? me.fullNameRef.current.getValue() : null
-            }
+            listDataIndex = JSON.stringify(["lLb"])
         return (
             <General Title={'Quản lý sử dụng tủ'} className='manager-employee-locker-nguyen-ngoc-anh-feature'>
                 <div className='col-6 manager-left padding-both-size-4'>
@@ -268,9 +289,10 @@ class ManageEmployeeLocker extends Component {
 
                         </div>
                         <TableNA Height={500} ID={"tableManageEmployeeLocker"} data={JSON.stringify(me.state.dataGrid)}
-                            NumPaging={5} Filter={filterGrid} changePaging={me.nextPrePage.bind(me)}
+                            NumPaging={5} changePaging={me.nextPrePage.bind(me)}
+                            onClickDelete={me.onClickDeleteGridLeft.bind(me)}
                             ref={me.tableManageEmployeeLocker} onClickRowGrid={me.onClickRowGrid.bind(me)}>
-                            <ColumnNA isLocked={true} Width={400} DataIndex='eName' text='Nhân viên' />
+                            <ColumnNA isLocked={true} Width={250} DataIndex='eName' text='Nhân viên' />
                             <ColumnNA MinWidth={150} Flex='1' text='Mã nhân viên' DataIndex='eCode' />
                             <ColumnNA Width={80} text='Số tủ' DataIndex='lNum' />
                             <ColumnNA Width={80} Command='Yes' DataIndex='Entertainment' />
@@ -305,10 +327,10 @@ class ManageEmployeeLocker extends Component {
 
                         </div>
                         <TableNA Height={500} ID={"tableManageEmployeeLockerRight"} data={JSON.stringify(me.state.dataGridRight)}
-                            NumPaging={5} Filter={filterGrid} changePaging={me.nextPrePage.bind(me)}
+                            NumPaging={5} changePaging={me.nextPrePageGridRight.bind(me)}
                             onClickDelete={me.onClickDeleteGridRight.bind(me)}
                             ref={me.tableManageEmployeeLockerRight}>
-                            <ColumnNA isLocked={true} Width={300} DataIndex='bName' text='Tòa nhà' />
+                            <ColumnNA isLocked={true} Width={200} DataIndex='bName' text='Tòa nhà' />
                             <ColumnNA MinWidth={100} Flex='1' text='Tầng' DataIndex='lLv' />
                             <ColumnNA Width={100} text='Nhãn' DataIndex='lLb' />
                             <ColumnNA Width={100} text='Mô tả vị trí' DataIndex='lNum' />
@@ -318,7 +340,7 @@ class ManageEmployeeLocker extends Component {
                 </div>
                 {this.state.isShowPopup && <ComponentPopup className="pop-up-add-locker-to-group"
                     onClosePopup={me.closePopup.bind(me)}
-                    ref={this.popup} Height={800} Width={900}>
+                    ref={this.popup} Height={650} Width={900}>
                     <BoxWrapNA Title="Thêm tủ vào nhóm" className='box-wrap-custom' >
                         <div className='row' typeChild='header'>
                             <div className='col-12 padding-parent'>
@@ -340,8 +362,8 @@ class ManageEmployeeLocker extends Component {
                             </div>
 
                         </div>
-                        <TableNA Height={400} ID={"tableManageEmployeeLockerPopup"} data={JSON.stringify(me.state.dataPopup)}
-                            NumPaging={5} changePaging={me.nextPrePage.bind(me)} isSelection={true}
+                        <TableNA Height={250} ID={"tableManageEmployeeLockerPopup"} data={JSON.stringify(me.state.dataPopup)}
+                            NumPaging={5} changePaging={me.nextPrePagePopup.bind(me)} isSelection={true}
                             ref={me.tableManageEmployeeLockerRight} onClickCheckboxColumn={me.onClickCheckboxColumnPopup.bind(me)}>
                             <ColumnNA isLocked={true} Width={100} DataIndex='bName' text='Tòa nhà' />
                             <ColumnNA MinWidth={100} Flex='1' text='Tầng' DataIndex='lLv' />

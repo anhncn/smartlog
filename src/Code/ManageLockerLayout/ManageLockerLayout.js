@@ -110,11 +110,11 @@ class ManageLockerLayout extends Component {
         httpRequest.excuteFactory(dataApi, 'locker', 'create').then(res => {
         })
     }
-    onClickRemoveLocker(controls){
+    onClickRemoveLocker(controls) {
         let param = {
             lId: this.state.dataPopup.lId
         }
-        httpRequest.excuteFactory(param, 'locker', 'remove').then(res=>{
+        httpRequest.excuteFactory(param, 'locker', 'remove').then(res => {
             debugger
         })
     }
