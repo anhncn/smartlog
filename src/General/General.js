@@ -42,12 +42,12 @@ class General extends React.Component {
                     href: '/Manage/Card',
                     title: [],
                 },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý sử dụng PINCode',
-                    href: '#',
-                    title: [],
-                },
+                // {
+                //     className: 'fa fa-fw fa-chevron-right',
+                //     textTitle: 'Quản lý sử dụng PINCode',
+                //     href: '#',
+                //     title: [],
+                // },
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý bộ phận phòng ban',
@@ -58,6 +58,12 @@ class General extends React.Component {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý sử dụng tủ',
                     href: '/Manage/EmployeeLocker',
+                    title: [],
+                },
+                {
+                    className: 'fa fa-fw fa-chevron-right',
+                    textTitle: 'Thêm quyền sử dụng tủ',
+                    href: '/Manage/AddPermissionEmployeeLocker',
                     title: [],
                 },
             ]
@@ -73,31 +79,31 @@ class General extends React.Component {
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý tòa nhà',
-                    href: '#',
+                    href: '/Manage/Building',
                     title: [],
                 },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý tầng',
-                    href: '#',
-                    title: [],
-                },
+                // {
+                //     className: 'fa fa-fw fa-chevron-right',
+                //     textTitle: 'Quản lý tầng',
+                //     href: '#',
+                //     title: [],
+                // },
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý tủ',
                     href: '/Manage/LockerLayout',
                     title: [],
                 },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý kho thẻ từ',
-                    href: '#',
-                    title: [],
-                },
+                // {
+                //     className: 'fa fa-fw fa-chevron-right',
+                //     textTitle: 'Quản lý kho thẻ từ',
+                //     href: '#',
+                //     title: [],
+                // },
                 {
                     className: 'fa fa-fw fa-chevron-right',
                     textTitle: 'Quản lý thiết bị điều khiển',
-                    href: '#',
+                    href: '/Manage/LockerController',
                     title: [],
                 },
             ]

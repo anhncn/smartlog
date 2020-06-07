@@ -80,8 +80,8 @@ class App extends Component {
         <Route path='/Manage/EmployeeLocker/' exact component={ManageEmployeeLocker}></Route>
         <Route path='/Manage/LockerLayout/' exact component={ManageLockerLayout}></Route>
         <Route path='/Manage/LockerController/' exact component={ManageLockerController}></Route>
-        <Route path='/Warn/Index/' exact component={Warn}></Route>
         <Route path='/Manage/AddPermissionEmployeeLocker' exact component={AddPermissionEmployeeLocker}></Route>
+        <Route path='/Warn/Index/' exact component={Warn}></Route>
       </Router>
     )
   }

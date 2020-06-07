@@ -14,7 +14,22 @@ class ConfigsAPI {
             statistic: this.server + 'api/v1/report/locker_statistical/',
             /** bô phận phòng ban */
             department: {
-                get: this.server + 'api/v1/department/get_department/'
+                get: this.server + 'api/v1/department/get_department/',
+                getPaging: {
+                    uri: this.server + 'api/v1/department/get_department/',
+                    method: NgocAnh.Enumeration.HttpMethod.GET,
+                    parameters: { name: '', page: 1 }
+                },
+                create:{
+                    uri: this.server + 'api/v1/department/create_department/',
+                    method: NgocAnh.Enumeration.HttpMethod.POST,
+                    parameters: { name: '' }
+                },
+                remove: {
+                    uri: this.server + 'api/v1/department/remove_department/',
+                    method: NgocAnh.Enumeration.HttpMethod.DELETE,
+                    parameters: { dId: '' }
+                },
             },
             locker: {
                 /* danh sách khóa tủ */
@@ -1587,7 +1602,7 @@ class TableNA extends Component {
 
     onClickDeleteRecord(e) {
         let me = this, id = e.currentTarget.getAttribute('recordid'),
-        rec = e.currentTarget.dataset.record;
+            rec = e.currentTarget.dataset.record;
         if (typeof (me.props.onClickDelete) === 'function') {
             me.props.onClickDelete(id, rec)
         }
@@ -1750,10 +1765,10 @@ class TableNA extends Component {
                 listTable.forEach(item => {
                     item.classList.add('selected')
                 })
-                if(e.target.nodeName != 'I'){
+                if (e.target.nodeName != 'I') {
                     me.onClickRowGrid(me.Paging.records[id])
                 }
-                else{
+                else {
                 }
             }
 
@@ -1806,16 +1821,16 @@ class TableNA extends Component {
         me.SyncValueCurrentPage()
     }
 
-    shouldComponentUpdate(nextProp, nextState){
+    shouldComponentUpdate(nextProp, nextState) {
         try {
             let isRender = true;
-            for(let prop in this.props){
-                if(this.props[prop].toString() != nextProp[prop].toString()){
+            for (let prop in this.props) {
+                if (this.props[prop].toString() != nextProp[prop].toString()) {
                     return isRender;
                 }
             }
-            for(let state in this.state){
-                if(this.state[state].toString() != nextState[state].toString()){
+            for (let state in this.state) {
+                if (this.state[state].toString() != nextState[state].toString()) {
                     return isRender;
                 }
             }
@@ -1970,6 +1985,8 @@ class ComponentPopup extends Component {
                 flexDirection: 'column',
                 width: me.props.Width ? me.props.Width + "px" : "",
                 height: me.props.Height ? me.props.Height + "px" : "",
+                boxShadow: '2px 2px 8px 2px #444',
+                borderRadius: '4px',
             },
             styleHeader = {
                 position: 'relative',
@@ -2306,7 +2323,7 @@ class ComponentLockerManage extends Component {
             if (data.aStatus == "DISABLED") {
                 txtStatus = <div>Tủ bị vô hiệu hóa</div>
                 className += 'color-gray-gray'
-            }else{
+            } else {
                 txtStatus = <div>Tủ chưa được phân</div>
             }
         } else {
