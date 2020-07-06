@@ -311,7 +311,7 @@ class General extends React.Component {
                                         <p>Nguyễn Công Ngọc Anh</p>
                                     </div>
                                     <div className='user-dropdown-footer'>
-                                        <a href="# ">Đổi mật khẩu</a>
+                                        <a href="# " style={{visibility: 'hidden'}}>Đổi mật khẩu</a>
                                         <a href="# " onClick={this.logout.bind(this)}>Đăng xuất</a>
                                     </div>
                                 </div>

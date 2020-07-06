@@ -790,7 +790,9 @@ class InputNA extends Component {
         if(value == null || value == undefined){
             value = ''
         }
-        me.inputRef.current.querySelector('input').value = value 
+        if(!me.inputRef.current.querySelector('input').value){
+            me.inputRef.current.querySelector('input').value = value 
+        }
     }
 
     componentDidMount() {
@@ -801,7 +803,10 @@ class InputNA extends Component {
         if(value == null || value == undefined){
             value = ''
         }
-        me.inputRef.current.querySelector('input').value = value
+        if(!me.inputRef.current.querySelector('input').value){
+            me.inputRef.current.querySelector('input').value = value 
+        }
+        // me.inputRef.current.querySelector('input').value = value
     }
     /**
      * className custom form
