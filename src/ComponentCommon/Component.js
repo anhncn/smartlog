@@ -20,7 +20,7 @@ class ConfigsAPI {
                     method: NgocAnh.Enumeration.HttpMethod.GET,
                     parameters: { name: '', page: 1 }
                 },
-                create:{
+                create: {
                     uri: this.server + 'api/v1/department/create_department/',
                     method: NgocAnh.Enumeration.HttpMethod.POST,
                     parameters: { name: '' }
@@ -375,10 +375,10 @@ var httpRequest = {
             }
             httpRequest.get(configs)
                 .then(res => {
-                    debugger
+                    resolve(res)
                 })
                 .catch(res => {
-                    debugger
+                    reject(res)
                 })
         })
     },
@@ -638,9 +638,19 @@ var NgocAnh = {
             ReportErrorLocker: 7,
             StopReportErrorLocker: 8,
         },
+        // sử dụng trong grid
         StatusClassify: [
             { gStatus: 0, gStatusName: "Chưa được phân nhóm" },
             { gStatus: 1, gStatusName: "Đã được phân nhóm" },
+        ],
+        // sử dụng trong combobox
+        IsStatusClassify: [
+            { gStatus: 1, gStatusName: "Chưa được phân nhóm" },
+            { gStatus: 0, gStatusName: "Đã được phân nhóm" },
+        ],
+        StatusUseCard: [
+            { gStatus: 0, gStatusName: "Chưa có thẻ" },
+            { gStatus: 1, gStatusName: "Đã có thẻ" },
         ],
     },
 
@@ -731,6 +741,10 @@ class InputNA extends Component {
     constructor() {
         super()
 
+        this.state = {
+            value: '',
+        }
+
         this.inputRef = React.createRef()
     }
     /**
@@ -767,6 +781,28 @@ class InputNA extends Component {
     setValue(val) {
         this.inputRef.current.querySelector('.input-element input').value = val
     }
+
+    componentDidUpdate(){
+        var me = this, value = me.props.value
+        if (me.props.setField && me.props.data && JSON.parse(me.props.data)) {
+            value = JSON.parse(me.props.data)[me.props.setField]
+        }
+        if(value == null || value == undefined){
+            value = ''
+        }
+        me.inputRef.current.querySelector('input').value = value 
+    }
+
+    componentDidMount() {
+        var me = this, value = me.props.value
+        if (me.props.setField && me.props.data && JSON.parse(me.props.data)) {
+            value = JSON.parse(me.props.data)[me.props.setField]
+        }
+        if(value == null || value == undefined){
+            value = ''
+        }
+        me.inputRef.current.querySelector('input').value = value
+    }
     /**
      * className custom form
      * ID id của input để label for được
@@ -784,8 +820,14 @@ class InputNA extends Component {
             <div className={classList} ref={me.inputRef}>
                 {label}
                 <div className="input-element">
-                    {me.props.isDisabled == true ? <input id={id} disabled type={typeInput} value={value} placeholder={placeholder} onClick={me.props.onClick} ></input> :
-                        <input id={id} type={typeInput} value={value} placeholder={placeholder} onClick={me.onClick.bind(me)} ></input>}
+                    {me.props.isDisabled == true ?
+                        <input id={id} disabled type={typeInput} value={undefined}
+                            onChange={me.onChangeInput}
+                            placeholder={placeholder} onClick={me.props.onClick}
+                        ></input> :
+                        <input id={id} type={typeInput} value={undefined}
+                            onChange={me.onChangeInput}
+                            placeholder={placeholder} onClick={me.onClick.bind(me)} ></input>}
                 </div>
             </div>
         )
@@ -1117,7 +1159,7 @@ class ComboboxNA extends Component {
             return JSON.parse(rec)
         }
         else {
-            return null
+            return []
         }
     }
 
@@ -1131,6 +1173,10 @@ class ComboboxNA extends Component {
             content = e.target.value.toLowerCase(),
             displayField = me.props.DisplayField,
             data = me.data.filter(item => { return item[displayField].toLowerCase().includes(content) })
+        if (content == null || content == "") {
+            me.inputRef.current['data-record'] = ""
+            me.inputRef.current['record-origin'] = ""
+        }
         me.renderCombobox(data, true)
     }
     // nếu combobox ẩn và bấm nút xuống thì hiện
@@ -2019,6 +2065,10 @@ class ComponentPopup extends Component {
         ReactDOM.render(element, container)
     }
 
+    getID(){
+        return this.state.idContent
+    }
+
     closePopup() {
         this.hide()
         if (this.props.onClosePopup && typeof (this.props.onClosePopup) == 'function') {
@@ -2231,14 +2281,14 @@ class LockerManage extends Component {
 
 class ComponentLockerManage extends Component {
     items = [
-        { stt: 1, icon: '', text: 'Chỉnh sửa', },
+        // { stt: 1, icon: '', text: 'Chỉnh sửa', },
+        // { stt: 8, icon: '', text: 'Dừng báo lỗi tủ', },
+        // { stt: 4, icon: '', text: 'Xác nhận mở tại chỗ', },
         { stt: 2, icon: '', text: 'Mở tủ', },
         { stt: 3, icon: '', text: 'Giải phóng tủ', },
-        { stt: 4, icon: '', text: 'Xác nhận mở tại chỗ', },
         { stt: 5, icon: '', text: 'Vô hiệu hóa tủ', },
         { stt: 6, icon: '', text: 'Kích hoạt tủ', },
         { stt: 7, icon: '', text: 'Báo lỗi tủ', },
-        { stt: 8, icon: '', text: 'Dừng báo lỗi tủ', },
     ]
     constructor() {
         super()
@@ -2481,6 +2531,14 @@ class LabelInput extends Component {
     }
 }
 
+class TutorialProject extends Component {
+    render() {
+        return (
+            <div> Xin chào ReactJS! </div>
+        )
+    }
+}
+
 const UserContext = React.createContext()
 const UserProvider = UserContext.Provider
 const UserConsumer = UserContext.Consumer
@@ -2492,7 +2550,7 @@ export {
     TableNA, ColumnNA, FormSubmit,
     ComponentPopup, LayoutLocker, LockerManage,
     ContainerWrapRecord,
-    LabelInput,
+    LabelInput, TutorialProject
 }
 
 

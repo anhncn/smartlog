@@ -77,7 +77,15 @@ class ManageUsers extends Component {
                     dataGrid: JSON.stringify(res),
                     currentPageGrid: employee.page,
                 })
-                NgocAnh.CommonFunction.hideMaskLoading(containerID)
+                // NgocAnh.CommonFunction.hideMaskLoading(containerID)
+            })
+            .catch(res=>{
+
+            })
+            .finally(()=>{
+                setTimeout(function(){
+                    NgocAnh.CommonFunction.hideMaskLoading(containerID)
+                }, 300)
             })
     }
 
@@ -93,20 +101,22 @@ class ManageUsers extends Component {
             newEmployee[setFieldObj] = value
         }
         httpRequest.saveEmployee(newEmployee).then(res => {
-            me.getEmployees(1)
+            alert("Thêm mới người dùng thành công!");
+            me.getEmployees(1);
         })
     }
 
     deleteEmployee(eId) {
+        var me = this;
         httpRequest.deleteEmployee(eId).then(res => {
-            this.getEmployees(1)
+            alert("Xóa người dùng thành công!");
+            me.getEmployees(1)
         }).catch(res => {
         })
     }
 
     onClickGridCell(controls, records) {
         var me = this
-        debugger
         me.setState({
             dataWrapComponent: JSON.stringify(records)
         })
@@ -148,16 +158,15 @@ class ManageUsers extends Component {
                         <ComboboxNA ID='ComboboxLeftPanel' ref={me.dIdNewEmployee} setField='dId' placeholder="Chọn bộ phận/phòng ban"
                             textLabel='Bộ phân làm việc' data={JSON.stringify(me.state.departement)}
                             DisplayField="dName" ValueField="dId" />
-                        <ContainerWrapRecord data={me.state.dataWrapComponent} listDataIndex={listDataIndex} sperator="-" textLabel={'Bộ phân làm việc'} />
                         <InputNA typeChild="footer" hasLabel={false} value={"Thêm người dùng mới"} typeInput={'button'}
                             ref={me.btnSaveEmployee} onClick={me.saveEmployee.bind(me)} />
                     </BoxWrapNA>
                     <div className='padding-bottom-20'></div>
-                    <BoxWrapNA Title="Thêm email người dùng">
+                    {/* <BoxWrapNA Title="Thêm email người dùng">
                         <InputNA textLabel="Mã nhân viên" placeholder="Ví dụ: 01-2345" />
                         <InputNA textLabel="Email" placeholder="Ví dụ: ABC@teckcombank.com.vn" />
                         <InputNA typeChild="footer" hasLabel={false} value={"Thêm email người dùng"} typeInput={'button'} />
-                    </BoxWrapNA>
+                    </BoxWrapNA> */}
                 </div>
                 <div className='col-9 right-panel'>
                     <BoxWrapNA Title="Danh người dùng hiện hành" className='' >

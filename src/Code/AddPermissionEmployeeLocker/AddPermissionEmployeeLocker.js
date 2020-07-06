@@ -77,8 +77,9 @@ class AddPermissionEmployeeLocker extends Component {
             }
             httpRequest.excuteFactory(obj, "user", "setPermissionUseLocker").then(res => {
                 alert("Thêm nhóm sử dụng thành công!")
-                NgocAnh.CommonFunction.hideMaskLoading(idContainer)
             }).catch(res => {
+                
+            }).finally(()=>{
                 NgocAnh.CommonFunction.hideMaskLoading(idContainer)
             })
         } catch (error) {
@@ -120,7 +121,7 @@ class AddPermissionEmployeeLocker extends Component {
             obj = {
                 bId: me.buildingBotRef.current.getValue(),
                 lvId: me.levelBotRef.current.getValue(),
-                imei: me.controllerBotRef.current.getValue(),
+                imei: me.controllerBotRef.current.getRecordsSelected().text,
                 label: me.labelBotRef.current.getValue(),
                 gStatus: me.gStatusBotRef.current.getValue(),
                 page: num,
@@ -251,7 +252,7 @@ class AddPermissionEmployeeLocker extends Component {
                                 <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxStatusGridTop' textLabel='Trạng thái'
                                     placeholder="Chọn tình trạng phân nhóm" ref={me.statusTopRef}
                                     setField='gStatus' DisplayField="gStatusName" ValueField="gStatus"
-                                    data={JSON.stringify(NgocAnh.Enumeration.StatusClassify)} />
+                                    data={JSON.stringify(NgocAnh.Enumeration.IsStatusClassify)} />
                             </div>
                             <InputNA ref='filterResult' className='col-2 btn-filter padding-both-size-4' typeInput='button' value='Lọc kết quả' onClick={this.filterGridTop.bind(this)}></InputNA>
                         </div>
@@ -285,7 +286,7 @@ class AddPermissionEmployeeLocker extends Component {
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxStatusGridBot' textLabel='Trạng thái'
                                     placeholder="Chọn tình trạng phân nhóm" ref={me.gStatusBotRef}
                                     setField='status' DisplayField="gStatusName" ValueField="gStatus"
-                                    data={JSON.stringify(NgocAnh.Enumeration.StatusClassify)} />
+                                    data={JSON.stringify(NgocAnh.Enumeration.IsStatusClassify)} />
                                 <InputNA typeChild="footer" className='col-4' value={"Lọc kết quả"} typeInput={'button'}
                                     onClick={this.filterGridBot.bind(this)} />
                             </div>

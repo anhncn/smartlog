@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA, NgocAnh } from './ComponentCommon/Component'
+import { UserContext, UserProvider, ComboboxNA, TableNA, ColumnNA, NgocAnh, TutorialProject } from './ComponentCommon/Component'
 /**
  * updated nnanh 08/03/2020
  * Không sử dụng các hàm có dạng base nữa
@@ -19,11 +19,12 @@ import ManageEmployeeLocker from './Code/ManageEmployeeLocker/ManageEmployeeLock
 import ManageLockerLayout from './Code/ManageLockerLayout/ManageLockerLayout'
 import ManageLockerController from './Code/ManageLockerController/ManageLockerController'
 import AddPermissionEmployeeLocker from './Code/AddPermissionEmployeeLocker/AddPermissionEmployeeLocker'
+import styled from 'styled-components'
 //import ManagePINCode from './Code/ManageUsePINCode/ManagePINCode' 
 class App extends Component {
-  constructor(){
+  constructor() {
     super()
-    this.state ={
+    this.state = {
       isRender: false,
     }
   }
@@ -70,7 +71,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Route path='/' exact component={ManageLocker}></Route>
+        <Route path='/' exact component={Login}></Route>
         <Route path='/Login/' exact component={Login}></Route>
         <Route path='/Home/' exact component={Home}></Route>
         <Route path='/Manage/User/' exact component={ManageUsers}></Route>
@@ -86,6 +87,5 @@ class App extends Component {
     )
   }
 }
-
 
 export default App;

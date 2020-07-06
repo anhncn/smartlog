@@ -90,7 +90,7 @@ class General extends React.Component {
                 // },
                 {
                     className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý tủ',
+                    textTitle: 'Quản lý layout tủ',
                     href: '/Manage/LockerLayout',
                     title: [],
                 },
@@ -102,86 +102,86 @@ class General extends React.Component {
                 // },
                 {
                     className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý thiết bị điều khiển',
+                    textTitle: 'Quản lý tủ',
                     href: '/Manage/LockerController',
                     title: [],
                 },
             ]
         },
-        {
-            className: 'fa fa-exclamation-triangle',
-            textTitle: 'Cảnh báo',
-            href: '/Warn/Index/',
-            title: [],
-        },
-        {
-            className: 'fa fa-tasks',
-            textTitle: 'Báo cáo',
-            href: '#',
-            title: [
-                {
-                    className: '',
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Báo cáo sự kiện thời gian thực',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Báo cáo trạng thái',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Báo cáo lịch sử dụng tủ',
-                    href: '#',
-                    title: [],
-                },
-            ]
-        },
-        {
-            className: 'fa fa-assistive-listening-systems',
-            textTitle: 'Quản trị hệ thống',
-            href: '#',
-            title: [
-                {
-                    className: '',
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Thêm tài khoản quản trị',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý quyền hạn của quản trị',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý quyền hạn của quản trị',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Thêm thẻ từ mới',
-                    href: '#',
-                    title: [],
-                },
-                {
-                    className: 'fa fa-fw fa-chevron-right',
-                    textTitle: 'Quản lý sử dụng thẻ',
-                    href: '#',
-                    title: [],
-                },
-            ]
-        },
+        // {
+        //     className: 'fa fa-exclamation-triangle',
+        //     textTitle: 'Cảnh báo',
+        //     href: '/Warn/Index/',
+        //     title: [],
+        // },
+        // {
+        //     className: 'fa fa-tasks',
+        //     textTitle: 'Báo cáo',
+        //     href: '#',
+        //     title: [
+        //         {
+        //             className: '',
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Báo cáo sự kiện thời gian thực',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Báo cáo trạng thái',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Báo cáo lịch sử dụng tủ',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //     ]
+        // },
+        // {
+        //     className: 'fa fa-assistive-listening-systems',
+        //     textTitle: 'Quản trị hệ thống',
+        //     href: '#',
+        //     title: [
+        //         {
+        //             className: '',
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Thêm tài khoản quản trị',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Quản lý quyền hạn của quản trị',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Quản lý quyền hạn của quản trị',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Thêm thẻ từ mới',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //         {
+        //             className: 'fa fa-fw fa-chevron-right',
+        //             textTitle: 'Quản lý sử dụng thẻ',
+        //             href: '#',
+        //             title: [],
+        //         },
+        //     ]
+        // },
     ]
     constructor() {
         super()
@@ -323,8 +323,8 @@ class General extends React.Component {
                 <div className="container">
                     <div className="content">
                         <div className="title">
-                            <div className="txt-title">{this.props.Title || `Canh bao`}</div>
-                            <div className="home-title">Trang chủ > {this.props.Title || `Canh bao`}</div>
+                            <div className="txt-title">{this.props.Title}</div>
+                            <div className="home-title">Trang chủ > {this.props.Title}</div>
                         </div>
                         <div className="grid">
                             {this.props.children}

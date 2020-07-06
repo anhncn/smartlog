@@ -32,10 +32,12 @@ class ManageDepartement extends Component {
         let me = this, param = {name: me.nameDepartment.current.getValue()},
         id = me.formDepartment.current.getID()
         NgocAnh.CommonFunction.showMaskLoading(id)
-        httpRequest.excuteFactory(param, "department", "create").then(res=>{
+        httpRequest.excuteFactory(param, "department", "create")
+        .then(res=>{
             me.nextPrePage()
             alert("Thêm thành công bộ phận!")
-        }).finally(()=>{
+        })
+        .finally(()=>{
             NgocAnh.CommonFunction.hideMaskLoading(id)
         })
     }

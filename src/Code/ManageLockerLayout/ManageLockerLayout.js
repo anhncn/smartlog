@@ -27,6 +27,7 @@ class ManageLockerLayout extends Component {
         this.formBuilding = React.createRef()
         this.refController = React.createRef()
         this.formPopup = React.createRef()
+        this.popup = React.createRef()
     }
 
     getLockerByController() {
@@ -101,21 +102,35 @@ class ManageLockerLayout extends Component {
         }
         let dataApi = {
             lNum: parseInt(data.lNum),
-            lCol: data.lCl,
-            lRow: data.lRw,
+            lCol: data.lCl - 1,
+            lRow: data.lRw - 1,
             lPage: data.lPg,
             label: data.lLb,
             imei: data.imei
         }
+        var idPopup = me.popup.current.getID();
+        NgocAnh.CommonFunction.showMaskLoading(idPopup)
         httpRequest.excuteFactory(dataApi, 'locker', 'create').then(res => {
+            alert("Thêm một layout tủ mới thành công!")
+            me.getLockerByController()
+            me.popup.current.closePopup()
+        }).finally(()=>{
+            NgocAnh.CommonFunction.hideMaskLoading(idPopup)
         })
     }
     onClickRemoveLocker(controls) {
+        var me = this
         let param = {
             lId: this.state.dataPopup.lId
         }
+        var idPopup = me.popup.current.getID();
+        NgocAnh.CommonFunction.showMaskLoading(idPopup)
         httpRequest.excuteFactory(param, 'locker', 'remove').then(res => {
-            debugger
+            alert("Xóa layout tủ thành công!")
+            me.getLockerByController()
+            me.popup.current.closePopup()
+        }).finally(()=>{
+            NgocAnh.CommonFunction.hideMaskLoading(idPopup)
         })
     }
 
@@ -180,7 +195,7 @@ class ManageLockerLayout extends Component {
                                     data={JSON.stringify(me.state.building)} />
                                 <ComboboxNA className='col-3' ID='ComboboxLevel' textLabel='Tầng'
                                     placeholder="Chọn một tầng"
-                                    setField='lLv' DisplayField="lDes" ValueField="lLv"
+                                    setField='lId' DisplayField="lLv" ValueField="lId"
                                     data={JSON.stringify(me.state.level)} />
                                 <ComboboxNA className='col-3' ID='ComboboxController' textLabel='Thiết bị điều khiển'
                                     placeholder="Thiết bị điều khiển" ref={this.refController}

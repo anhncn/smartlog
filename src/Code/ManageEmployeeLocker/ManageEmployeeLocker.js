@@ -35,6 +35,7 @@ class ManageEmployeeLocker extends Component {
         this.popup = React.createRef()
         this.tableManageEmployeeLocker = React.createRef()
         this.tableManageEmployeeLockerRight = React.createRef()
+        this.tableManageEmployeeLockerPopup = React.createRef()
 
         this.containerWrapRec = React.createRef()
 
@@ -94,7 +95,6 @@ class ManageEmployeeLocker extends Component {
             imei: me.controllerPopup.current ? me.controllerPopup.current.getValue():"",
             label: me.labelPopup.current ? me.labelPopup.current.getValue():"",
         }
-        debugger
         httpRequest.excuteFactory(param, 'locker', 'getLockerCanAddExistPermission').then(res => {
             res = JSON.parse(res)
             NgocAnh.CommonFunction.matchPropertiesOfListObject(res.items, me.state.building, "bId", 'bName')
@@ -159,7 +159,7 @@ class ManageEmployeeLocker extends Component {
                 lvId: me.levelRight.current.getValue(),
                 bId: me.buildingRight.current.getValue(),
             }
-        NgocAnh.CommonFunction.showMaskLoading(idContainer)
+        // NgocAnh.CommonFunction.showMaskLoading(idContainer)
         NgocAnh.CommonFunction.showMaskLoading(idContainerRight)
         httpRequest.excuteFactory(param, 'locker', 'getUsage').then(res => {
             res = JSON.parse(res)
@@ -167,7 +167,8 @@ class ManageEmployeeLocker extends Component {
             me.setState({
                 dataGridRight: res,
             })
-            NgocAnh.CommonFunction.hideMaskLoading(idContainer)
+        })
+        .finally(()=>{
             NgocAnh.CommonFunction.hideMaskLoading(idContainerRight)
         })
     }
@@ -187,10 +188,11 @@ class ManageEmployeeLocker extends Component {
         }
         httpRequest.excuteFactory(param, "user", "removePermissionUseLocker").then(res => {
             alert("Xóa thành công khóa!");
-            this.setState({
+            me.setState({
                 isRender: true,
             })
-            window.location.reload();
+            me.nextPrePageGridRight()
+            // window.location.reload();
         })
 
     }
@@ -206,7 +208,7 @@ class ManageEmployeeLocker extends Component {
             this.setState({
                 isRender: true,
             })
-            window.location.reload();
+            this.nextPrePage();
         })
     }
 
@@ -222,17 +224,20 @@ class ManageEmployeeLocker extends Component {
             listLk: listLockerID,
             eCode: me.state.eCodeClick,
         }
+        var idPopup = me.tableManageEmployeeLockerPopup.current.getID()
+        NgocAnh.CommonFunction.showMaskLoading(idPopup)
         httpRequest.excuteFactory(param, "user", "addLockerExistPermission").then(res => {
             alert("Thêm thành công khóa tủ cho nhân viên!");
             me.popup.current.closePopup()
-            window.location.reload();
+            this.nextPrePage();
+        })
+        .finally(()=>{
+            NgocAnh.CommonFunction.hideMaskLoading(idPopup)
         })
     }
 
     componentDidUpdate(){
         let me = this
-        // if(me.state.isShowPopup){
-        // }
     }
 
     componentDidMount() {
@@ -278,10 +283,26 @@ class ManageEmployeeLocker extends Component {
         })
     }
 
+    onChangeBuildingPopup(controls, rec){
+        httpRequest.excuteFactory({ bId: rec.value }, "level", "get").then(res => {
+            this.setState({
+                levelPopup: JSON.parse(res).items
+            })
+        })
+    }
+
     onChangeLevelRight(control, rec) {
         httpRequest.excuteFactory({ lId: rec.value }, "controller", "get").then(res => {
             this.setState({
                 controllerRight: JSON.parse(res).items
+            })
+        })
+    }
+
+    onChangeLevelPopup(control, rec){
+        httpRequest.excuteFactory({ lId: rec.value }, "controller", "get").then(res => {
+            this.setState({
+                controllerPopup: JSON.parse(res).items
             })
         })
     }
@@ -346,7 +367,7 @@ class ManageEmployeeLocker extends Component {
                                     hasLabel={true} data={JSON.stringify(me.state.levelRight)} />
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxDeviceRemote' textLabel='Thiết bị điều khiển'
                                     placeholder="Chọn một mã thiết bị" ref={me.controllerRight}
-                                    setField='cId' DisplayField="imei" ValueField="cId"
+                                    setField='imei' DisplayField="imei" ValueField="imei"
                                     hasLabel={true} data={JSON.stringify(me.state.controllerRight)} />
                                 <InputNA className='col-4 padding-both-size-4' textLabel='Nhãn tủ'
                                     ref={me.labelRight} placeholder='ví dụ: 22.092'></InputNA>
@@ -377,18 +398,19 @@ class ManageEmployeeLocker extends Component {
                             <div className='col-12 padding-parent'>
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxBuildingPopup' textLabel='Toà nhà'
                                     placeholder="Chọn một tòa nhà"
-                                    ref={me.buildingPopup}
+                                    ref={me.buildingPopup} onChange={me.onChangeBuildingPopup.bind(me)}
                                     setField='bId' DisplayField="bName" ValueField="bId"
                                     hasLabel={true} data={JSON.stringify(me.state.building)} />
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxFloorPopup' textLabel='Tầng'
                                     placeholder="Chọn một tầng"
                                     ref={me.levelPopup}
+                                    onChange={me.onChangeLevelPopup.bind(me)}
                                     setField='lId' DisplayField="lLv" ValueField="lId"
                                     hasLabel={true} data={JSON.stringify(me.state.levelPopup)} />
                                 <ComboboxNA className='col-4 padding-both-size-4' ID='ComboboxDeviceRemotePopup' textLabel='Thiết bị điều khiển'
                                     placeholder="Chọn một mã thiết bị"
                                     ref={me.controllerPopup}
-                                    setField='cId' DisplayField="imei" ValueField="cId"
+                                    setField='imei' DisplayField="imei" ValueField="imei"
                                     hasLabel={true} data={JSON.stringify(me.state.controllerPopup)} />
                                 <InputNA className='col-4 padding-both-size-4' textLabel='Nhãn tủ' ref={me.labelPopup} placeholder='ví dụ: 22.092'/>
                                 <InputNA className='col-4 btn-filter padding-both-size-4' typeInput='button' onClick={me.filterPagePopup.bind(me)} value='Lọc danh sách' />
@@ -398,7 +420,7 @@ class ManageEmployeeLocker extends Component {
                         </div>
                         <TableNA Height={250} ID={"tableManageEmployeeLockerPopup"} data={JSON.stringify(me.state.dataPopup)}
                             NumPaging={5} changePaging={me.nextPrePagePopup.bind(me)} isSelection={true}
-                            ref={me.tableManageEmployeeLockerRight} onClickCheckboxColumn={me.onClickCheckboxColumnPopup.bind(me)}>
+                            ref={me.tableManageEmployeeLockerPopup} onClickCheckboxColumn={me.onClickCheckboxColumnPopup.bind(me)}>
                             <ColumnNA isLocked={true} Width={100} DataIndex='bName' text='Tòa nhà' />
                             <ColumnNA MinWidth={100} Flex={1} text='Tầng' DataIndex='lLv' />
                             <ColumnNA MinWidth={120} Flex={1} text='Thứ tự' DataIndex='lId' />

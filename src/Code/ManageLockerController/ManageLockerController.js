@@ -169,10 +169,13 @@ class ManageLockerController extends Component {
                 this.setState({
                     isRender: true
                 })
+                alert('Thành công!')
+                me.getLockerByController()
+
             }).catch(e => {
                 const res = JSON.parse(e.response)
                 alert(res.message)
-            }).finally(()=>{
+            }).finally(() => {
                 ReactDOM.render(null, document.getElementById(NgocAnh.Enumeration.PopupOptionLocker.ID))
                 NgocAnh.CommonFunction.hideMaskLoading(containerID)
             })
@@ -181,16 +184,21 @@ class ManageLockerController extends Component {
         }
     }
 
-    freeGroupLockerByController(){
+    freeGroupLockerByController() {
         let me = this, refController = me.refController.current,
-        param = {
-            imei: refController.getRecordsSelected().text,
-        }   
-        httpRequest.excuteFactory(param, 'locker', 'freeLockerExistController').then(res=>{
+            param = {
+                imei: refController.getRecordsSelected().text,
+            }
+        let containerID = me.boxWrap.current.getID()
+        NgocAnh.CommonFunction.showMaskLoading(containerID)
+        httpRequest.excuteFactory(param, 'locker', 'freeLockerExistController').then(res => {
             alert("Giải phóng thành công cụm tủ!");
-            window.location.reload();
-        }).catch(res=>{
-
+            me.getLockerByController();
+        }).catch(e => {
+            const res = JSON.parse(e.response)
+            alert(res.message)
+        }).finally(() => {
+            NgocAnh.CommonFunction.hideMaskLoading(containerID)
         })
     }
     onResize() {
@@ -244,7 +252,7 @@ class ManageLockerController extends Component {
         let me = this,
             popup = me.renderPopupExcuteLoker()
         return (
-            <General Title={'Quản lý layout tủ'} className='manager-locker-controller-nnanh' onResize={me.onResize.bind(me)} >
+            <General Title={'Quản lý tủ'} className='manager-locker-controller-nnanh' onResize={me.onResize.bind(me)} >
                 <div className='col-12'>
                     <BoxWrapNA Title=' ' className='' ref={me.boxWrap} >
                         <div className='row' typeChild='header'>
@@ -255,7 +263,7 @@ class ManageLockerController extends Component {
                                     data={JSON.stringify(me.state.building)} />
                                 <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxLevel' textLabel='Tầng'
                                     placeholder="Chọn một tầng"
-                                    setField='lLv' DisplayField="lDes" ValueField="lLv"
+                                    setField='lId' DisplayField="lLv" ValueField="lId"
                                     data={JSON.stringify(me.state.level)} />
                                 <ComboboxNA className='col-3 padding-both-size-4' ID='ComboboxController' textLabel='Thiết bị điều khiển'
                                     placeholder="Thiết bị điều khiển" ref={this.refController}
